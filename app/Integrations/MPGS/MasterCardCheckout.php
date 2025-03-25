@@ -23,6 +23,7 @@ class MasterCardCheckout
     public function initiateCheckout(float $amount, string $merchant_name, string $order_ID, string $description_of_order, $txn_id, string $return_url, string $currency = 'ZMW')
     {
         $currency = 'ZMW';
+        $f_amount = number_format(($amount * 31), 2, '.', '');
         $curl = curl_init();
         $url = config('app.url');
         $endpoint = $this->apiUrl . "/api/rest/version/72/merchant/{$this->apiKey}/session";
@@ -38,7 +39,7 @@ class MasterCardCheckout
             ],
             "order" => [
                 "currency" => $currency,
-                "amount" => $amount,
+                "amount" => $f_amount,
                 "id" => $order_ID,
                 "reference" => $order_ID . '-' . $txn_id,
                 "description" => $description_of_order,

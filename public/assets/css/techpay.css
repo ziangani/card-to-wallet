@@ -1,0 +1,69 @@
+body.frontend {
+    background: #fff url(../img/pay-bill.jpg) repeat-y;
+    background-size: cover;
+    background-position: bottom;
+    background-blend-mode: lighten;
+    background-color: rgb(93, 58, 142); /* Light blue color with 50% opacity */
+}
+
+.card.payment-card {
+    height: 100%;
+}
+
+.card.payment-card .card-body {
+    min-height: 45dvh;
+}
+
+.navbar .navbar-nav .nav-link {
+    font-weight: 600;
+}
+
+header.navbar.navbar-expand-md.d-print-none {
+    padding-bottom: 0;
+}
+
+.page-header {
+    min-height: 3.25rem;
+}
+.form-label {
+    font-size: .95rem;
+}
+ol li{
+    margin-bottom: 10px;
+}
+.nav-link .icon-tabler {
+    width: 16px;
+}
+
+.navbar-brand {
+    color: #1a309e;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+
+
+.detected-payment-mode {
+    padding-left: 0;
+}
+
+.detected-payment-mode li {
+    display: inline-block;
+    margin-right: 4%;
+    list-style: none;
+}
+
+.detected-payment-mode li img {
+    width: 50px;
+    border-radius: 45px;
+    /*    make the image black and white*/
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+.btn-primary {
+    background-color: #0071cc;
+    border-color: #0071cc;
+}

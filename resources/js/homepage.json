@@ -1,0 +1,551 @@
+{
+    "header": {
+        "logo": "assets/img/logo.png",
+        "navmenu": {
+            "links": [
+                {
+                    "text": "Home",
+                    "href": "#hero"
+                },
+                {
+                    "text": "About",
+                    "href": "#services"
+                },
+                {
+                    "text": "Services",
+                    "href": "#what-we-offer"
+                },
+                {
+                    "text": "Contact",
+                    "href": "#contact"
+                }
+            ],
+            "buttons": [
+                {
+                    "text": "Sign In",
+                    "href": "/login"
+                },
+                {
+                    "text": "Sign Up",
+                    "href": "/sign-up",
+                    "class": "bordered-button"
+                }
+            ]
+        }
+    },
+    "hero": [
+        {
+            "backgroundImage": "assets/frontend/img/5.jpg",
+            "h1": "Streamline Your Payments",
+            "p": "Your trusted partner for seamless, secure, and efficient payment processing.",
+            "buttons": [
+                {
+                    "text": "Learn More",
+                    "href": "/about"
+                },
+                {
+                    "text": "Sign Up",
+                    "href": "/sign-up",
+                    "class": "bordered-button"
+                }
+            ]
+        },
+        {
+            "backgroundImage": "assets/frontend/img/10.jpg",
+            "h1": "Effortless Integration",
+            "p": "Enhance your online store with Techpay's hassle-free checkout experience.",
+            "buttons": [
+                {
+                    "text": "Learn More",
+                    "href": "/features"
+                },
+                {
+                    "text": "Sign Up",
+                    "href": "/sign-up",
+                    "class": "bordered-button"
+                }
+            ]
+        },
+        {
+            "backgroundImage": "assets/frontend/img/9.jpg",
+            "h1": "Scalable Solutions",
+            "p": "From startups to enterprises, Techpay grows with your business needs.",
+            "buttons": [
+                {
+                    "text": "Learn More",
+                    "href": "/solutions"
+                },
+                {
+                    "text": "Sign Up",
+                    "href": "/sign-up",
+                    "class": "bordered-button"
+                }
+            ]
+        },
+        {
+            "backgroundImage": "assets/frontend/img/4.jpg",
+            "h1": "Versatile Integration",
+            "p": "Easily add Techpay to your apps and websites with our extensive plugin library.",
+            "buttons": [
+                {
+                    "text": "Learn More",
+                    "href": "/integrations"
+                },
+                {
+                    "text": "Sign Up",
+                    "href": "/sign-up",
+                    "class": "bordered-button"
+                }
+            ]
+        },
+        {
+            "backgroundImage": "assets/frontend/img/5.jpg",
+            "h1": "Tailored for Every Industry",
+            "p": "Diverse payment methods to suit your unique business needs.",
+            "buttons": [
+                {
+                    "text": "Learn More",
+                    "href": "/industries"
+                },
+                {
+                    "text": "Sign Up",
+                    "href": "/sign-up",
+                    "class": "bordered-button"
+                }
+            ]
+        }
+    ],
+    "services": {
+        "sectionTitle": {
+            "h2": "Why choosing us?",
+            "p": "What we do offer"
+        },
+        "serviceItems": [
+            {
+                "icon": "bi bi-gear",
+                "h3": "No Coding Needed",
+                "p": "With Techpay, you can receive payments effortlessly. Generate payment links and share them with your customers—no coding skills needed."
+            },
+            {
+                "icon": "bi bi-phone",
+                "h3": "Mobile Friendly",
+                "p": "Access Techpay from any device with a browser. It's cross-platform and available on major app stores for your convenience."
+            },
+            {
+                "icon": "bi bi-tools",
+                "h3": "Efficient Tools",
+                "p": "Use our management tools to simplify your payment process, monitor transactions, and create reports easily."
+            },
+            {
+                "icon": "bi bi-wallet",
+                "h3": "Fast Transactions",
+                "p": "Easily manage transactions and refunds with one click. Techpay makes payment handling simple for you and your customers."
+            },
+            {
+                "icon": "bi bi-bell",
+                "h3": "Real-Time Updates",
+                "p": "Stay updated with real-time notifications and reports. Techpay keeps you informed about all payment activities instantly."
+            },
+            {
+                "icon": "bi bi-shield",
+                "h3": "Secure and Reliable",
+                "p": "Techpay ensures your transactions are secure with robust encryption. Trust our platform to handle your payments with reliability."
+            }
+        ],
+        "sections": [
+            {
+                "id": "what-we-offer",
+                "title": "Our Services",
+                "subtitle": "What we do offer",
+                "offers": [
+                    {
+                        "image": "assets/frontend/img/16.jpg",
+                        "alt": "Ecommerce: WooCommerce",
+                        "title": "Ecommerce: WooCommerce",
+                        "description": "Integrate seamless ecommerce solutions with WooCommerce to enhance your online store."
+                    },
+                    {
+                        "image": "assets/frontend/img/13.jpg",
+                        "alt": "USSD",
+                        "title": "USSD",
+                        "description": "Utilize USSD for quick and efficient service delivery, accessible from any mobile phone."
+                    },
+                    {
+                        "image": "assets/frontend/img/6.jpg",
+                        "alt": "QR Codes",
+                        "title": "QR Codes",
+                        "description": "Generate and integrate QR codes for easy access to your services and promotions."
+                    },
+                    {
+                        "image": "assets/frontend/img/5.jpg",
+                        "alt": "POS",
+                        "title": "POS",
+                        "description": "Streamline your transactions with our reliable Point of Sale systems."
+                    },
+                    {
+                        "image": "assets/frontend/img/15.jpg",
+                        "alt": "API Integration",
+                        "title": "API Integration & Software Development",
+                        "description": "Streamline your operations by connecting with various APIs, enhancing functionality and improving system performance."
+                    },
+                    {
+                        "image": "assets/frontend/img/14.jpg",
+                        "alt": "WhatsApp Payment",
+                        "title": "WhatsApp Payment",
+                        "description": "Facilitate easy and secure payments through WhatsApp for enhanced customer convenience."
+                    }
+                ]
+            },
+            {
+                "id": "usage",
+                "title": "Where can you use Techpay?",
+                "subtitle": "See some industry examples of where you can use Techpay",
+                "titleStyle": {
+                    "fontSize": "1.2rem",
+                    "textAlign": "center"
+                },
+                "examples": [
+                    {
+                        "image": "assets/frontend/img/4.jpg",
+                        "alt": "Online Payments",
+                        "title": "Online Payments",
+                        "description": "With Techpay, you can offer customers a variety of payment options. No website? No problem! Just sign up and start receiving payments instantly.",
+                        "button_text": "Sign Up"
+                    },
+                    {
+                        "image": "assets/frontend/img/6.jpg",
+                        "alt": "Websites & Apps",
+                        "title": "Websites & Apps",
+                        "description": "Integrate Techpay into websites and apps using our easy-to-use APIs and pre-built themes.",
+                        "button_text": "Sign Up"
+                    },
+                    {
+                        "image": "assets/frontend/img/11.jpg",
+                        "alt": "Home Business",
+                        "title": "Home Business",
+                        "description": "Accept secure payments for your products or services efficiently from home.",
+                        "button_text": "Sign Up"
+                    },
+                    {
+                        "image": "assets/frontend/img/9.jpg",
+                        "alt": "Supermarkets",
+                        "title": "Supermarkets",
+                        "description": "Enhance checkout experience with Techpay POS systems, accepting Mobile Money, Visa, and MasterCard.",
+                        "button_text": "Sign Up"
+                    }
+                ]
+            },
+            {
+                "id": "prices",
+                "title": "Prices",
+                "subtitle": "We do offer awesome Prices",
+                "pricing": {
+                    "image": "assets/frontend/img/17.jpg",
+                    "cards": [
+                        {
+                            "title": "Card Checkout",
+                            "description": "Accept Visa, MasterCard & other major Cards",
+                            "price": "3.5%",
+                            "price_unit": "/transaction"
+                        },
+                        {
+                            "title": "Mobile Money",
+                            "description": "We support MTN, Airtel and Zamtel Money",
+                            "price": "2.5%",
+                            "price_unit": "/transaction"
+                        }
+                    ]
+                }
+            }
+        ],
+        "footer": {
+            "info": {
+                "title": "Techpay",
+                "description": "Empowering businesses with seamless payment solutions.",
+                "social_links": [
+                    {
+                        "platform": "facebook",
+                        "icon_class": "fa-brands fa-facebook-f"
+                    }
+                ]
+            },
+            "links": [
+                {
+                    "category": "Useful Links",
+                    "items": [
+                        {
+                            "name": "Home",
+                            "icon_class": "fa-solid fa-chevron-right",
+                            "link": "#"
+                        },
+                        {
+                            "name": "Services",
+                            "icon_class": "fa-solid fa-chevron-right",
+                            "link": "#"
+                        },
+                        {
+                            "name": "Terms of service",
+                            "icon_class": "fa-solid fa-chevron-right",
+                            "link": "#"
+                        },
+                        {
+                            "name": "Privacy policy",
+                            "icon_class": "fa-solid fa-chevron-right",
+                            "link": "#"
+                        }
+                    ]
+                },
+                {
+                    "category": "Contact Us",
+                    "address": {
+                        "location": "Plot No. 37861, Alick Nkhata Road, MassMedia, Lusaka, Zambia",
+                        "phone": "+260 764 188 643",
+                        "email": "info@techpay.com"
+                    }
+                }
+            ],
+            "copyright": {
+                "text": "© Copyright Techpay. All Rights Reserved"
+            }
+        }
+    },
+    "cta": {
+        "h3": "Get Started with Techpay",
+        "steps": [
+            {
+                "icon": "fas fa-user",
+                "h4": "Sign Up",
+                "p": "Create an account to start using Techpay."
+            },
+            {
+                "icon": "fas fa-upload",
+                "h4": "Upload documents",
+                "p": "Upload documents and get verified"
+            },
+            {
+                "icon": "fas fa-hand-holding-usd",
+                "h4": "Receive Payments",
+                "p": "Upon review and approval of your account you can start receiving payments."
+            }
+        ],
+        "button": {
+            "href": "/sign-up",
+            "text": "Get Started"
+        },
+        "whatWeOffer": {
+            "title": "Our Services",
+            "subtitle": "What we do offer",
+            "offers": [
+                {
+                    "image": "assets/frontend/img/19.jpg",
+                    "altText": "MasterCard Payment Gateway",
+                    "title": "MasterCard Payment Gateway",
+                    "description": "Ensure secure, seamless payments for customer convenience."
+                },
+                {
+                    "image": "assets/frontend/img/14.jpg",
+                    "altText": "WhatsApp Payment",
+                    "title": "WhatsApp & USSD",
+                    "description": "Facilitate easy and secure payments through WhatsApp for enhanced customer convenience."
+                },
+                {
+                    "image": "assets/frontend/img/6.jpg",
+                    "altText": "QR Codes",
+                    "title": "QR Codes",
+                    "description": "Generate and integrate QR codes for easy access to your services and promotions."
+                },
+                {
+                    "image": "assets/frontend/img/5.jpg",
+                    "altText": "POS",
+                    "title": "POS",
+                    "description": "Streamline your transactions with our reliable Point of Sale systems."
+                },
+                {
+                    "image": "assets/frontend/img/16.jpg",
+                    "altText": "Ecommerce: WooCommerce",
+                    "title": "Ecommerce: WooCommerce",
+                    "description": "Integrate seamless ecommerce solutions with WooCommerce to enhance your online store."
+                },
+                {
+                    "image": "assets/frontend/img/15.jpg",
+                    "altText": "API & Software Development",
+                    "title": "API & Software Development",
+                    "description": "We offer seamless API integration and custom software development."
+                }
+            ]
+        },
+        "usage": {
+            "title": "Where can you use Techpay?",
+            "subtitle": "See some industry examples of where you can use Techpay",
+            "examples": [
+                {
+                    "image": "assets/frontend/img/4.jpg",
+                    "alt": "Online Payments",
+                    "title": "Online Payments",
+                    "description": "Receiving payments online has never been easier. With Techpay, you can offer your customers a variety of payment options through a single platform. No website? No problem! Just sign up and start receiving payments instantly.",
+                    "button_text": "Sign Up"
+                },
+                {
+                    "image": "assets/frontend/img/21.jpg",
+                    "alt": "Websites & Apps",
+                    "title": "Websites & Apps",
+                    "description": "Integrate Techpay using our APIs seamlessly into your websites and mobile apps. Whether you are an experienced developer or a beginner, our easy-to-use APIs and pre-built themes in Mobirise Site Maker will help you get started without hassle.",
+                    "button_text": "Sign Up"
+                },
+                {
+                    "image": "assets/frontend/img/11.jpg",
+                    "alt": "Home Business",
+                    "title": "Home Business",
+                    "description": "Turn your home business into a cashless venture with Techpay. Accept payments for your products or services securely and efficiently. From home bakers to freelance consultants, Techpay caters to all.",
+                    "button_text": "Sign Up"
+                },
+                {
+                    "image": "assets/frontend/img/22.jpg",
+                    "alt": "Supermarkets",
+                    "title": "Supermarkets",
+                    "description": "Enhance your supermarket's checkout experience by adding Techpay to your Point of Sale (POS) system. Our APIs allow you to accept various payment methods such as Mobile Money, Visa, and MasterCard, giving your customers the freedom to choose how they pay.",
+                    "button_text": "Sign Up"
+                },
+                {
+                    "image": "assets/frontend/img/23.jpg",
+                    "alt": "Pharmacy",
+                    "title": "Pharmacy",
+                    "description": "Upgrade your pharmacy's payment system with Techpay. Easily integrate our APIs to accept payments through Mobile Money, Visa, and MasterCard, offering your customers flexible payment options.",
+                    "button_text": "Sign Up"
+                  },
+                  {
+                    "image": "assets/frontend/img/25.jpg",
+                    "alt": "School",
+                    "title": "Univeristies & Schools",
+                    "description": "Simplify fee payments for your school by using Techpay. Our APIs enable the acceptance of Mobile Money, Visa, and MasterCard, making it easier for parents and students to pay securely and conveniently.",
+                    "button_text": "Sign Up"
+                  },
+                  {
+                    "image": "assets/frontend/img/24.jpg",
+                    "alt": "Events",
+                    "title": "Events",
+                    "description": "Boost your event's ticketing system with Techpay. Accept various payment methods like Mobile Money, Visa, and MasterCard using our easy-to-integrate APIs, offering attendees a smooth and secure payment experience.",
+                    "button_text": "Sign Up"
+                  }
+                  
+            ]
+        }
+    },
+    "prices": {
+        "title": "Prices",
+        "subtitle": "We do offer awesome Prices",
+        "image": "assets/frontend/img/17.jpg",
+        "cards": [
+            {
+                "title": "Card Checkout",
+                "description": "Accept Visa, MasterCard & other major Cards",
+                "price": "3.5%",
+                "price_unit": "/transaction"
+            },
+            {
+                "title": "Mobile Money",
+                "description": "We support MTN, Airtel and Zamtel Money",
+                "price": "2.5%",
+                "price_unit": "/transaction"
+            }
+        ]
+    },
+    "footer": {
+        "info": {
+            "title": "Techpay",
+            "description": "Empowering businesses with seamless payment solutions.",
+            "social_links": [
+                {
+                    "platform": "twitter",
+                    "icon_class": "fa-brands fa-twitter"
+                },
+                {
+                    "platform": "facebook",
+                    "icon_class": "fa-brands fa-facebook-f"
+                },
+                {
+                    "platform": "instagram",
+                    "icon_class": "fa-brands fa-instagram"
+                },
+                {
+                    "platform": "linkedin",
+                    "icon_class": "fa-brands fa-linkedin-in"
+                }
+            ]
+        },
+        "links": [
+            {
+                "category": "Useful Links",
+                "items": [
+                    {
+                        "name": "Home",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    },
+                    {
+                        "name": "About us",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    },
+                    {
+                        "name": "Services",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    },
+                    {
+                        "name": "Terms of service",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    },
+                    {
+                        "name": "Privacy policy",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    }
+                ]
+            },
+            {
+                "category": "Our Services",
+                "items": [
+                    {
+                        "name": "Online Payments",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    },
+                    {
+                        "name": "Mobile Money",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    },
+                    {
+                        "name": "POS Solutions",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    },
+                    {
+                        "name": "API Integration",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    },
+                    {
+                        "name": "Payment Analytics",
+                        "icon_class": "fa-solid fa-chevron-right",
+                        "link": "#"
+                    }
+                ]
+            },
+            {
+                "category": "Contact Us",
+                "address": {
+                    "location": "Plot No. 37861, Alick Nkhata Road, MassMedia, Lusaka, Zambia",
+                    "phone": "+260 764 188 643",
+                    "email": "info@techpay.com"
+                }
+            }
+        ],
+        "copyright": {
+            "text": "© Copyright Techpay. All Rights Reserved"
+        }
+    }
+}
+

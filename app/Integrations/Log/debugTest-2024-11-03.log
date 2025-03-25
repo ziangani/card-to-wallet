@@ -1,0 +1,40 @@
+[2024-11-03T11:58:10] [INFO] [MerchantConfiguration] : APPLICATION LOGGING START:
+
+[2024-11-03T11:58:10] [INFO] [MerchantConfiguration] : CONFIGURATION INFORMATION :
+authenticationType  = HTTP_SIGNATURE
+enableLogging  = 1
+debugLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/debugTest.log
+errorLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/errorTest.log
+RunEnvironment  = apitest.cybersource.com
+[2024-11-03T11:58:10] [INFO] [MerchantConfiguration] : APPLICATION LOGGING START:
+
+[2024-11-03T11:58:10] [INFO] [MerchantConfiguration] : CONFIGURATION INFORMATION :
+authenticationType  = HTTP_SIGNATURE
+enableLogging  = 1
+debugLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/debugTest.log
+errorLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/errorTest.log
+RunEnvironment  = apitest.cybersource.com
+[2024-11-03T12:00:20] [INFO] [MerchantConfiguration] : APPLICATION LOGGING START:
+
+[2024-11-03T12:00:20] [INFO] [MerchantConfiguration] : CONFIGURATION INFORMATION :
+authenticationType  = HTTP_SIGNATURE
+enableLogging  = 1
+debugLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/debugTest.log
+errorLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/errorTest.log
+RunEnvironment  = apitest.cybersource.com
+[2024-11-03T12:01:41] [INFO] [MerchantConfiguration] : APPLICATION LOGGING START:
+
+[2024-11-03T12:01:41] [INFO] [MerchantConfiguration] : CONFIGURATION INFORMATION :
+authenticationType  = HTTP_SIGNATURE
+enableLogging  = 1
+debugLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/debugTest.log
+errorLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/errorTest.log
+RunEnvironment  = apitest.cybersource.com
+[2024-11-03T12:01:41] [INFO] [MerchantConfiguration] : APPLICATION LOGGING START:
+
+[2024-11-03T12:01:41] [INFO] [MerchantConfiguration] : CONFIGURATION INFORMATION :
+authenticationType  = HTTP_SIGNATURE
+enableLogging  = 1
+debugLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/debugTest.log
+errorLogFile  = /Users/ziang/code/techpay-core/app/Integrations/Cybersource/../Log/errorTest.log
+RunEnvironment  = apitest.cybersource.com

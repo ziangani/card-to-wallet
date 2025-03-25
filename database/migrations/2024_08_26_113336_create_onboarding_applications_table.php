@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('onboarding_applications', function (Blueprint $table) {
+            $table->id();
+            $table->string('reference')->unique();
+            $table->string('status');
+            $table->integer('approval_level');
+            $table->text('comment')->nullable();
+            $table->foreignIdFor(\App\Models\CompanyDetail::class, 'company_id');
+            $table->foreignIdFor(\App\Models\User::class, 'reviewed_by')->nullable();
+            $table->timestamp('reviewed_at')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('onboarding_applications');
+    }
+};

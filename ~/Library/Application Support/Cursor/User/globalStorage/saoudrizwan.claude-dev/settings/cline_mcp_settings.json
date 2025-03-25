@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "docker",
+      "args": ["run", "--rm", "-i", "mcp/postgres", "postgres://postgres:password@host.docker.internal:5432/mcp_db"],
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

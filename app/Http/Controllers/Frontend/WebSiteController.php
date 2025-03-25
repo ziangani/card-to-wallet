@@ -8,23 +8,15 @@ class WebSiteController extends Controller
 {
     public function index()
     {
-        $homepageData = json_decode(file_get_contents(resource_path('js/homepage.json')), true);
-        $header = $homepageData['header'] ?? [];
-        $hero = $homepageData['hero'] ?? [];
-        $services = $homepageData['services'] ?? [];
-        $cta = $homepageData['cta'] ?? [];
-        $whatWeOffer = $homepageData['cta']['whatWeOffer'] ?? [];
-        $usage = $homepageData['cta']['usage'] ?? [];
-        $price = $homepageData['price'] ?? [];
+        // Simple data for the homepage
         $data = [
-            'header' => $header,
-            'hero' => $hero,
-            'services' => $services,
-            'cta' => $cta,
-            'whatWeOffer' => $whatWeOffer,
-            'usage' => $usage,
-            'price' => $price
+            'title' => 'Welcome to ' . config('app.name'),
+            'subtitle' => 'Your trusted payment processing solution',
+            'description' => 'We provide secure and reliable payment processing services for businesses of all sizes.',
+            'buttonText' => 'Make a Payment',
+            'buttonUrl' => '/tpm/DEFAULT/'
         ];
+        
         return view('welcome', $data);
     }
 }

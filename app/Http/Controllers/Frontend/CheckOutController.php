@@ -79,6 +79,12 @@ class CheckOutController extends Controller
                 'statusMessage' => 'Payment request has already been processed'
             ];
 
+        if($paymentRequest->amount >= 1000)
+            return [
+                'status' => 'error',
+                'statusMessage' => 'Threshold amount exceeded'
+            ];
+
         try {
 
             $reference = $paymentRequest->token;

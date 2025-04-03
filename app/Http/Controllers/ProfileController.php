@@ -47,19 +47,6 @@ class ProfileController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($user->id),
-            ],
-            'phone_number' => [
-                'required',
-                'string',
-                'max:20',
-                Rule::unique('users')->ignore($user->id),
-            ],
             'date_of_birth' => 'required|date|before:today',
             'address' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:100',
@@ -69,8 +56,6 @@ class ProfileController extends Controller
         $user->update([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
             'date_of_birth' => $request->date_of_birth,
             'address' => $request->address,
             'city' => $request->city,

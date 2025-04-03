@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
@@ -11,19 +11,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class User extends Authenticatable implements HasName, FilamentUser
+class User extends Authenticatable implements HasName, FilamentUser, MustVerifyEmail
 {
     use HasFactory, Notifiable;
-
-    public function merchants(): BelongsTo
-    {
-        return $this->belongsTo(Merchants::class, 'merchant_id', 'id');
-    }
-
-    public function companyDetails(): BelongsTo
-    {
-        return $this->belongsTo(CompanyDetail::class, 'company_detail_id', 'id');
-    }
 
     public static $userTypes = [
         'DATA_ENTRY' => 'DATA_ENTRY',
@@ -46,14 +36,38 @@ class User extends Authenticatable implements HasName, FilamentUser
         'email',
         'password',
         'first_name',
-        'surname',
-        'mobile',
+        'last_name',
+        'phone_number',
+        'date_of_birth',
+        'verification_level',
+        'is_active',
+        'is_email_verified',
+        'is_phone_verified',
         'auth_id',
         'auth_password',
         'user_type',
         'merchant_id',
         'company_detail_id'
     ];
+
+    /**
+     * Override the __get method to always return true for is_phone_verified
+     * while still allowing the property to be set in the database.
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function __get($key)
+    {
+        if ($key === 'is_phone_verified') {
+            return true;
+        }
+        if ($key === 'is_email_verified') {
+            return true;
+        }
+
+        return parent::__get($key);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

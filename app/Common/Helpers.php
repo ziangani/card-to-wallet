@@ -3,6 +3,7 @@
 namespace App\Common;
 
 use App\Models\Applications;
+use Illuminate\Support\Facades\URL;
 use App\Models\BotUserFud;
 use App\Models\Emails;
 use App\Models\Logs\ApiLogs;
@@ -452,5 +453,33 @@ class Helpers
     public static function generatePaymentUUID(): string
     {
         return substr(self::generateUUIDV4(), 0, 20);
+    }
+
+    public static function sendEmailVerificationNotification(User $user): void
+    {
+        // Generate a signed URL for email verification
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id' => $user->id,
+                'hash' => sha1($user->email),
+            ]
+        );
+        
+        $data = [
+            'name' => $user->first_name,
+            'verification_url' => $verificationUrl,
+            'url' => url('/')
+        ];
+
+        $email = new Emails();
+        $email->subject = 'Verify Your Email Address';
+        $email->from = config('mail.from.address');
+        $email->email = $user->email;
+        $email->message = view('emails.verify-email', $data)->render();
+        $email->view = 'emails.verify-email';
+        $email->data = $data;
+        $email->save();
     }
 }

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title }}</title>
     <meta name="description" content="Fund your mobile wallet instantly with secure card payments">
-    
+
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('assets/img/logo.png') }}">
-    
+
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -28,15 +28,15 @@
             }
         }
     </script>
-    
+
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -160,7 +160,7 @@
 <body class="bg-light">
     <!-- Accessibility Skip Link -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    
+
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-30">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-6xl">
@@ -173,7 +173,7 @@
             </nav>
         </div>
     </header>
-    
+
     <!-- Hero Section -->
     <section class="py-20 hero-gradient text-white relative overflow-hidden" id="main-content">
         <div class="container mx-auto px-4 max-w-6xl relative z-10">
@@ -187,10 +187,10 @@
                     </a>
                 </div>
                 <div class="md:w-1/2 flex justify-center">
-                    <img src="{{ asset('assets/img/woman-with-phone.png') }}" alt="Person using mobile wallet" class="max-w-full h-auto rounded-lg shadow-lg" onerror="this.src='https://via.placeholder.com/500x400?text=Mobile+Wallet';this.onerror='';">
+                    <img src="{{ asset('assets/img/woman-with-phone.png') }}" alt="Person using mobile wallet" class="max-w-full h-auto rounded-lg" onerror="this.src='https://via.placeholder.com/500x400?text=Mobile+Wallet';this.onerror='';">
                 </div>
             </div>
-            
+
             <!-- Scroll indicator -->
             <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white text-center scroll-indicator">
                 <p class="text-sm mb-2">Scroll to learn more</p>
@@ -198,7 +198,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Supported Mobile Networks Section -->
     <section class="py-8 bg-white">
         <div class="container mx-auto px-4 max-w-6xl">
@@ -206,7 +206,7 @@
                 <h2 class="text-2xl font-bold text-dark mb-2">Supported Mobile Networks</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">Send money instantly to any of these mobile wallet providers</p>
             </div>
-            
+
             <div class="flex flex-wrap justify-center items-center gap-6 md:gap-12">
                 <!-- MTN -->
                 <div class="text-center">
@@ -215,7 +215,7 @@
                     </div>
                     <p class="font-medium text-gray-800">MTN Mobile Money</p>
                 </div>
-                
+
                 <!-- Airtel -->
                 <div class="text-center">
                     <div class="w-20 h-20 mx-auto mb-2 p-2 bg-white rounded-full shadow-sm hover:shadow-md transition-all">
@@ -223,7 +223,7 @@
                     </div>
                     <p class="font-medium text-gray-800">Airtel Money</p>
                 </div>
-                
+
                 <!-- Zamtel -->
                 <div class="text-center">
                     <div class="w-20 h-20 mx-auto mb-2 p-2 bg-white rounded-full shadow-sm hover:shadow-md transition-all">
@@ -232,7 +232,7 @@
                     <p class="font-medium text-gray-800">Zamtel Kwacha</p>
                 </div>
             </div>
-            
+
             <!-- Trust indicators -->
             <div class="mt-8 text-center">
                 <div class="inline-flex items-center justify-center bg-gray-100 rounded-full px-4 py-2 text-sm text-gray-700">
@@ -242,7 +242,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- How It Works Section -->
     <section class="py-12 bg-light" id="how-it-works">
         <div class="container mx-auto px-4 max-w-6xl">
@@ -250,7 +250,7 @@
                 <h2 class="text-2xl font-bold text-dark mb-3">How It Works</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">Fund your mobile wallet in three simple steps</p>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Step 1 -->
                 <div class="bg-white rounded-lg p-5 text-center shadow-sm hover:shadow-md transition-shadow duration-300 step-card relative">
@@ -261,7 +261,7 @@
                     <h3 class="text-base font-semibold mb-2 text-dark">Enter Mobile Details</h3>
                     <p class="text-gray-600 text-sm">Enter your mobile number and the amount you want to transfer.</p>
                 </div>
-                
+
                 <!-- Step 2 -->
                 <div class="bg-white rounded-lg p-5 text-center shadow-sm hover:shadow-md transition-shadow duration-300 step-card relative">
                     <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-base">2</div>
@@ -271,7 +271,7 @@
                     <h3 class="text-base font-semibold mb-2 text-dark">Make Secure Payment</h3>
                     <p class="text-gray-600 text-sm">Complete your payment using your Visa or Mastercard securely.</p>
                 </div>
-                
+
                 <!-- Step 3 -->
                 <div class="bg-white rounded-lg p-5 text-center shadow-sm hover:shadow-md transition-shadow duration-300 step-card relative">
                     <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-base">3</div>
@@ -282,7 +282,7 @@
                     <p class="text-gray-600 text-sm">Your mobile wallet is funded instantly with confirmation.</p>
                 </div>
             </div>
-            
+
             <!-- CTA Button -->
             <div class="text-center mt-8">
                 <a href="{{ url($buttonUrl) }}" class="inline-block bg-primary text-white font-medium px-5 py-2 rounded-lg shadow-sm hover:bg-opacity-90 transition duration-300 text-sm">
@@ -291,7 +291,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Fee Structure Section -->
     <section class="py-10 bg-white">
         <div class="container mx-auto px-4 max-w-6xl">
@@ -306,7 +306,7 @@
                     <div class="p-6">
                         <div class="text-xl font-semibold text-dark mb-3">Transparent Fee Structure</div>
                         <p class="text-gray-600 mb-4 text-sm">We charge a simple, transparent fee of 4% on all transactions. No hidden charges.</p>
-                        
+
                         <div class="grid grid-cols-2 gap-4 mt-4">
                             <div class="border rounded-lg p-3 hover:shadow-sm transition-all">
                                 <div class="flex items-center">
@@ -331,7 +331,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Example calculation -->
                         <div class="mt-4 bg-gray-50 p-3 rounded-lg">
                             <p class="font-medium text-gray-700 mb-1 text-sm">Example Transaction:</p>
@@ -354,7 +354,7 @@
                 <h2 class="text-2xl font-bold text-dark mb-3">Why Choose Our Card-to-Wallet Service?</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">Experience the best way to fund your mobile wallet</p>
             </div>
-            
+
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Benefit 1 -->
                 <div class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow duration-300 benefit-card">
@@ -364,7 +364,7 @@
                     <h3 class="text-base font-semibold mb-2 text-dark">Security</h3>
                     <p class="text-gray-600 text-xs">Your card details are never stored on our platform.</p>
                 </div>
-                
+
                 <!-- Benefit 2 -->
                 <div class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow duration-300 benefit-card">
                     <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
@@ -373,7 +373,7 @@
                     <h3 class="text-base font-semibold mb-2 text-dark">Speed</h3>
                     <p class="text-gray-600 text-xs">Instant transfers with real-time confirmation.</p>
                 </div>
-                
+
                 <!-- Benefit 3 -->
                 <div class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow duration-300 benefit-card">
                     <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
@@ -382,7 +382,7 @@
                     <h3 class="text-base font-semibold mb-2 text-dark">Convenience</h3>
                     <p class="text-gray-600 text-xs">Fund your wallet anytime, anywhere.</p>
                 </div>
-                
+
                 <!-- Benefit 4 -->
                 <div class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow duration-300 benefit-card">
                     <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
@@ -395,7 +395,7 @@
         </div>
     </section>
     </section>
-    
+
     <!-- Payment Methods Section -->
     <section class="py-8 bg-white">
         <div class="container mx-auto px-4 max-w-6xl">
@@ -403,14 +403,14 @@
                 <h2 class="text-2xl font-bold text-dark mb-2">Accepted Payment Methods</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">We accept all major credit and debit cards</p>
             </div>
-            
+
             <div class="flex justify-center items-center space-x-6">
                 <img src="{{ asset('assets/img/visa.png') }}" alt="Visa" class="h-10 object-contain">
                 <img src="{{ asset('assets/img/mastercard.png') }}" alt="Mastercard" class="h-10 object-contain">
             </div>
         </div>
     </section>
-    
+
     <!-- FAQ Preview Section -->
     <section class="py-12 bg-light" id="faq">
         <div class="container mx-auto px-4 max-w-6xl">
@@ -418,7 +418,7 @@
                 <h2 class="text-2xl font-bold text-dark mb-3">Frequently Asked Questions</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">Find quick answers to common questions</p>
             </div>
-            
+
             <div class="max-w-2xl mx-auto">
                 <!-- FAQ Item 1 -->
                 <div class="bg-white rounded-lg shadow-sm mb-3 overflow-hidden">
@@ -432,7 +432,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- FAQ Item 2 -->
                 <div class="bg-white rounded-lg shadow-sm mb-3 overflow-hidden">
                     <div class="p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200 faq-header">
@@ -445,7 +445,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="text-center mt-6">
                     <a href="#" class="inline-flex items-center text-primary hover:underline font-medium text-sm">
                         View all FAQs <i class="fas fa-arrow-right ml-2"></i>
@@ -454,7 +454,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- CTA Section -->
     <section class="py-10 bg-primary text-white">
         <div class="container mx-auto px-4 text-center max-w-6xl">
@@ -470,7 +470,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4 max-w-6xl">
@@ -490,7 +490,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
                     <div class="grid grid-cols-2 gap-4">
@@ -506,7 +506,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Contact</h3>
                     <ul class="space-y-3">
@@ -526,9 +526,9 @@
                 </div>
             </div>
             </div>
-            
+
             <hr class="border-gray-800 my-8">
-            
+
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-400 text-sm">&copy; {{ date('Y') }} <strong>{{ config('app.name') }}</strong>. All Rights Reserved</p>
                 <div class="mt-4 md:mt-0 flex items-center space-x-4">
@@ -537,27 +537,27 @@
             </div>
         </div>
     </footer>
-    
+
     <script>
         // FAQ toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
             const faqHeaders = document.querySelectorAll('.faq-header');
-            
+
             faqHeaders.forEach(header => {
                 header.addEventListener('click', function() {
                     const answer = this.querySelector('.faq-answer');
                     const icon = this.querySelector('.faq-toggle');
-                    
+
                     // Toggle active class
                     answer.classList.toggle('active');
                     icon.classList.toggle('active');
-                    
+
                     // Close other FAQs
                     faqHeaders.forEach(otherHeader => {
                         if (otherHeader !== header) {
                             const otherAnswer = otherHeader.querySelector('.faq-answer');
                             const otherIcon = otherHeader.querySelector('.faq-toggle');
-                            
+
                             otherAnswer.classList.remove('active');
                             otherIcon.classList.remove('active');
                         }

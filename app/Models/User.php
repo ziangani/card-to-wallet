@@ -47,7 +47,10 @@ class User extends Authenticatable implements HasName, FilamentUser, MustVerifyE
         'auth_password',
         'user_type',
         'merchant_id',
-        'company_detail_id'
+        'company_detail_id',
+        'address',
+        'city',
+        'country'
     ];
 
     /**
@@ -87,6 +90,7 @@ class User extends Authenticatable implements HasName, FilamentUser, MustVerifyE
     protected function casts(): array
     {
         return [
+            'date_of_birth' => 'datetime',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];

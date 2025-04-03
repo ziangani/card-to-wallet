@@ -17,7 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'admissions/submit',
             'admissions/uploads/validate',
             'tpm/*',
-            '/checkout/*/process'
+            '/checkout/*/process',
+            'checkout/*/3ds/callback'
         ]);
         //$middleware->append(\App\Http\Middleware\AuthenticateMerchant::class);
     })

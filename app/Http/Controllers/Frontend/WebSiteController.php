@@ -8,13 +8,13 @@ class WebSiteController extends Controller
 {
     public function index()
     {
-        // Simple data for the homepage
+        // Data for the card-to-wallet homepage
         $data = [
-            'title' => 'Welcome to ' . config('app.name'),
-            'subtitle' => 'Your trusted payment processing solution',
-            'description' => 'We provide secure and reliable payment processing services for businesses of all sizes.',
-            'buttonText' => 'Make a Payment',
-            'buttonUrl' => '/tpm/DEFAULT/'
+            'title' => 'Fund your mobile wallet instantly',
+            'subtitle' => 'Secure, fast transfers from your card to mobile money',
+            'description' => 'Experience quick and secure transfers from your bank card to any mobile wallet in Zambia with transparent fees and no hidden charges.',
+            'buttonText' => 'Get Started',
+            'buttonUrl' => '/register'
         ];
         
         return view('welcome', $data);

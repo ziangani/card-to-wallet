@@ -147,14 +147,45 @@
 {{--                                        </h2>--}}
                                         <div id="collapse-2" class="accordion-collapse collapse- show"
                                              data-bs-parent="#accordion-example">
-                                            <div class="accordion-body pt-3 text-center">
-                                                <p class="fw-bold"> Visa, Mastercard cards are accepted.</p>
+                                            <div class="accordion-body pt-3">
+                                                <p class="fw-bold text-center"> Visa, Mastercard cards are accepted.</p>
                                                 <img src="{{asset('assets/img/visa-mastercard.png')}}" alt="Mastercard"
-                                                     class="mb-3" style="width: 80%">
-                                                <button type="button" class="btn btn-primary w-100 make-payment"
-                                                        data-mode="card">
-                                                    Pay with Card
-                                                </button>
+                                                     class="mb-3 d-block mx-auto" style="width: 80%">
+                                                
+                                                <form id="cardPaymentForm">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="cardNumber">Card Number</label>
+                                                        <input type="text" class="form-control" id="cardNumber" 
+                                                               maxlength="16" required placeholder="1234 5678 9012 3456">
+                                                        <small class="card-help text-danger"></small>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="expiryMonth">Expiry Month</label>
+                                                                <input type="text" class="form-control" id="expiryMonth" 
+                                                                       maxlength="2" required placeholder="MM">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="expiryYear">Expiry Year</label>
+                                                                <input type="text" class="form-control" id="expiryYear" 
+                                                                       maxlength="2" required placeholder="YY">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="cvv">CVV</label>
+                                                                <input type="text" class="form-control" id="cvv" 
+                                                                       maxlength="3" required placeholder="123">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary w-100 process-3ds-payment">
+                                                        Pay with Card
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -298,6 +329,20 @@
             </div>
         </div>
     </div>
+    
+    <div class="modal modal-blur fade" id="threeDSModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">3D Secure Authentication</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="threeds-iframe-container">
+                    <!-- 3DS iframe will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -319,6 +364,84 @@
         let mobile = '';
         let last_check_ts = new Date();
         let update_last_checked = false;
+        let threeDSData = {}; // Store 3DS data
+
+        // Get browser information for 3DS
+        function getBrowserInfo() {
+            return {
+                colorDepth: window.screen.colorDepth,
+                javaEnabled: navigator.javaEnabled(),
+                language: navigator.language,
+                screenHeight: window.screen.height,
+                screenWidth: window.screen.width,
+                timeZone: new Date().getTimezoneOffset(),
+                userAgent: navigator.userAgent,
+                ipAddress: '127.0.0.1' // This will be replaced by the server
+            };
+        }
+
+        // Create a container for the 3DS challenge iframe
+        function create3DSChallengeContainer(html) {
+            // Remove any existing container
+            $('#threeds-container').remove();
+            
+            // Create a new container
+            const $challengeContainer = $('<div>')
+                .attr('id', 'threeds-container')
+                .css({
+                    'position': 'fixed',
+                    'top': '0',
+                    'left': '0',
+                    'width': '100%',
+                    'height': '100%',
+                    'background': 'rgba(0,0,0,0.8)',
+                    'z-index': '9999',
+                    'display': 'flex',
+                    'align-items': 'center',
+                    'justify-content': 'center'
+                });
+            
+            // Add the 3DS HTML to the container
+            $challengeContainer.html(html);
+            
+            // Add the container to the body
+            $('body').append($challengeContainer);
+            
+            // Find and execute any scripts
+            $challengeContainer.find('script').each(function() {
+                if (this.text) {
+                    eval(this.text);
+                }
+            });
+            
+            // Style the iframe
+            $('#redirectTo3ds1Frame').css({
+                'width': '500px',
+                'height': '600px',
+                'border': 'none',
+                'background': 'white',
+                'border-radius': '8px',
+                'box-shadow': '0 4px 6px rgba(0,0,0,0.1)'
+            });
+            
+            // After 3DS challenge is completed, the callback will redirect to the status page
+            // The server will handle the redirect to http://127.0.0.1:8001/checkout/{token}?indi=1
+            
+            // Add a message to inform the user
+            const $message = $('<div>')
+                .css({
+                    'position': 'absolute',
+                    'bottom': '20px',
+                    'left': '0',
+                    'width': '100%',
+                    'text-align': 'center',
+                    'color': 'white',
+                    'font-size': '16px'
+                })
+                .html('<p>Please complete the authentication process.<br>You will be redirected automatically when finished.</p>');
+            
+            $challengeContainer.append($message);
+        }
 
         jQuery(document).ready(function ($) {
             // Check if we're returning from MPGS
@@ -330,6 +453,152 @@
                 checkTransactionStatus(); // Check immediately
             }
 
+            // Format card number as user types
+            $('#cardNumber').on('input', function() {
+                var input = $(this).val();
+                // Remove non-numeric characters
+                var numericValue = input.replace(/\D/g, '');
+                $(this).val(numericValue);
+            });
+
+            // Format expiry month as user types
+            $('#expiryMonth').on('input', function() {
+                var input = $(this).val();
+                // Remove non-numeric characters
+                var numericValue = input.replace(/\D/g, '');
+                $(this).val(numericValue);
+            });
+
+            // Format expiry year as user types
+            $('#expiryYear').on('input', function() {
+                var input = $(this).val();
+                // Remove non-numeric characters
+                var numericValue = input.replace(/\D/g, '');
+                $(this).val(numericValue);
+            });
+
+            // Format CVV as user types
+            $('#cvv').on('input', function() {
+                var input = $(this).val();
+                // Remove non-numeric characters
+                var numericValue = input.replace(/\D/g, '');
+                $(this).val(numericValue);
+            });
+
+            // Process 3DS payment
+            $('.process-3ds-payment').on('click', function() {
+                // Validate card details
+                var cardNumber = $('#cardNumber').val();
+                var expiryMonth = $('#expiryMonth').val();
+                var expiryYear = $('#expiryYear').val();
+                var cvv = $('#cvv').val();
+
+                // Basic validation
+                if (cardNumber.length !== 16) {
+                    $('.card-help').text('Card number must be 16 digits');
+                    return;
+                }
+                if (expiryMonth.length !== 2 || parseInt(expiryMonth) < 1 || parseInt(expiryMonth) > 12) {
+                    $('.card-help').text('Expiry month must be between 01 and 12');
+                    return;
+                }
+                if (expiryYear.length !== 2) {
+                    $('.card-help').text('Expiry year must be 2 digits');
+                    return;
+                }
+                if (cvv.length !== 3) {
+                    $('.card-help').text('CVV must be 3 digits');
+                    return;
+                }
+
+                $('.card-help').text('');
+
+                // Step 1: Initiate 3DS authentication
+                $.ajax({
+                    url: '{{url("checkout/$token/3ds/initiate")}}',
+                    method: 'post',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        "_token": "{{ csrf_token() }}",
+                        "card_number": cardNumber,
+                        "currency": "USD"
+                    }),
+                    beforeSend: function() {
+                        overlay = setOverlay('Initiating 3DS authentication...', '.payment-card .card-body');
+                    },
+                    success: function(response) {
+                        if (response.status === 'SUCCESS') {
+                            // Store 3DS data for next step
+                            threeDSData = {
+                                orderId: response.data.orderId,
+                                transactionId: response.data.transactionId
+                            };
+                            
+                            // Step 2: Authenticate payer
+                            $.ajax({
+                                url: '{{url("checkout/$token/3ds/authenticate")}}',
+                                method: 'post',
+                                contentType: 'application/json',
+                                data: JSON.stringify({
+                                    "_token": "{{ csrf_token() }}",
+                                    "order_id": threeDSData.orderId,
+                                    "transaction_id": threeDSData.transactionId,
+                                    "card_number": cardNumber,
+                                    "expiry_month": expiryMonth,
+                                    "expiry_year": expiryYear,
+                                    "amount": {{$paymentRequest->amount}},
+                                    "currency": "USD",
+                                    "browser_details": getBrowserInfo()
+                                }),
+                                success: function(authResponse) {
+                                    overlay.unblock();
+                                    
+                                    if (authResponse.status === 'SUCCESS') {
+                                        if (authResponse.data.requiresChallenge) {
+                                            // Show 3DS challenge
+                                            create3DSChallengeContainer(authResponse.data.challengeHtml);
+                                        } else {
+                                            // Frictionless flow - payment already completed
+                                            check_status = true;
+                                            update_last_checked = true;
+                                            $('.payment-status').show();
+                                            $('.payment-methods').hide();
+                                            checkTransactionStatus();
+                                        }
+                                    } else {
+                                        swal('Authentication Failed', authResponse.statusMessage, 'error');
+                                    }
+                                },
+                                error: function(xhr) {
+                                    overlay.unblock();
+                                    let errorMessage = 'Authentication error';
+                                    try {
+                                        const response = JSON.parse(xhr.responseText);
+                                        errorMessage = response.statusMessage || errorMessage;
+                                    } catch (e) {
+                                        console.error('Error parsing error response:', e);
+                                    }
+                                    swal('Authentication Failed', errorMessage, 'error');
+                                }
+                            });
+                        } else {
+                            overlay.unblock();
+                            swal('Authentication Failed', response.statusMessage, 'error');
+                        }
+                    },
+                    error: function(xhr) {
+                        overlay.unblock();
+                        let errorMessage = 'An error occurred';
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            errorMessage = response.statusMessage || errorMessage;
+                        } catch (e) {
+                            console.error('Error parsing error response:', e);
+                        }
+                        swal('Error', errorMessage, 'error');
+                    }
+                });
+            });
 
             $('.check-mobile').on('click', function () {
                 var input = $('#mobileNumber').val();

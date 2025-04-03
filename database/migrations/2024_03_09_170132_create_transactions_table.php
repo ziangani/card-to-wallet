@@ -19,11 +19,11 @@ return new class extends Migration
             $table->string('status')->default('PENDING');
             $table->string('currency')->default('ZMW');
             $table->decimal('amount', 10, 2);
-            $table->foreignIdFor(Merchants::class, 'merchant_id');
             $table->string('merchant_code');
             $table->string('merchant_settlement_status')->default('PENDING');
             $table->date('merchant_settlement_date')->nullable();
             $table->foreignIdFor(\App\Models\PaymentProviders::class)->nullable();
+            $table->foreignIdFor(\App\Models\User::class)->nullable();
             $table->string('provider_name')->nullable();
             $table->string('provider_push_status')->nullable();
             $table->string('provider_external_reference')->nullable();
@@ -43,10 +43,10 @@ return new class extends Migration
             $table->string('reversal_reason')->nullable();
             $table->string('reversal_reference')->nullable();
             $table->dateTime('reversal_date')->nullable();
-
             $table->timestamps();
             $table->softDeletes();
         });
+
     }
 
     /**

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('status');
             $table->integer('approval_level');
             $table->text('comment')->nullable();
-            $table->foreignIdFor(\App\Models\CompanyDetail::class, 'company_id');
+            $table->unsignedBigInteger('user_id');
             $table->foreignIdFor(\App\Models\User::class, 'reviewed_by')->nullable();
             $table->timestamp('reviewed_at')->nullable();
             $table->softDeletes();

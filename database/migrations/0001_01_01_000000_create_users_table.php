@@ -13,40 +13,29 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('uuid')->nullable();
-            $table->string('first_name');
-            $table->string('middle_name')->nullable();
-            $table->string('surname');
-            $table->string('auth_id')->unique();
-            $table->string('name')->nullable();
-            $table->string('auth_password');
-            $table->string('password');
-            $table->boolean('changed_one_time_password')->default(0);
-            $table->timestamp('password_last_modified')->nullable();
-            $table->string('email');
-            $table->integer('mobile', false, true)->nullable();
-            $table->boolean('email_verified')->default(0);
-            $table->timestamp('email_verified_at')->nullable();
-            $table->timestamp('last_login_date')->nullable();
-            $table->string('last_login_ip')->nullable();
-            $table->timestamp('last_failed_login_date')->nullable();
+            $table->uuid('uuid')->default(\Illuminate\Support\Facades\DB::raw('gen_random_uuid()'));
+            $table->string('name', 100)->nullable(false);
+            $table->string('first_name', 100)->nullable(false);
+            $table->string('last_name', 100)->nullable(false);
+            $table->string('email', 255)->unique()->nullable(false);
+            $table->string('phone_number', 20)->unique()->nullable(false);
+            $table->string('password', 255)->nullable(false);
+            $table->date('date_of_birth')->nullable(false);
+            $table->text('address')->nullable();
+            $table->string('city', 100)->nullable();
+            $table->string('country', 100)->default('Zambia');
+            $table->string('verification_level', 20)->default('basic')->check('verification_level IN (\'basic\', \'verified\')');
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_email_verified')->default(false);
+            $table->boolean('is_phone_verified')->default(false);
             $table->integer('login_attempts')->default(0);
-            $table->boolean('lockout')->default(0);
-            $table->timestamp('lockout_date')->nullable();
-            $table->string('user_class')->nullable();
-            $table->string('user_type')->nullable();
-            $table->string('address_line1')->nullable();
-            $table->string('address_line2')->nullable();
-            $table->string('address_line3')->nullable();
-            $table->string('state')->nullable();
-            $table->string('city')->nullable();
-            $table->string('country')->nullable();
-            $table->string('status')->nullable();
-            $table->integer('portrait_id')->nullable();
+            $table->timestamp('last_login_date')->nullable();
+            $table->timestampTz('last_login_at')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
-        });
+                });
+
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
@@ -70,7 +59,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };

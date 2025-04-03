@@ -17,6 +17,50 @@ class Transaction extends Model
     protected $table = 'transactions';
 
     /**
+     * Get the variable fee percentage for card to wallet transactions.
+     *
+     * @return float
+     */
+    private static function getVariableFeePercentage()
+    {
+        return 4.0; // 4% variable fee
+    }
+
+    /**
+     * Get the fixed fee amount for card to wallet transactions.
+     *
+     * @return float
+     */
+    private static function getFixedFeeAmount()
+    {
+        return 7.5; // K7.5 fixed fee
+    }
+
+    /**
+     * Calculate the total fee for a given amount.
+     *
+     * @param float $amount
+     * @return float Returns the total fee amount
+     */
+    public static function calculateFee($amount)
+    {
+        $variableFee = $amount * (self::getVariableFeePercentage() / 100);
+        $fixedFee = self::getFixedFeeAmount();
+        
+        return $variableFee + $fixedFee;
+    }
+
+    /**
+     * Get the fee description for display purposes.
+     *
+     * @return string
+     */
+    public static function getFeeDescription()
+    {
+        return 'K' . self::getFixedFeeAmount() . ' + ' . self::getVariableFeePercentage() . '%';
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

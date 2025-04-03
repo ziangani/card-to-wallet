@@ -63,8 +63,7 @@ class TransactionController extends Controller
 
         // Calculate fees
         $amount = $request->amount;
-        $feePercentage = 4.00; // 4% fee
-        $feeAmount = $amount * ($feePercentage / 100);
+        $feeAmount = Transaction::calculateFee($amount);
         $totalAmount = $amount + $feeAmount;
 
         // Store transaction data in session
@@ -544,8 +543,7 @@ class TransactionController extends Controller
 
         // Calculate fees
         $amount = $request->amount;
-        $feePercentage = 4.00; // 4% fee
-        $feeAmount = $amount * ($feePercentage / 100);
+        $feeAmount = Transaction::calculateFee($amount);
         $totalAmount = $amount + $feeAmount;
 
         // Create transaction record
@@ -604,8 +602,7 @@ class TransactionController extends Controller
 
             // Calculate fees
             $amount = $request->amount;
-            $feePercentage = 4.00; // 4% fee
-            $feeAmount = $amount * ($feePercentage / 100);
+            $feeAmount = Transaction::calculateFee($amount);
             $totalAmount = $amount + $feeAmount;
 
             // Generate UUID for transaction

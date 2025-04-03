@@ -370,7 +370,7 @@
                             <span class="font-medium text-gray-900" id="display-amount">K0.00</span>
                         </div>
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-gray-700">Fee (4%):</span>
+                            <span class="text-gray-700">Fee (K7.5 + 4%):</span>
                             <span class="font-medium text-gray-900" id="display-fee">K0.00</span>
                         </div>
                         <div class="border-t border-gray-200 my-3 pt-3 flex justify-between items-center">
@@ -422,7 +422,7 @@
                             <span class="font-medium text-gray-900" id="modal-amount">K0.00</span>
                         </div>
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-gray-600">Fee (4%):</span>
+                            <span class="text-gray-600">Fee (K7.5 + 4%):</span>
                             <span class="font-medium text-gray-900" id="modal-fee">K0.00</span>
                         </div>
                         <div class="border-t border-gray-200 my-2 pt-3 flex justify-between items-center">
@@ -493,14 +493,16 @@
         // Calculate fee and total
         function calculateFee() {
             const amount = parseFloat(amountInput.value) || 0;
-            const fee = amount * 0.04; // 4% fee
-            const total = amount + fee;
+            const variableFee = amount * 0.04; // 4% fee
+            const fixedFee = 7.5; // K7.5 fixed fee
+            const totalFee = variableFee + fixedFee;
+            const total = amount + totalFee;
 
             displayAmount.textContent = formatCurrency(amount);
-            displayFee.textContent = formatCurrency(fee);
+            displayFee.textContent = formatCurrency(totalFee);
             displayTotal.textContent = formatCurrency(total);
 
-            return { amount, fee, total };
+            return { amount, variableFee, fixedFee, totalFee, total };
         }
 
         if (amountInput) {
@@ -549,13 +551,13 @@
                 }
 
                 // Calculate fees
-                const { amount: amountValue, fee, total } = calculateFee();
+                const { amount: amountValue, totalFee, total } = calculateFee();
 
                 // Update modal content
                 modalRecipientName.textContent = recipientName;
                 modalWalletNumber.textContent = '+260' + mobileNumber;
                 modalAmount.textContent = formatCurrency(amountValue);
-                modalFee.textContent = formatCurrency(fee);
+                modalFee.textContent = formatCurrency(totalFee);
                 modalTotal.textContent = formatCurrency(total);
 
                 // Set provider icon

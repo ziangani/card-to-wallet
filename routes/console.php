@@ -12,8 +12,9 @@ Artisan::command('inspire', function () {
 //Schedule::command(\App\Console\Commands\updateAirtelTxn::class)->everyTenSeconds()->runInBackground()->withoutOverlapping();
 //Schedule::command(\App\Console\Commands\updateCgrateTxn::class)->everyTenSeconds()->runInBackground()->withoutOverlapping();
 // Schedule::command(\App\Console\Commands\Reporting\DownloadMPGSReport::class)->everyMinute()->runInBackground()->withoutOverlapping();
-Schedule::command('wallet:post-deposits')->everyFiveMinutes()->runInBackground()->withoutOverlapping();
+//Schedule::command('wallet:post-deposits')->everyFiveMinutes()->runInBackground()->withoutOverlapping();
 
+Schedule::command(\App\Console\Commands\PostToMobileWallets::class)->everyMinute()->runInBackground()->withoutOverlapping();
 Schedule::command(\App\Console\Commands\sendEmail::class)->everyMinute()->runInBackground()->withoutOverlapping();
 Schedule::command(\App\Console\Commands\sendSMS::class)->everyMinute()->runInBackground()->withoutOverlapping();
 

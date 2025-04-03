@@ -599,7 +599,7 @@ class TransactionController extends Controller
                 'wallet_provider_id' => 'required|exists:wallet_providers,id',
                 'wallet_number' => 'required|digits:9',
                 'amount' => 'required|numeric|min:10',
-                'save_beneficiary' => 'nullable|boolean',
+//                'save_beneficiary' => 'nullable|boolean',
             ]);
 
             // Calculate fees

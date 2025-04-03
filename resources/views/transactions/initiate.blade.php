@@ -244,38 +244,36 @@
 
                     <!-- Maximized Space Layout -->
                     <div class="space-y-3">
-                        <!-- Mobile Number Row -->
+                        <!-- Mobile Number and Provider Row -->
                         <div>
                             <label for="wallet_number" class="block text-sm font-medium text-gray-700 mb-1">Mobile Number <span class="text-red-500">*</span></label>
-                            <div class="flex">
-                                <span class="inline-flex items-center px-3 text-gray-500 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md">
-                                    +260
-                                </span>
-                                <input type="text" id="mobileNumber" name="wallet_number" value="{{ old('wallet_number', $selectedBeneficiary->wallet_number ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-r-md focus:ring-2 focus:ring-primary focus:border-primary" placeholder="97XXXXXXX" required>
+                            <div class="flex items-center space-x-3">
+                                <div class="flex flex-grow">
+                                    <span class="inline-flex items-center px-3 text-gray-500 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md">
+                                        +260
+                                    </span>
+                                    <input type="text" id="mobileNumber" name="wallet_number" value="{{ old('wallet_number', $selectedBeneficiary->wallet_number ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-r-md focus:ring-2 focus:ring-primary focus:border-primary" placeholder="97XXXXXXX" required>
+                                </div>
+                                
+                                <!-- Provider Selection -->
+                                <div class="flex items-center space-x-2">
+                                    <div class="provider-option mtn cursor-pointer bg-white border border-gray-200 rounded-lg p-1 text-center hover:border-primary hover:bg-blue-50 transition" title="MTN Mobile Money" data-provider="2">
+                                        <img src="{{ asset('assets/img/mtn.jpg') }}" alt="MTN" class="h-8 w-8 rounded-full object-cover border-2 border-transparent" style="filter: grayscale(1);">
+                                    </div>
+                                    <div class="provider-option airtel cursor-pointer bg-white border border-gray-200 rounded-lg p-1 text-center hover:border-primary hover:bg-blue-50 transition" title="Airtel Money" data-provider="1">
+                                        <img src="{{ asset('assets/img/airtel.png') }}" alt="Airtel" class="h-8 w-8 rounded-full object-cover border-2 border-transparent" style="filter: grayscale(1);">
+                                    </div>
+                                    <div class="provider-option zamtel cursor-pointer bg-white border border-gray-200 rounded-lg p-1 text-center hover:border-primary hover:bg-blue-50 transition" title="Zamtel Kwacha" data-provider="3">
+                                        <img src="{{ asset('assets/img/zamtel.jpg') }}" alt="Zamtel" class="h-8 w-8 rounded-full object-cover border-2 border-transparent" style="filter: grayscale(1);">
+                                    </div>
+                                </div>
                             </div>
+                            
                             <!-- Hidden input for wallet provider -->
                             <input type="hidden" id="wallet_provider_id" name="wallet_provider_id" value="{{ old('wallet_provider_id', $selectedBeneficiary->wallet_provider_id ?? '') }}">
                             @error('wallet_number')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
-                        </div>
-
-                        <div class="mt-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Selected Provider</label>
-                            <div class="grid grid-cols-3 gap-2">
-                                <div class="provider-option mtn cursor-pointer bg-white border border-gray-200 rounded-lg p-2 text-center hover:border-primary hover:bg-blue-50 transition" title="MTN Mobile Money" data-provider="2">
-                                    <img src="{{ asset('assets/img/mtn.jpg') }}" alt="MTN" class="h-10 w-10 rounded-full object-cover border-2 border-transparent mx-auto mb-1" style="filter: grayscale(1);">
-                                    <span class="text-sm font-medium text-gray-700">MTN</span>
-                                </div>
-                                <div class="provider-option airtel cursor-pointer bg-white border border-gray-200 rounded-lg p-2 text-center hover:border-primary hover:bg-blue-50 transition" title="Airtel Money" data-provider="1">
-                                    <img src="{{ asset('assets/img/airtel.png') }}" alt="Airtel" class="h-10 w-10 rounded-full object-cover border-2 border-transparent mx-auto mb-1" style="filter: grayscale(1);">
-                                    <span class="text-sm font-medium text-gray-700">Airtel</span>
-                                </div>
-                                <div class="provider-option zamtel cursor-pointer bg-white border border-gray-200 rounded-lg p-2 text-center hover:border-primary hover:bg-blue-50 transition" title="Zamtel Kwacha" data-provider="3">
-                                    <img src="{{ asset('assets/img/zamtel.jpg') }}" alt="Zamtel" class="h-10 w-10 rounded-full object-cover border-2 border-transparent mx-auto mb-1" style="filter: grayscale(1);">
-                                    <span class="text-sm font-medium text-gray-700">Zamtel</span>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Recipient Name and Amount Row - Side by Side -->

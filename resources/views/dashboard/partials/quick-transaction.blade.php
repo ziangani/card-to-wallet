@@ -5,12 +5,12 @@
             <h2 class="text-xl font-bold text-dark mb-1">Quick Transaction</h2>
             <p class="text-gray-600">Send money to a mobile wallet instantly</p>
         </div>
-        
+
         <div class="mt-4 md:mt-0 flex space-x-3">
             <button type="button" id="open-quick-transaction-modal" class="bg-primary text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 font-medium">
                 <i class="fas fa-paper-plane mr-2"></i> Quick Send
             </button>
-            
+
             <a href="{{ route('transactions.initiate') }}" class="text-primary hover:underline flex items-center">
                 <i class="fas fa-external-link-alt mr-1"></i> Advanced options
             </a>
@@ -23,7 +23,7 @@
     <div class="flex items-center justify-center min-h-screen p-4">
         <!-- Modal Backdrop -->
         <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" id="modal-backdrop"></div>
-        
+
         <!-- Modal Content -->
         <div class="relative bg-white rounded-xl shadow-xl max-w-2xl w-full mx-auto z-10">
             <div class="p-6">
@@ -32,45 +32,47 @@
                         <h2 class="text-xl font-bold text-dark mb-1">Quick Transaction</h2>
                         <p class="text-gray-600">Send money to a mobile wallet instantly</p>
                     </div>
-                    
+
                     <button type="button" id="close-quick-transaction-modal" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-        
+
                 <form action="{{ route('transactions.quick') }}" method="POST" id="quick-transaction-form">
                     @csrf
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Mobile Provider -->
-                        <div>
-                            <label for="wallet_provider_id" class="block text-sm font-medium text-gray-700 mb-1">Mobile Provider</label>
-                            <select id="wallet_provider_id" name="wallet_provider_id" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
-                                <option value="">Select Provider</option>
-                                @foreach($walletProviders ?? [] as $provider)
-                                    <option value="{{ $provider->id }}" data-code="{{ $provider->api_code }}">{{ $provider->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('wallet_provider_id')
-                                <p class="text-error text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        
-                        <!-- Mobile Number -->
+                        <!-- Mobile Number with Provider Detection -->
                         <div>
                             <label for="wallet_number" class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
                             <div class="flex">
                                 <span class="inline-flex items-center px-3 text-gray-500 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg">
                                     +260
                                 </span>
-                                <input type="text" id="wallet_number" name="wallet_number" class="w-full px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="97XXXXXXX" required>
+                                <input type="text" id="mobileNumber" name="wallet_number" class="w-full px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="97XXXXXXX" required>
                             </div>
                             <p class="text-xs text-gray-500 mt-1">Enter 9-digit number without leading zero</p>
                             @error('wallet_number')
                                 <p class="text-error text-sm mt-1">{{ $message }}</p>
                             @enderror
+
+                            <!-- Hidden input for wallet provider -->
+                            <input type="hidden" id="wallet_provider_id" name="wallet_provider_id" value="">
+
+                            <!-- Network Provider Logos -->
+                            <div class="flex items-center space-x-4 mt-2">
+                                <div class="p-mode mtn" title="MTN Mobile Money">
+                                    <img src="{{ asset('assets/img/mtn.jpg') }}" alt="MTN" class="h-9 w-9 rounded-full object-cover" style="filter: grayscale(1);">
+                                </div>
+                                <div class="p-mode airtel" title="Airtel Money">
+                                    <img src="{{ asset('assets/img/airtel.png') }}" alt="Airtel" class="h-9 w-9 rounded-full object-cover" style="filter: grayscale(1);">
+                                </div>
+                                <div class="p-mode zamtel" title="Zamtel Kwacha">
+                                    <img src="{{ asset('assets/img/zamtel.jpg') }}" alt="Zamtel" class="h-9 w-9 rounded-full object-cover" style="filter: grayscale(1);">
+                                </div>
+                            </div>
                         </div>
-                        
+
                         <!-- Amount -->
                         <div>
                             <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Amount (ZMW)</label>
@@ -85,7 +87,7 @@
                                 <p class="text-error text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                        
+
                         <!-- Recipient Name -->
                         <div>
                             <label for="recipient_name" class="block text-sm font-medium text-gray-700 mb-1">Recipient Name (Optional)</label>
@@ -95,7 +97,7 @@
                             @enderror
                         </div>
                     </div>
-                    
+
                     <!-- Fee Calculation -->
                     <div class="mt-6 p-4 bg-light rounded-lg">
                         <div class="flex justify-between items-center mb-2">
@@ -111,7 +113,7 @@
                             <span class="font-bold text-dark" id="display-total">K0.00</span>
                         </div>
                     </div>
-                    
+
                     <!-- Save Beneficiary -->
                     <div class="mt-4">
                         <label class="inline-flex items-center">
@@ -119,7 +121,7 @@
                             <span class="ml-2 text-gray-700">Save this recipient for future transactions</span>
                         </label>
                     </div>
-                    
+
                     <!-- Submit Button -->
                     <div class="mt-6">
                         <button type="submit" class="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 font-medium">
@@ -127,17 +129,17 @@
                         </button>
                     </div>
                 </form>
-                
+
                 <!-- Beneficiary Dropdown -->
                 <div class="mt-4">
                     <div class="flex items-center justify-between">
                         <h3 class="text-sm font-medium text-gray-700">Recent Recipients</h3>
                         <a href="{{ route('beneficiaries.index') }}" class="text-primary hover:underline text-sm">View All</a>
                     </div>
-                    
+
                     <div class="mt-2 flex flex-wrap gap-2">
                         @forelse($recentBeneficiaries ?? [] as $beneficiary)
-                            <button type="button" 
+                            <button type="button"
                                     class="inline-flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition beneficiary-chip"
                                     data-provider="{{ $beneficiary->wallet_provider_id }}"
                                     data-number="{{ $beneficiary->wallet_number }}"
@@ -164,7 +166,7 @@
         const modalBackdrop = document.getElementById('modal-backdrop');
         const openModalButton = document.getElementById('open-quick-transaction-modal');
         const closeModalButton = document.getElementById('close-quick-transaction-modal');
-        
+
         // Form elements
         const amountInput = document.getElementById('amount');
         const displayAmount = document.getElementById('display-amount');
@@ -173,86 +175,120 @@
         const walletNumberInput = document.getElementById('wallet_number');
         const beneficiaryChips = document.querySelectorAll('.beneficiary-chip');
         const walletProviderSelect = document.getElementById('wallet_provider_id');
-        
+
         // Modal functions
         function openModal() {
             modal.classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
         }
-        
+
         function closeModal() {
             modal.classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
         }
-        
+
         // Format currency
         function formatCurrency(amount) {
             return 'K' + parseFloat(amount).toFixed(2);
         }
-        
+
         // Calculate fee and total
         function calculateFee() {
             const amount = parseFloat(amountInput.value) || 0;
             const fee = amount * 0.04; // 4% fee
             const total = amount + fee;
-            
+
             displayAmount.textContent = formatCurrency(amount);
             displayFee.textContent = formatCurrency(fee);
             displayTotal.textContent = formatCurrency(total);
         }
-        
-        // Phone number validation
+
+        // Mobile number validation and provider detection
         function validatePhoneNumber() {
             // Remove non-numeric characters
             this.value = this.value.replace(/\D/g, '');
-            
+
             // Limit to 9 digits
             if (this.value.length > 9) {
                 this.value = this.value.slice(0, 9);
             }
+
+            // Reset all logos to grey
+            document.querySelectorAll('.p-mode').forEach(logo => {
+                logo.querySelector('img').style.filter = 'grayscale(1)';
+            });
+
+            // Set the wallet provider ID based on the number prefix
+            const input = this.value;
+            const walletProviderInput = document.getElementById('wallet_provider_id');
+
+            if (input.startsWith('96') || input.startsWith('76')) {
+                document.querySelector('.p-mode.mtn img').style.filter = 'grayscale(0)';
+                walletProviderInput.value = '2'; // MTN ID
+            }
+            if (input.startsWith('95') || input.startsWith('75')) {
+                document.querySelector('.p-mode.zamtel img').style.filter = 'grayscale(0)';
+                walletProviderInput.value = '3'; // Zamtel ID
+            }
+            if (input.startsWith('97') || input.startsWith('77')) {
+                document.querySelector('.p-mode.airtel img').style.filter = 'grayscale(0)';
+                walletProviderInput.value = '1'; // Airtel ID
+            }
         }
-        
+
         // Fill form with beneficiary data
         function fillBeneficiaryData() {
             const providerId = this.dataset.provider;
             const number = this.dataset.number;
             const name = this.dataset.name;
-            
-            walletProviderSelect.value = providerId;
-            walletNumberInput.value = number;
+
+            document.getElementById('wallet_provider_id').value = providerId;
+            document.getElementById('mobileNumber').value = number;
             document.getElementById('recipient_name').value = name;
-            
+
+            // Trigger the input event to update provider logos
+            const mobileNumberInput = document.getElementById('mobileNumber');
+            const event = new Event('input', { bubbles: true });
+            mobileNumberInput.dispatchEvent(event);
+
             // Add active class to selected chip
             beneficiaryChips.forEach(chip => {
                 chip.classList.remove('bg-primary', 'text-white');
                 chip.classList.add('bg-gray-100', 'text-gray-700');
             });
-            
+
             this.classList.remove('bg-gray-100', 'text-gray-700');
             this.classList.add('bg-primary', 'text-white');
         }
-        
+
         // Event listeners for modal
         openModalButton.addEventListener('click', openModal);
         closeModalButton.addEventListener('click', closeModal);
         modalBackdrop.addEventListener('click', closeModal);
-        
+
         // Close modal when pressing Escape key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
                 closeModal();
             }
         });
-        
+
         // Event listeners for form
         amountInput.addEventListener('input', calculateFee);
-        walletNumberInput.addEventListener('input', validatePhoneNumber);
-        
+        document.getElementById('mobileNumber').addEventListener('input', validatePhoneNumber);
+
         beneficiaryChips.forEach(chip => {
             chip.addEventListener('click', fillBeneficiaryData);
         });
-        
+
         // Initialize
         calculateFee();
+
+        // Trigger the input event to initialize provider detection for pre-filled values
+        const mobileNumberInput = document.getElementById('mobileNumber');
+        if (mobileNumberInput.value) {
+            const event = new Event('input', { bubbles: true });
+            mobileNumberInput.dispatchEvent(event);
+        }
     });
 </script>

@@ -109,7 +109,7 @@
                 <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-12">
             </a>
         </div>
-        
+
         <div class="p-4">
             <div class="flex items-center space-x-3 mb-6">
                 <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-lg font-semibold">
@@ -120,7 +120,7 @@
                     <p class="text-sm text-gray-500">{{ auth()->user()->email }}</p>
                 </div>
             </div>
-            
+
             <nav class="mt-6">
                 <ul class="space-y-1">
                     <li>
@@ -173,7 +173,7 @@
                 </ul>
             </nav>
         </div>
-        
+
         <div class="p-4 mt-auto border-t">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -191,7 +191,7 @@
         <header class="hidden lg:block bg-white shadow-sm sticky top-0 z-20">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-dark">Transaction History</h1>
-                
+
                 <div class="flex items-center space-x-4">
                     <div class="relative">
                         <button id="notifications-button" class="text-gray-600 hover:text-primary p-2 relative">
@@ -234,7 +234,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="relative">
                         <button id="user-menu-button" class="flex items-center space-x-3 focus:outline-none">
                             <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
@@ -294,14 +294,14 @@
                 <div class="p-6">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                         <h2 class="text-xl font-bold text-dark mb-2 md:mb-0">Your Transaction History</h2>
-                        
+
                         <div class="flex space-x-2">
                             <a href="{{ route('transactions.initiate') }}" class="inline-flex items-center px-3 py-2 bg-primary text-white rounded text-sm hover:bg-opacity-90 transition">
                                 <i class="fas fa-plus mr-1"></i> New Transaction
                             </a>
                         </div>
                     </div>
-                    
+
                     <!-- Filters -->
                     <div class="mb-6 bg-light rounded-lg p-4">
                         <form action="{{ route('transactions.history') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -310,12 +310,12 @@
                                 <label for="date_from" class="block text-sm font-medium text-gray-700 mb-1">From Date</label>
                                 <input type="date" id="date_from" name="date_from" value="{{ request('date_from') }}" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
                             </div>
-                            
+
                             <div>
                                 <label for="date_to" class="block text-sm font-medium text-gray-700 mb-1">To Date</label>
                                 <input type="date" id="date_to" name="date_to" value="{{ request('date_to') }}" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
                             </div>
-                            
+
                             <!-- Status Filter -->
                             <div>
                                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -326,7 +326,7 @@
                                     <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
                                 </select>
                             </div>
-                            
+
                             <!-- Search -->
                             <div>
                                 <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
@@ -337,7 +337,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Filter Button -->
                             <div class="md:col-span-4 flex justify-end space-x-2">
                                 <a href="{{ route('transactions.history') }}" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
@@ -349,7 +349,7 @@
                             </div>
                         </form>
                     </div>
-                    
+
                     <!-- Transactions Table -->
                     @if(count($transactions ?? []) > 0)
                         <div class="overflow-x-auto">
@@ -397,17 +397,17 @@
                                                     </div>
                                                     <div class="ml-3">
                                                         <div class="text-sm font-medium text-gray-900">
-                                                            {{ $transaction->recipient_name ?: 'Unknown' }}
+                                                            {{ $transaction->reference_4 ?: 'Unknown' }}
                                                         </div>
                                                         <div class="text-xs text-gray-500">
-                                                            +260{{ $transaction->wallet_number }}
+                                                            +260{{ $transaction->reference_1 }}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="px-4 py-4">
                                                 <div class="text-sm font-medium text-gray-900">K{{ number_format($transaction->amount, 2) }}</div>
-                                                <div class="text-xs text-gray-500">Fee: K{{ number_format($transaction->fee_amount, 2) }}</div>
+                                                <div class="text-xs text-gray-500">Fee: K{{ number_format(($transaction->amount * 0.04), 2) }}</div>
                                             </td>
                                             <td class="px-4 py-4">
                                                 @if($transaction->status === 'completed')
@@ -438,7 +438,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <!-- Pagination -->
                         <div class="mt-6">
                             {{ $transactions->withQueryString()->links() }}
@@ -457,7 +457,7 @@
                     @endif
                 </div>
             </div>
-            
+
             <!-- Transaction Summary -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <!-- Total Transactions -->
@@ -472,7 +472,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Total Amount -->
                 <div class="bg-white rounded-xl shadow-sm p-6">
                     <div class="flex items-center">
@@ -485,7 +485,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Successful Transactions -->
                 <div class="bg-white rounded-xl shadow-sm p-6">
                     <div class="flex items-center">
@@ -499,11 +499,11 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Export Options -->
             <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
                 <h3 class="text-lg font-bold text-dark mb-4">Export Transactions</h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="{{ route('transactions.export', ['format' => 'pdf']) }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                         <div class="w-10 h-10 rounded-full bg-error bg-opacity-10 flex items-center justify-center text-error mr-3">
@@ -514,7 +514,7 @@
                             <p class="text-xs text-gray-500">Download as PDF document</p>
                         </div>
                     </a>
-                    
+
                     <a href="{{ route('transactions.export', ['format' => 'csv']) }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                         <div class="w-10 h-10 rounded-full bg-success bg-opacity-10 flex items-center justify-center text-success mr-3">
                             <i class="fas fa-file-csv"></i>
@@ -524,7 +524,7 @@
                             <p class="text-xs text-gray-500">Download as CSV spreadsheet</p>
                         </div>
                     </a>
-                    
+
                     <a href="{{ route('transactions.export', ['format' => 'excel']) }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                         <div class="w-10 h-10 rounded-full bg-primary bg-opacity-10 flex items-center justify-center text-primary mr-3">
                             <i class="fas fa-file-excel"></i>
@@ -544,84 +544,84 @@
             // Mobile sidebar toggle
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebar = document.getElementById('sidebar');
-            
+
             if (sidebarToggle) {
                 sidebarToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('open');
                 });
             }
-            
+
             // Close sidebar when clicking outside
             document.addEventListener('click', function(event) {
-                if (sidebar.classList.contains('open') && 
-                    !sidebar.contains(event.target) && 
+                if (sidebar.classList.contains('open') &&
+                    !sidebar.contains(event.target) &&
                     event.target !== sidebarToggle) {
                     sidebar.classList.remove('open');
                 }
             });
-            
+
             // User menu dropdown
             const userMenuButton = document.getElementById('user-menu-button');
             const userMenu = document.getElementById('user-menu');
-            
+
             if (userMenuButton) {
                 userMenuButton.addEventListener('click', function() {
                     userMenu.classList.toggle('hidden');
                 });
             }
-            
+
             // Mobile user menu dropdown
             const mobileUserMenuButton = document.getElementById('mobile-user-menu-button');
             const mobileUserMenu = document.getElementById('mobile-user-menu');
-            
+
             if (mobileUserMenuButton) {
                 mobileUserMenuButton.addEventListener('click', function() {
                     mobileUserMenu.classList.toggle('hidden');
                 });
             }
-            
+
             // Notifications dropdown
             const notificationsButton = document.getElementById('notifications-button');
             const notificationsDropdown = document.getElementById('notifications-dropdown');
-            
+
             if (notificationsButton) {
                 notificationsButton.addEventListener('click', function() {
                     notificationsDropdown.classList.toggle('hidden');
                 });
             }
-            
+
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(event) {
-                if (userMenu && !userMenu.classList.contains('hidden') && 
-                    !userMenu.contains(event.target) && 
+                if (userMenu && !userMenu.classList.contains('hidden') &&
+                    !userMenu.contains(event.target) &&
                     !userMenuButton.contains(event.target)) {
                     userMenu.classList.add('hidden');
                 }
-                
-                if (mobileUserMenu && !mobileUserMenu.classList.contains('hidden') && 
-                    !mobileUserMenu.contains(event.target) && 
+
+                if (mobileUserMenu && !mobileUserMenu.classList.contains('hidden') &&
+                    !mobileUserMenu.contains(event.target) &&
                     !mobileUserMenuButton.contains(event.target)) {
                     mobileUserMenu.classList.add('hidden');
                 }
-                
-                if (notificationsDropdown && !notificationsDropdown.classList.contains('hidden') && 
-                    !notificationsDropdown.contains(event.target) && 
+
+                if (notificationsDropdown && !notificationsDropdown.classList.contains('hidden') &&
+                    !notificationsDropdown.contains(event.target) &&
                     !notificationsButton.contains(event.target)) {
                     notificationsDropdown.classList.add('hidden');
                 }
             });
-            
+
             // Date range validation
             const dateFromInput = document.getElementById('date_from');
             const dateToInput = document.getElementById('date_to');
-            
+
             if (dateFromInput && dateToInput) {
                 dateFromInput.addEventListener('change', function() {
                     if (dateToInput.value && this.value > dateToInput.value) {
                         dateToInput.value = this.value;
                     }
                 });
-                
+
                 dateToInput.addEventListener('change', function() {
                     if (dateFromInput.value && this.value < dateFromInput.value) {
                         dateFromInput.value = this.value;

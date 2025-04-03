@@ -65,6 +65,18 @@ class Transaction extends Model
         'reversal_date',
     ];
 
+    public function __get($key)
+    {
+        if ($key === 'recipient_name') {
+            $this->reference_4;
+        }
+        if ($key === 'wallet_number') {
+            $this->reference_1;
+        }
+
+        return parent::__get($key);
+    }
+
     /**
      * The attributes that should be cast.
      *

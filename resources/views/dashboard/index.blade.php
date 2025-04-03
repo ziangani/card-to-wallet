@@ -12,7 +12,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
                 <div class="lg:col-span-2">
                     <!-- Quick Transaction Widget -->
-                    @include('dashboard.partials.quick-transaction')
+{{--                    @include('dashboard.partials.quick-transaction')--}}
 
                     <!-- Recent Transactions -->
                     @include('dashboard.partials.recent-transactions')

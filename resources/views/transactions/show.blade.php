@@ -405,9 +405,9 @@
                                                 <img class="h-5 w-5 rounded-full mr-2" src="{{ asset('assets/img/zamtel.jpg') }}" alt="Zamtel">
                                             @endif
                                         @endif
-                                        <p class="text-dark font-medium">{{ $transaction->recipient_name ?: 'Unknown' }}</p>
+                                        <p class="text-dark font-medium">{{ $transaction->reference_4 ?: 'Unknown' }}</p>
                                     </div>
-                                    <p class="text-sm text-gray-500">+260{{ $transaction->wallet_number }}</p>
+                                    <p class="text-sm text-gray-500">+260{{ $transaction->reference_1 }}</p>
                                 </div>
                                 
                                 <div>
@@ -472,7 +472,7 @@
                             <i class="fas fa-download mr-2"></i> Download Receipt
                         </a>
                         
-                        <a href="mailto:?subject=Transaction Receipt - {{ $transaction->uuid }}&body=Transaction Details:%0D%0A%0D%0AReference: {{ $transaction->uuid }}%0D%0ADate: {{ $transaction->created_at->format('M d, Y h:i A') }}%0D%0ARecipient: {{ $transaction->recipient_name }} (+260{{ $transaction->wallet_number }})%0D%0AAmount: K{{ number_format($transaction->amount, 2) }}%0D%0AFee: K{{ number_format($transaction->fee_amount, 2) }}%0D%0ATotal: K{{ number_format($transaction->total_amount, 2) }}%0D%0AStatus: {{ ucfirst($transaction->status) }}" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        <a href="mailto:?subject=Transaction Receipt - {{ $transaction->uuid }}&body=Transaction Details:%0D%0A%0D%0AReference: {{ $transaction->uuid }}%0D%0ADate: {{ $transaction->created_at->format('M d, Y h:i A') }}%0D%0ARecipient: {{ $transaction->reference_4 }} (+260{{ $transaction->reference_1 }})%0D%0AAmount: K{{ number_format($transaction->amount, 2) }}%0D%0AFee: K{{ number_format($transaction->fee_amount, 2) }}%0D%0ATotal: K{{ number_format($transaction->total_amount, 2) }}%0D%0AStatus: {{ ucfirst($transaction->status) }}" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                             <i class="fas fa-envelope mr-2"></i> Email Receipt
                         </a>
                         

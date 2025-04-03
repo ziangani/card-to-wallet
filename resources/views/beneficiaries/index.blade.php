@@ -109,7 +109,7 @@
                 <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-12">
             </a>
         </div>
-        
+
         <div class="p-4">
             <div class="flex items-center space-x-3 mb-6">
                 <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-lg font-semibold">
@@ -120,7 +120,7 @@
                     <p class="text-sm text-gray-500">{{ auth()->user()->email }}</p>
                 </div>
             </div>
-            
+
             <nav class="mt-6">
                 <ul class="space-y-1">
                     <li>
@@ -173,7 +173,7 @@
                 </ul>
             </nav>
         </div>
-        
+
         <div class="p-4 mt-auto border-t">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -191,7 +191,7 @@
         <header class="hidden lg:block bg-white shadow-sm sticky top-0 z-20">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-dark">Beneficiaries</h1>
-                
+
                 <div class="flex items-center space-x-4">
                     <div class="relative">
                         <button id="user-menu-button" class="flex items-center space-x-3 focus:outline-none">
@@ -252,12 +252,12 @@
                 <div class="p-6">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                         <h2 class="text-xl font-bold text-dark mb-2 md:mb-0">Your Saved Beneficiaries</h2>
-                        
+
                         <button id="add-beneficiary-button" class="inline-flex items-center px-3 py-2 bg-primary text-white rounded text-sm hover:bg-opacity-90 transition">
                             <i class="fas fa-plus mr-1"></i> Add New Beneficiary
                         </button>
                     </div>
-                    
+
                     <!-- Search and Filter -->
                     <div class="mb-6">
                         <div class="relative">
@@ -267,13 +267,14 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Beneficiaries Grid -->
                     @if(count($beneficiaries ?? []) > 0)
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             @foreach($beneficiaries as $beneficiary)
                                 <div class="border rounded-lg overflow-hidden hover:shadow-md transition beneficiary-card">
                                     <div class="p-4">
+{{--                                        {{dd($beneficiary)}}--}}
                                         <div class="flex items-center mb-3">
                                             <div class="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center mr-3">
                                                 @if($beneficiary->wallet_provider->api_code === 'airtel')
@@ -298,14 +299,14 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        
+
                                         @if($beneficiary->notes)
                                             <p class="text-sm text-gray-600 mb-3">{{ $beneficiary->notes }}</p>
                                         @endif
-                                        
+
                                         <div class="flex justify-between items-center">
                                             <span class="text-xs text-gray-500">Last used: {{ $beneficiary->updated_at->diffForHumans() }}</span>
-                                            
+
                                             <div class="flex space-x-2">
                                                 <a href="{{ route('transactions.initiate', ['beneficiary_id' => $beneficiary->id]) }}" class="text-primary hover:text-primary-dark" title="Send Money">
                                                     <i class="fas fa-paper-plane"></i>
@@ -342,11 +343,11 @@
                     @endif
                 </div>
             </div>
-            
+
             <!-- Benefits of Saving Beneficiaries -->
             <div class="bg-white rounded-xl shadow-sm overflow-hidden p-6">
                 <h3 class="text-lg font-bold text-dark mb-4">Benefits of Saving Beneficiaries</h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="flex items-start">
                         <div class="flex-shrink-0 h-10 w-10 rounded-full bg-primary bg-opacity-10 text-primary flex items-center justify-center mr-3">
@@ -357,7 +358,7 @@
                             <p class="text-sm text-gray-600">Save time by quickly selecting saved recipients instead of entering details each time.</p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-start">
                         <div class="flex-shrink-0 h-10 w-10 rounded-full bg-success bg-opacity-10 text-success flex items-center justify-center mr-3">
                             <i class="fas fa-check-circle"></i>
@@ -367,7 +368,7 @@
                             <p class="text-sm text-gray-600">Reduce the risk of sending money to the wrong number by using verified beneficiaries.</p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-start">
                         <div class="flex-shrink-0 h-10 w-10 rounded-full bg-secondary bg-opacity-10 text-secondary flex items-center justify-center mr-3">
                             <i class="fas fa-star"></i>
@@ -392,17 +393,17 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                
+
                 <form id="beneficiary-form" action="{{ route('beneficiaries.store') }}" method="POST">
                     @csrf
                     <input type="hidden" id="beneficiary-id" name="id">
-                    
+
                     <div class="space-y-4">
                         <div>
                             <label for="recipient_name" class="block text-sm font-medium text-gray-700 mb-1">Recipient Name</label>
                             <input type="text" id="recipient_name" name="recipient_name" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
                         </div>
-                        
+
                         <div>
                             <label for="wallet_provider_id" class="block text-sm font-medium text-gray-700 mb-1">Mobile Money Provider</label>
                             <select id="wallet_provider_id" name="wallet_provider_id" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
@@ -412,7 +413,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        
+
                         <div>
                             <label for="wallet_number" class="block text-sm font-medium text-gray-700 mb-1">Wallet Number</label>
                             <div class="flex">
@@ -421,18 +422,18 @@
                             </div>
                             <p class="mt-1 text-xs text-gray-500">Enter 9 digits without the leading zero</p>
                         </div>
-                        
+
                         <div>
                             <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
                             <textarea id="notes" name="notes" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"></textarea>
                         </div>
-                        
+
                         <div class="flex items-center">
                             <input type="checkbox" id="is_favorite" name="is_favorite" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
                             <label for="is_favorite" class="ml-2 block text-sm text-gray-700">Add to favorites</label>
                         </div>
                     </div>
-                    
+
                     <div class="mt-6 flex justify-end space-x-3">
                         <button type="button" id="cancel-modal" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                             Cancel
@@ -456,13 +457,13 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                
+
                 <p class="text-gray-600 mb-4">Are you sure you want to delete this beneficiary? This action cannot be undone.</p>
-                
+
                 <form id="delete-form" action="{{ route('beneficiaries.destroy', 0) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    
+
                     <div class="flex justify-end space-x-3">
                         <button type="button" id="cancel-delete" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                             Cancel
@@ -481,57 +482,57 @@
             // Mobile sidebar toggle
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebar = document.getElementById('sidebar');
-            
+
             if (sidebarToggle) {
                 sidebarToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('open');
                 });
             }
-            
+
             // Close sidebar when clicking outside
             document.addEventListener('click', function(event) {
-                if (sidebar.classList.contains('open') && 
-                    !sidebar.contains(event.target) && 
+                if (sidebar.classList.contains('open') &&
+                    !sidebar.contains(event.target) &&
                     event.target !== sidebarToggle) {
                     sidebar.classList.remove('open');
                 }
             });
-            
+
             // User menu dropdown
             const userMenuButton = document.getElementById('user-menu-button');
             const userMenu = document.getElementById('user-menu');
-            
+
             if (userMenuButton) {
                 userMenuButton.addEventListener('click', function() {
                     userMenu.classList.toggle('hidden');
                 });
             }
-            
+
             // Mobile user menu dropdown
             const mobileUserMenuButton = document.getElementById('mobile-user-menu-button');
             const mobileUserMenu = document.getElementById('mobile-user-menu');
-            
+
             if (mobileUserMenuButton) {
                 mobileUserMenuButton.addEventListener('click', function() {
                     mobileUserMenu.classList.toggle('hidden');
                 });
             }
-            
+
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(event) {
-                if (userMenu && !userMenu.classList.contains('hidden') && 
-                    !userMenu.contains(event.target) && 
+                if (userMenu && !userMenu.classList.contains('hidden') &&
+                    !userMenu.contains(event.target) &&
                     !userMenuButton.contains(event.target)) {
                     userMenu.classList.add('hidden');
                 }
-                
-                if (mobileUserMenu && !mobileUserMenu.classList.contains('hidden') && 
-                    !mobileUserMenu.contains(event.target) && 
+
+                if (mobileUserMenu && !mobileUserMenu.classList.contains('hidden') &&
+                    !mobileUserMenu.contains(event.target) &&
                     !mobileUserMenuButton.contains(event.target)) {
                     mobileUserMenu.classList.add('hidden');
                 }
             });
-            
+
             // Beneficiary Modal
             const beneficiaryModal = document.getElementById('beneficiary-modal');
             const addBeneficiaryButton = document.getElementById('add-beneficiary-button');
@@ -541,7 +542,7 @@
             const beneficiaryForm = document.getElementById('beneficiary-form');
             const modalTitle = document.getElementById('modal-title');
             const submitButtonText = document.getElementById('submit-button-text');
-            
+
             // Open modal for adding new beneficiary
             if (addBeneficiaryButton) {
                 addBeneficiaryButton.addEventListener('click', function() {
@@ -553,7 +554,7 @@
                     beneficiaryModal.classList.remove('hidden');
                 });
             }
-            
+
             if (emptyAddBeneficiaryButton) {
                 emptyAddBeneficiaryButton.addEventListener('click', function() {
                     modalTitle.textContent = 'Add New Beneficiary';
@@ -564,42 +565,42 @@
                     beneficiaryModal.classList.remove('hidden');
                 });
             }
-            
+
             // Close modal
             if (closeModalButton) {
                 closeModalButton.addEventListener('click', function() {
                     beneficiaryModal.classList.add('hidden');
                 });
             }
-            
+
             if (cancelModalButton) {
                 cancelModalButton.addEventListener('click', function() {
                     beneficiaryModal.classList.add('hidden');
                 });
             }
-            
+
             // Close modal when clicking outside
             beneficiaryModal?.addEventListener('click', function(event) {
                 if (event.target === beneficiaryModal) {
                     beneficiaryModal.classList.add('hidden');
                 }
             });
-            
+
             // Edit beneficiary
             const editButtons = document.querySelectorAll('.edit-beneficiary');
             editButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const beneficiaryId = this.getAttribute('data-id');
-                    
+
                     // Here you would typically fetch the beneficiary data from the server
                     // For demonstration, we'll use a placeholder approach
                     // In a real application, you would make an AJAX request to get the data
-                    
+
                     modalTitle.textContent = 'Edit Beneficiary';
                     submitButtonText.textContent = 'Update Beneficiary';
                     document.getElementById('beneficiary-id').value = beneficiaryId;
                     beneficiaryForm.action = "{{ route('beneficiaries.update', '') }}/" + beneficiaryId;
-                    
+
                     // Add method spoofing for PUT request
                     let methodField = beneficiaryForm.querySelector('input[name="_method"]');
                     if (!methodField) {
@@ -609,18 +610,18 @@
                         beneficiaryForm.appendChild(methodField);
                     }
                     methodField.value = 'PUT';
-                    
+
                     beneficiaryModal.classList.remove('hidden');
                 });
             });
-            
+
             // Delete beneficiary
             const deleteModal = document.getElementById('delete-modal');
             const closeDeleteModalButton = document.getElementById('close-delete-modal');
             const cancelDeleteButton = document.getElementById('cancel-delete');
             const deleteForm = document.getElementById('delete-form');
             const deleteButtons = document.querySelectorAll('.delete-beneficiary');
-            
+
             deleteButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const beneficiaryId = this.getAttribute('data-id');
@@ -628,39 +629,39 @@
                     deleteModal.classList.remove('hidden');
                 });
             });
-            
+
             if (closeDeleteModalButton) {
                 closeDeleteModalButton.addEventListener('click', function() {
                     deleteModal.classList.add('hidden');
                 });
             }
-            
+
             if (cancelDeleteButton) {
                 cancelDeleteButton.addEventListener('click', function() {
                     deleteModal.classList.add('hidden');
                 });
             }
-            
+
             // Close delete modal when clicking outside
             deleteModal?.addEventListener('click', function(event) {
                 if (event.target === deleteModal) {
                     deleteModal.classList.add('hidden');
                 }
             });
-            
+
             // Search functionality
             const searchInput = document.getElementById('search-beneficiaries');
             const beneficiaryCards = document.querySelectorAll('.beneficiary-card');
-            
+
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     const searchTerm = this.value.toLowerCase();
-                    
+
                     beneficiaryCards.forEach(card => {
                         const name = card.querySelector('h3').textContent.toLowerCase();
                         const number = card.querySelector('p').textContent.toLowerCase();
                         const notes = card.querySelector('p:nth-child(2)')?.textContent.toLowerCase() || '';
-                        
+
                         if (name.includes(searchTerm) || number.includes(searchTerm) || notes.includes(searchTerm)) {
                             card.style.display = '';
                         } else {

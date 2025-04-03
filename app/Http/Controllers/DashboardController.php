@@ -27,20 +27,20 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         // Get recent transactions
         $recentTransactions = Transaction::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->limit(5)
+            ->limit(3)
             ->get();
-        
+
         // Get saved beneficiaries
         $savedBeneficiaries = Beneficiary::where('user_id', $user->id)
             ->orderBy('is_favorite', 'desc')
             ->orderBy('updated_at', 'desc')
             ->limit(4)
             ->get();
-        
+
         // Get transaction statistics
         $totalTransactions = Transaction::where('user_id', $user->id)->count();
         $successfulTransactions = Transaction::where('user_id', $user->id)
@@ -49,13 +49,13 @@ class DashboardController extends Controller
         $totalAmount = Transaction::where('user_id', $user->id)
             ->where('status', 'completed')
             ->sum('amount');
-        
+
         return view('dashboard.index', compact(
-            'user', 
-            'recentTransactions', 
-            'savedBeneficiaries', 
-            'totalTransactions', 
-            'successfulTransactions', 
+            'user',
+            'recentTransactions',
+            'savedBeneficiaries',
+            'totalTransactions',
+            'successfulTransactions',
             'totalAmount'
         ));
     }

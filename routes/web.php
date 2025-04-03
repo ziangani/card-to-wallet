@@ -83,6 +83,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/payment', [TransactionController::class, 'payment'])->name('payment');
         Route::post('/payment', [TransactionController::class, 'processPayment'])->name('process-payment');
 
+        // MPGS Integration
+        Route::post('/mpgs/checkout', [TransactionController::class, 'mpgsCheckout'])->name('mpgs.checkout');
+        Route::get('/mpgs/callback/{uuid}', [TransactionController::class, 'mpgsCallback'])->name('mpgs.callback');
+        Route::post('/process-ajax', [TransactionController::class, 'processAjax'])->name('process-ajax');
+
         // Success and failure
         Route::get('/success/{uuid}', [TransactionController::class, 'success'])->name('success');
         Route::get('/failure/{uuid}', [TransactionController::class, 'failure'])->name('failure');

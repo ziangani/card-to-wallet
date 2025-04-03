@@ -11,23 +11,10 @@ class cGrate
 
 
     private string $endpoint = "https://543.cgrate.co.zm/Konik/KonikWs";
-    private string $username;
-    private string $password;
+    private string $username = 'REMOVED_USERNAME';
+    private string $password = 'REMOVED_PASSWORD';
     private $reference = '';
 
-    public function getEndpoint()
-    {
-        return $this->endpoint;
-    }
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
     public static $mobileVouchers = [
         'EF52DTHN2',//Airtel
         'EF52DDRS7',//MTN
@@ -60,15 +47,13 @@ class cGrate
     public function __construct($reference, $endpoint = null)
     {
         $this->reference = $reference;
-        $this->username = config('cgrate.username');
-        $this->password = config('cgrate.password');
 
         if ($endpoint != null)
             $this->endpoint = $endpoint;
     }
 
 
-    private function sendBlankRequest($param): array
+    public function sendBlankRequest($param): array
     {
         $requestBody = <<<REQUEST
             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:kon="http://konik.cgrate.com">
@@ -162,7 +147,97 @@ REQUEST;
         ];
     }
 
+
+    private function sendRequest($requestBody): array
+    {
+        $request_time = date('Y-m-d H:i:s');
+        $curlHandle = curl_init();
+        $endpoint = $this->endpoint;
+        $content_length = strlen($requestBody);
+
+        $headers = [
+            "Content-Type: text/xml; charset=\"utf-8\"",
+            "Content-length: $content_length"
+        ];
+
+        curl_setopt($curlHandle, CURLOPT_URL, $endpoint);
+        curl_setopt($curlHandle, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlHandle, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curlHandle, CURLOPT_POSTFIELDS, $requestBody);
+
+        try {
+            $response = curl_exec($curlHandle);
+            if (curl_errno($curlHandle)) {
+                throw new Exception(curl_error($curlHandle));
+            }
+        } catch (Exception $e) {
+            return [
+                'errorCode' => $e->getMessage(),
+                'response' => null
+            ];
+        }
+
+        curl_close($curlHandle);
+
+        $dom = new DOMDocument();
+        if (!@$dom->loadXML($response)) {
+            Helpers::logApiRequest($requestBody, $response, $request_time, date('Y-m-d H:i:s'), '', '', '', $this->reference, 'cGrate', 'FAILED', '');
+            return [
+                'errorCode' => 'Invalid XML response',
+                'response' => null
+            ];
+        }
+
+        if ($dom->getElementsByTagName('Fault')->length > 0) {
+            Helpers::logApiRequest($requestBody, $response, $request_time, date('Y-m-d H:i:s'), '', '', '', $this->reference, 'cGrate', 'FAILED', '');
+            return [
+                'errorCode' => 'SOAP Fault: ' . $dom->getElementsByTagName('Fault')->item(0)->nodeValue,
+                'response' => null
+            ];
+        }
+        Helpers::logApiRequest($requestBody, $response, $request_time, date('Y-m-d H:i:s'), '', '', '', $this->reference, 'cGrate', 'SUCCESS', '');
+        return [
+            'errorCode' => 0,
+            'request' => $requestBody,
+            'response' => $dom,
+            'raw' => $response,
+
+        ];
+    }
+
+    public function getBillPaymentBalanceDue($serviceProvider, $accountNumber): array
+    {
+        $requestBody = <<<REQUEST
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:kon="http://konik.cgrate.com">
+               <soapenv:Header>
+                     <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soapenv:mustUnderstand="1">
+                        <wsse:UsernameToken xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="{$this->username}">
+                           <wsse:Username>{$this->username}</wsse:Username>
+                           <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{$this->password}</wsse:Password>
+                        </wsse:UsernameToken>
+                     </wsse:Security>
+                  </soapenv:Header>
+               <soapenv:Body>
+
+                  <ns2:getBillPaymentBalanceDue  xmlns:ns2="http://konik.cgrate.com">
+                        <serviceProvider>{$serviceProvider}</serviceProvider>
+                        <billPaymentAccountNumber>{$accountNumber}</billPaymentAccountNumber>
+                    </ns2:getBillPaymentBalanceDue>
+               </soapenv:Body>
+          </soapenv:Envelope>
+REQUEST;
+
+        $response = $this->sendRequest($requestBody);
+        if ($response['errorCode'] != 0)
+            throw new Exception($response['errorCode']);
+
+        return $response;
+    }
+
+
     //queryTransactionStatus
+
     public function queryTransactionStatus($transactionReference): array
     {
         $requestBody = <<<REQUEST
@@ -244,7 +319,7 @@ REQUEST;
     //getBillCustomerName
     public function getBillCustomerName($serviceProvider, $accountNumber, $is_clean_provider = false): array
     {
-        if (!$is_clean_provider) {
+        if(!$is_clean_provider){
             $myProvider = strtoupper($serviceProvider);
             switch ($myProvider) {
                 case 'dstv':
@@ -321,6 +396,58 @@ REQUEST;
           </soapenv:Envelope>
 REQUEST;
 
+            $response = $this->sendRequest($requestBody);
+            if ($response['errorCode'] != 0)
+                throw new Exception($response['errorCode']);
+
+            $dom = new DOMDocument;
+            $dom->loadXML($response['raw']);
+
+            $responseCode = $dom->getElementsByTagName('responseCode')->item(0)->nodeValue;
+            $responseMessage = $dom->getElementsByTagName('responseMessage')->item(0)->nodeValue;
+            $purchaseId = $dom->getElementsByTagName('purchaseId')->item(0)->nodeValue ?? '';
+            $voucherSerialNumber = $dom->getElementsByTagName('voucherPinNumber')->item(0)->nodeValue ?? '';
+            return [
+                'errorCode' => $responseCode,
+                'responseMessage' => $responseMessage,
+                'purchaseId' => $purchaseId,
+                'voucherSerialNumber' => $voucherSerialNumber
+            ];
+    }
+
+    /**
+     * Process a cash deposit to a bank account
+     * 
+     * @param float|int $transactionAmount The amount to deposit
+     * @param string $customerAccount The customer account number
+     * @param string $issuerName The name of the issuer/bank
+     * @param string $depositorReference A reference for the deposit
+     * @return array Response with status and reference number
+     * @throws Exception
+     */
+    public function processCashDeposit(float|int $transactionAmount, string $customerAccount, string $issuerName, string $depositorReference): array
+    {
+        $requestBody = <<<REQUEST
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:kon="http://konik.cgrate.com">
+               <soapenv:Header>
+                     <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soapenv:mustUnderstand="1">
+                        <wsse:UsernameToken xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="{$this->username}">
+                           <wsse:Username>{$this->username}</wsse:Username>
+                           <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{$this->password}</wsse:Password>
+                        </wsse:UsernameToken>
+                     </wsse:Security>
+                  </soapenv:Header>
+               <soapenv:Body>
+                  <ns2:processCashDeposit xmlns:ns2="http://konik.cgrate.com">
+                     <transactionAmount>{$transactionAmount}</transactionAmount>
+                     <customerAccount>{$customerAccount}</customerAccount>
+                     <issuerName>{$issuerName}</issuerName>
+                     <depositorReference>{$depositorReference}</depositorReference>
+                  </ns2:processCashDeposit>
+               </soapenv:Body>
+          </soapenv:Envelope>
+REQUEST;
+
         $response = $this->sendRequest($requestBody);
         if ($response['errorCode'] != 0)
             throw new Exception($response['errorCode']);
@@ -330,19 +457,23 @@ REQUEST;
 
         $responseCode = $dom->getElementsByTagName('responseCode')->item(0)->nodeValue;
         $responseMessage = $dom->getElementsByTagName('responseMessage')->item(0)->nodeValue;
-        $purchaseId = $dom->getElementsByTagName('purchaseId')->item(0)->nodeValue ?? '';
-        $voucherSerialNumber = $dom->getElementsByTagName('voucherPinNumber')->item(0)->nodeValue ?? '';
+        $internalReferenceNumber = $dom->getElementsByTagName('internalReferenceNumber')->item(0)->nodeValue ?? '';
+        
         return [
             'errorCode' => $responseCode,
             'responseMessage' => $responseMessage,
-            'purchaseId' => $purchaseId,
-            'voucherSerialNumber' => $voucherSerialNumber
+            'internalReferenceNumber' => $internalReferenceNumber
         ];
     }
 
-    public function requestMomoPayment($reference, $mobile, float|int $amount, $serviceProvider)
+    /**
+     * Get available cash deposit issuers
+     * 
+     * @return array List of available issuers for cash deposits
+     * @throws Exception
+     */
+    public function getAvailableCashDepositIssuers(): array
     {
-
         $requestBody = <<<REQUEST
             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:kon="http://konik.cgrate.com">
                <soapenv:Header>
@@ -354,167 +485,82 @@ REQUEST;
                      </wsse:Security>
                   </soapenv:Header>
                <soapenv:Body>
-                  <ns2:processCustomerPayment xmlns:ns2="http://konik.cgrate.com">
-                    <transactionAmount>{$amount}</transactionAmount>
-                    <customerMobile>{$mobile}</customerMobile>
-                    <paymentReference>{$reference}</paymentReference>
-                    <issuerName xmlns="">{$serviceProvider}</issuerName>
-                </ns2:processCustomerPayment>
-               </soapenv:Body>
-          </soapenv:Envelope>
-REQUEST;
-        $response = $this->sendRequest($requestBody, true);
-        if ($response['errorCode'] != 0)
-            throw new Exception($response['errorCode']);
-
-        return [
-            'errorCode' => $response['errorCode'],
-            'response' => $response['response'],
-        ];
-    }
-
-    private function sendRequest($requestBody, $async = false): array
-    {
-        $request_time = date('Y-m-d H:i:s');
-        $curlHandle = curl_init();
-        $endpoint = $this->endpoint;
-        $content_length = strlen($requestBody);
-
-        $headers = [
-            "Content-Type: text/xml; charset=\"utf-8\"",
-            "Content-length: $content_length"
-        ];
-
-        curl_setopt($curlHandle, CURLOPT_URL, $endpoint);
-        curl_setopt($curlHandle, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlHandle, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curlHandle, CURLOPT_POSTFIELDS, $requestBody);
-
-        if ($async) {
-            // Fork a child process to handle the request asynchronously
-            if (function_exists('pcntl_fork')) {
-                $pid = pcntl_fork();
-                if ($pid == -1) {
-                    // Fork failed
-                    return [
-                        'errorCode' => 'Fork failed',
-                        'response' => null
-                    ];
-                } elseif ($pid) {
-                    // Parent process: immediately return and continue execution
-                    return [
-                        'errorCode' => 0,
-                        'response' => 'Request sent asynchronously',
-                        'raw' => null
-                    ];
-                } else {
-                    // Child process: perform the cURL request
-                    $response = curl_exec($curlHandle);
-                    if (curl_errno($curlHandle)) {
-                        curl_close($curlHandle);
-                        exit(1); // Exit child process
-                    }
-
-                    curl_close($curlHandle);
-
-                    $dom = new DOMDocument();
-                    if (!@$dom->loadXML($response)) {
-                        Helpers::logApiRequest($requestBody, $response, $request_time, date('Y-m-d H:i:s'), '', '', '', $this->reference, 'cGrate', 'FAILED', '');
-                        exit(1); // Exit child process
-                    }
-
-                    if ($dom->getElementsByTagName('Fault')->length > 0) {
-                        Helpers::logApiRequest($requestBody, $response, $request_time, date('Y-m-d H:i:s'), '', '', '', $this->reference, 'cGrate', 'FAILED', '');
-                        exit(1); // Exit child process
-                    }
-                    Helpers::logApiRequest($requestBody, $response, $request_time, date('Y-m-d H:i:s'), '', '', '', $this->reference, 'cGrate', 'SUCCESS', '');
-                    exit(0); // Exit child process
-                }
-            } else {
-                throw new Exception('pcntl_fork() not available');
-            }
-        } else {
-            // Synchronous request (normal behavior)
-            try {
-                $response = curl_exec($curlHandle);
-                if (curl_errno($curlHandle)) {
-                    throw new Exception(curl_error($curlHandle));
-                }
-            } catch (Exception $e) {
-                return [
-                    'errorCode' => $e->getMessage(),
-                    'response' => null
-                ];
-            }
-
-            curl_close($curlHandle);
-
-            $dom = new DOMDocument();
-            if (!@$dom->loadXML($response)) {
-                Helpers::logApiRequest($requestBody, $response, $request_time, date('Y-m-d H:i:s'), '', '', '', $this->reference, 'cGrate', 'FAILED', '');
-                return [
-                    'errorCode' => 'Invalid XML response',
-                    'response' => null
-                ];
-            }
-
-            if ($dom->getElementsByTagName('Fault')->length > 0) {
-                Helpers::logApiRequest($requestBody, $response, $request_time, date('Y-m-d H:i:s'), '', '', '', $this->reference, 'cGrate', 'FAILED', '');
-                return [
-                    'errorCode' => 'SOAP Fault: ' . $dom->getElementsByTagName('Fault')->item(0)->nodeValue,
-                    'response' => null
-                ];
-            }
-            Helpers::logApiRequest($requestBody, $response, $request_time, date('Y-m-d H:i:s'), '', '', '', $this->reference, 'cGrate', 'SUCCESS', '');
-            return [
-                'errorCode' => 0,
-                'request' => $requestBody,
-                'response' => $dom,
-                'raw' => $response,
-
-            ];
-        }
-    }
-
-    public function queryCustomerPayment($reference): array
-    {
-
-        $requestBody = <<<REQUEST
-            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:kon="http://konik.cgrate.com">
-               <soapenv:Header>
-                     <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soapenv:mustUnderstand="1">
-                        <wsse:UsernameToken xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="{$this->username}">
-                           <wsse:Username>{$this->username}</wsse:Username>
-                           <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{$this->password}</wsse:Password>
-                        </wsse:UsernameToken>
-                     </wsse:Security>
-                  </soapenv:Header>
-               <soapenv:Body>
-                <kon:queryCustomerPayment>
-                    <paymentReference>{$reference}</paymentReference>
-                </kon:queryCustomerPayment>
+                  <ns2:getAvailableCashDepositIssuers xmlns:ns2="http://konik.cgrate.com"/>
                </soapenv:Body>
           </soapenv:Envelope>
 REQUEST;
 
         $response = $this->sendRequest($requestBody);
-
         if ($response['errorCode'] != 0)
             throw new Exception($response['errorCode']);
 
         $dom = new DOMDocument;
         $dom->loadXML($response['raw']);
-        $responseCode = $dom->getElementsByTagName('responseCode')->item(0)->nodeValue;
-        $responseMessage = $dom->getElementsByTagName('responseMessage')->item(0)->nodeValue;
-        $paymentId = $dom->getElementsByTagName('paymentID')->item(0)->nodeValue ?? '';
+
+        $issuers = [];
+        $returnNodes = $dom->getElementsByTagName('return');
+        foreach ($returnNodes as $node) {
+            $issuers[] = $node->nodeValue;
+        }
+
         return [
-            'errorCode' => $responseCode,
-            'response' => $responseMessage,
-            'paymentId' => $paymentId
+            'errorCode' => 0,
+            'issuers' => $issuers
         ];
     }
+
+    /**
+     * Check the status of a cash out code
+     * 
+     * @param string $cashOutCode The cash out code to check
+     * @param string $customerMobile The customer's mobile number
+     * @return array Status of the cash out code including amount and requestor details
+     * @throws Exception
+     */
+    public function checkCashOutCodeStatus(string $cashOutCode, string $customerMobile): array
+    {
+        $requestBody = <<<REQUEST
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:kon="http://konik.cgrate.com">
+               <soapenv:Header>
+                     <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soapenv:mustUnderstand="1">
+                        <wsse:UsernameToken xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="{$this->username}">
+                           <wsse:Username>{$this->username}</wsse:Username>
+                           <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{$this->password}</wsse:Password>
+                        </wsse:UsernameToken>
+                     </wsse:Security>
+                  </soapenv:Header>
+               <soapenv:Body>
+                  <ns2:checkCashOutCodeStatus xmlns:ns2="http://konik.cgrate.com">
+                     <cashOutCode>{$cashOutCode}</cashOutCode>
+                     <customerMobile>{$customerMobile}</customerMobile>
+                  </ns2:checkCashOutCodeStatus>
+               </soapenv:Body>
+          </soapenv:Envelope>
+REQUEST;
+
+        $response = $this->sendRequest($requestBody);
+        if ($response['errorCode'] != 0)
+            throw new Exception($response['errorCode']);
+
+        $dom = new DOMDocument;
+        $dom->loadXML($response['raw']);
+
+        $responseCode = $dom->getElementsByTagName('responseCode')->item(0)->nodeValue;
+        $responseMessage = $dom->getElementsByTagName('responseMessage')->item(0)->nodeValue;
+        $cashOutAmount = $dom->getElementsByTagName('cashOutAmount')->item(0)->nodeValue ?? '';
+        $cashOutBank = $dom->getElementsByTagName('cashOutBank')->item(0)->nodeValue ?? '';
+        $requestorName = $dom->getElementsByTagName('requestorName')->item(0)->nodeValue ?? '';
+        $requestorSurname = $dom->getElementsByTagName('requestorSurname')->item(0)->nodeValue ?? '';
+        
+        return [
+            'errorCode' => $responseCode,
+            'responseMessage' => $responseMessage,
+            'cashOutAmount' => $cashOutAmount,
+            'cashOutBank' => $cashOutBank,
+            'requestorName' => $requestorName,
+            'requestorSurname' => $requestorSurname
+        ];
+    }
+
+
 }
-
-
-

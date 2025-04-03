@@ -434,7 +434,32 @@
         </div>
     </main>
 
+    <!-- MPGS Checkout Script -->
+    <script src="{{ $mpgs_endpoint }}/static/checkout/checkout.min.js" 
+            data-error="errorCallback"
+            data-cancel="cancelCallback"></script>
+            
     <script>
+        function errorCallback(error) {
+            console.log(JSON.stringify(error));
+            Swal.fire({
+                icon: 'error',
+                title: 'Payment Error',
+                text: JSON.stringify(error),
+                confirmButtonColor: '#3366CC'
+            });
+        }
+
+        function cancelCallback() {
+            console.log('Payment cancelled');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Payment Cancelled',
+                text: 'Your payment process was cancelled',
+                confirmButtonColor: '#3366CC'
+            });
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Mobile sidebar toggle
             const sidebarToggle = document.getElementById('sidebar-toggle');
@@ -489,6 +514,58 @@
                     mobileUserMenu.classList.add('hidden');
                 }
             });
+            
+            // MPGS Checkout
+            const checkoutForm = document.querySelector('form[action="{{ route('transactions.mpgs.checkout') }}"]');
+            
+            if (checkoutForm) {
+                checkoutForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Show loading state
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    const originalText = submitButton.innerHTML;
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                    
+                    // Make AJAX request to get MPGS session
+                    fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            transaction_id: '{{ $transaction->id }}'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'SUCCESS') {
+                            // Configure MPGS Checkout
+                            Checkout.configure({
+                                session: {
+                                    id: data.session
+                                }
+                            });
+                            
+                            // Open MPGS Checkout
+                            Checkout.showPaymentPage();
+                        } else {
+                            // Show error
+                            alert('Error: ' + data.statusMessage);
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = originalText;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while processing your payment. Please try again.');
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalText;
+                    });
+                });
+            }
         });
     </script>
 </body>

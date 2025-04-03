@@ -52,6 +52,11 @@ class Beneficiary extends Model
     /**
      * Get the wallet provider for the beneficiary.
      */
+    public function wallet_provider()
+    {
+        return $this->belongsTo(WalletProvider::class);
+    }
+
     public function walletProvider()
     {
         return $this->belongsTo(WalletProvider::class);

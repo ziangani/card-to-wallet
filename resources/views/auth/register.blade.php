@@ -116,7 +116,7 @@
                             <div>
                                 <h2 class="text-2xl font-bold mb-4">Join Card-to-Wallet</h2>
                                 <p class="mb-6">Create your account to start funding mobile wallets instantly with your card.</p>
-                                
+
                                 <div class="space-y-4 mt-8">
                                     <div class="flex items-start mb-5">
                                         <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-3">
@@ -127,7 +127,7 @@
                                             <p class="text-sm text-white text-opacity-80">Your card details are never stored</p>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="flex items-start mb-5">
                                         <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-3">
                                             <i class="fas fa-bolt text-white"></i>
@@ -137,7 +137,7 @@
                                             <p class="text-sm text-white text-opacity-80">Fund your wallet in seconds</p>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="flex items-start mb-5">
                                         <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-3">
                                             <i class="fas fa-mobile-alt text-white"></i>
@@ -149,19 +149,19 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="mt-8 text-sm text-white text-opacity-80">
                                 Already have an account? <a href="{{ url('/login') }}" class="text-white underline">Login here</a>
                             </div>
                         </div>
-                        
+
                         <!-- Right Side - Form -->
                         <div class="md:w-2/3 p-8">
                             <h1 class="text-2xl font-bold text-dark mb-6">Create Your Account</h1>
-                            
+
                             <form id="registerForm" class="space-y-6">
                                 @csrf
-                                
+
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <!-- First Name -->
                                     <div>
@@ -171,7 +171,7 @@
                                             <p class="text-error text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                    
+
                                     <!-- Last Name -->
                                     <div>
                                         <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
@@ -181,7 +181,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                
+
                                 <!-- Email and Phone Number -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
@@ -195,7 +195,7 @@
                                     <div>
                                         <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                                         <input type="text" id="phone_number" name="phone_number" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="+26097XXXXXXX" required>
-                                        <p class="text-xs text-gray-500 mt-1 mb-3">Mobile number incluing the country code.</p>
+                                        <p class="text-xs text-gray-500 mt-1 mb-3">Mobile number including the country code.</p>
                                         @error('phone_number')
                                             <p class="text-error text-sm mt-1">{{ $message }}</p>
                                         @enderror
@@ -230,14 +230,14 @@
                                             <p class="text-error text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                    
+
                                     <!-- Country -->
                                     <div>
                                         <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
                                         <input type="text" id="country" name="country" value="Zambia" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" readonly>
                                     </div>
                                 </div>
-                                
+
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <!-- Password -->
                                     <div>
@@ -252,7 +252,7 @@
                                             <p class="text-error text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                    
+
                                     <!-- Confirm Password -->
                                     <div>
                                         <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
@@ -264,7 +264,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Password Strength Indicator -->
                                 <div class="password-strength hidden">
                                     <div class="flex space-x-1 mb-1">
@@ -275,7 +275,7 @@
                                     </div>
                                     <p class="text-xs text-gray-500 strength-text">Password strength: <span>Weak</span></p>
                                 </div>
-                                
+
                                 <!-- Terms and Conditions -->
                                 <div class="flex items-start mb-5 mt-3">
                                     <div class="flex items-center h-5">
@@ -296,7 +296,7 @@
                                     </button>
                                 </div>
                             </form>
-                            
+
                             <div class="mt-6 text-center text-sm text-gray-600">
                                 Already have an account? <a href="{{ url('/login') }}" class="text-primary hover:underline font-medium">Login here</a>
                             </div>
@@ -325,12 +325,12 @@
         // Toggle password visibility
         document.addEventListener('DOMContentLoaded', function() {
             const toggleButtons = document.querySelectorAll('.toggle-password');
-            
+
             toggleButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const input = this.parentElement.querySelector('input');
                     const icon = this.querySelector('i');
-                    
+
                     if (input.type === 'password') {
                         input.type = 'text';
                         icon.classList.remove('fa-eye');
@@ -342,47 +342,47 @@
                     }
                 });
             });
-            
+
             // Password strength indicator
             const passwordInput = document.getElementById('password');
             const strengthIndicators = document.querySelectorAll('.strength-indicator');
             const strengthText = document.querySelector('.strength-text span');
             const strengthContainer = document.querySelector('.password-strength');
-            
+
             passwordInput.addEventListener('input', function() {
                 const password = this.value;
-                
+
                 if (password.length > 0) {
                     strengthContainer.classList.remove('hidden');
-                    
+
                     // Reset indicators
                     strengthIndicators.forEach(indicator => {
                         indicator.classList.remove('bg-error', 'bg-warning', 'bg-success');
                         indicator.classList.add('bg-gray-200');
                     });
-                    
+
                     // Calculate strength
                     let strength = 0;
-                    
+
                     // Length check
                     if (password.length >= 8) strength++;
-                    
+
                     // Contains lowercase
                     if (/[a-z]/.test(password)) strength++;
-                    
+
                     // Contains uppercase
                     if (/[A-Z]/.test(password)) strength++;
-                    
+
                     // Contains number
                     if (/[0-9]/.test(password)) strength++;
-                    
+
                     // Contains special character
                     if (/[^A-Za-z0-9]/.test(password)) strength++;
-                    
+
                     // Update indicators
                     let color = '';
                     let text = '';
-                    
+
                     if (strength <= 2) {
                         color = 'bg-error';
                         text = 'Weak';
@@ -393,25 +393,25 @@
                         color = 'bg-success';
                         text = 'Strong';
                     }
-                    
+
                     for (let i = 0; i < strength && i < 4; i++) {
                         strengthIndicators[i].classList.remove('bg-gray-200');
                         strengthIndicators[i].classList.add(color);
                     }
-                    
+
                     strengthText.textContent = text;
                 } else {
                     strengthContainer.classList.add('hidden');
                 }
             });
-            
+
             // Phone number validation
             const phoneInput = document.getElementById('phone_number');
-            
+
             phoneInput.addEventListener('input', function() {
                 // Remove non-numeric characters
                 this.value = this.value.replace(/\D/g, '');
-                
+
                 // Limit to 9 digits
                 if (this.value.length > 9) {
                     this.value = this.value.slice(0, 9);

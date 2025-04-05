@@ -16,8 +16,9 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#5D5FEF', /* ChitChat purple */
-                        secondary: '#4F46E5', /* Secondary purple */
+                        primary: '#007751', /* Zambian green */
+                        secondary: '#CE1126', /* Zambian red */
+                        accent: '#000000', /* Black */
                         success: '#28A745',
                         warning: '#FFC107',
                         error: '#DC3545',
@@ -98,8 +99,8 @@
         }
         .mno-logo {
             transition: all 0.3s ease;
-            filter: grayscale(0.5);
-            opacity: 0.9;
+            /*filter: grayscale(0.5);*/
+            /*opacity: 0.9;*/
         }
         .mno-logo:hover {
             filter: grayscale(0);
@@ -174,125 +175,58 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="py-20 hero-gradient text-white relative overflow-hidden" id="main-content">
-        <div class="container mx-auto px-4 max-w-6xl relative z-10">
-            <div class="flex flex-col md:flex-row items-center justify-between">
-                <div class="md:w-1/2 text-left mb-10 md:mb-0">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">{{ $title }}</h1>
-                    <p class="text-xl mb-6 font-light">{{ $subtitle }}</p>
-                    <p class="text-lg mb-8 opacity-90">{{ $description }}</p>
-                    <a href="{{ url($buttonUrl) }}" class="inline-block bg-white text-primary font-semibold px-8 py-4 rounded-lg shadow-md hover:bg-gray-100 transition duration-300 text-lg payment-button">
-                        <i class="fas fa-credit-card mr-2"></i> {{ $buttonText }}
-                    </a>
-                </div>
-                <div class="md:w-1/2 flex justify-center">
-                    <img src="{{ asset('assets/img/woman-with-phone.png') }}" alt="Person using mobile wallet" class="max-w-full h-auto rounded-lg" onerror="this.src='https://via.placeholder.com/500x400?text=Mobile+Wallet';this.onerror='';">
-                </div>
-            </div>
+    <!-- Hero Section with Zambian Flag Colors -->
+    <section class="py-32 bg-cover bg-center relative overflow-hidden" id="main-content" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ asset('assets/img/victoria-falls.jpg') }}')">
+        <div class="container mx-auto px-4 max-w-6xl relative z-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight text-white">Fund Your Zambian Mobile Wallet</h1>
+            <p class="text-xl mb-8 font-light text-white max-w-2xl mx-auto">Instant transfers using your Visa/Mastercard to MTN, Airtel and Zamtel</p>
+            <a href="{{ url($buttonUrl) }}" class="inline-block bg-orange-500 text-white font-semibold px-8 py-4 rounded-lg shadow-md hover:bg-orange-600 transition duration-300 text-lg payment-button">
+                <i class="fas fa-credit-card mr-2"></i> Start Transfer
+            </a>
 
-            <!-- Scroll indicator -->
-            <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white text-center scroll-indicator">
-                <p class="text-sm mb-2">Scroll to learn more</p>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-        </div>
-    </section>
-
-    <!-- Supported Mobile Networks Section -->
-    <section class="py-8 bg-white">
-        <div class="container mx-auto px-4 max-w-6xl">
-            <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold text-dark mb-2">Supported Mobile Networks</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Send money instantly to any of these mobile wallet providers</p>
-            </div>
-
-            <div class="flex flex-wrap justify-center items-center gap-6 md:gap-12">
-                <!-- MTN -->
-                <div class="text-center">
-                    <div class="w-20 h-20 mx-auto mb-2 p-2 bg-white rounded-full shadow-sm hover:shadow-md transition-all">
-                        <img src="{{ asset('assets/img/mtn.jpg') }}" alt="MTN Mobile Money" class="w-full h-full object-contain rounded-full mno-logo">
-                    </div>
-                    <p class="font-medium text-gray-800">MTN Mobile Money</p>
-                </div>
-
-                <!-- Airtel -->
-                <div class="text-center">
-                    <div class="w-20 h-20 mx-auto mb-2 p-2 bg-white rounded-full shadow-sm hover:shadow-md transition-all">
-                        <img src="{{ asset('assets/img/airtel.png') }}" alt="Airtel Money" class="w-full h-full object-contain rounded-full mno-logo">
-                    </div>
-                    <p class="font-medium text-gray-800">Airtel Money</p>
-                </div>
-
-                <!-- Zamtel -->
-                <div class="text-center">
-                    <div class="w-20 h-20 mx-auto mb-2 p-2 bg-white rounded-full shadow-sm hover:shadow-md transition-all">
-                        <img src="{{ asset('assets/img/zamtel.jpg') }}" alt="Zamtel Kwacha" class="w-full h-full object-contain rounded-full mno-logo">
-                    </div>
-                    <p class="font-medium text-gray-800">Zamtel Kwacha</p>
-                </div>
-            </div>
-
-            <!-- Trust indicators -->
-            <div class="mt-8 text-center">
-                <div class="inline-flex items-center justify-center bg-gray-100 rounded-full px-4 py-2 text-sm text-gray-700">
-                    <i class="fas fa-shield-alt text-primary mr-2"></i>
-                    <span>Secure & Regulated Financial Service</span>
+            <div class="mt-12">
+                <h3 class="text-white font-semibold mb-4">Supported Mobile Networks</h3>
+                <div class="flex justify-center gap-6">
+                    <img src="{{ asset('assets/img/mtn.jpg') }}" alt="MTN" class="h-12 bg-white p-2 rounded-lg">
+                    <img src="{{ asset('assets/img/airtel.png') }}" alt="Airtel" class="h-12 bg-white p-2 rounded-lg">
+                    <img src="{{ asset('assets/img/zamtel.jpg') }}" alt="Zamtel" class="h-12 bg-white p-2 rounded-lg">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works Section -->
-    <section class="py-12 bg-light" id="how-it-works">
+    <!-- Networks & How It Works Section -->
+    <section class="py-16 bg-white">
         <div class="container mx-auto px-4 max-w-6xl">
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-dark mb-3">How It Works</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Fund your mobile wallet in three simple steps</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <h2 class="text-3xl font-bold text-center mb-12 text-green-600">How It Works</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Step 1 -->
-                <div class="bg-white rounded-lg p-5 text-center shadow-sm hover:shadow-md transition-shadow duration-300 step-card relative">
-                    <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-base">1</div>
-                    <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
-                        <i class="fas fa-mobile-alt text-xl"></i>
-                    </div>
-                    <h3 class="text-base font-semibold mb-2 text-dark">Enter Mobile Details</h3>
-                    <p class="text-gray-600 text-sm">Enter your mobile number and the amount you want to transfer.</p>
+                <div class="bg-gray-50 p-6 rounded-lg border-t-4 border-red-600">
+                    <div class="text-red-600 text-2xl font-bold mb-3">1</div>
+                    <h3 class="text-lg font-bold mb-2">Enter Details</h3>
+                    <p class="text-gray-600">Mobile number and amount to transfer</p>
                 </div>
-
+                
                 <!-- Step 2 -->
-                <div class="bg-white rounded-lg p-5 text-center shadow-sm hover:shadow-md transition-shadow duration-300 step-card relative">
-                    <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-base">2</div>
-                    <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
-                        <i class="fas fa-credit-card text-xl"></i>
-                    </div>
-                    <h3 class="text-base font-semibold mb-2 text-dark">Make Secure Payment</h3>
-                    <p class="text-gray-600 text-sm">Complete your payment using your Visa or Mastercard securely.</p>
+                <div class="bg-gray-50 p-6 rounded-lg border-t-4 border-black">
+                    <div class="text-black text-2xl font-bold mb-3">2</div>
+                    <h3 class="text-lg font-bold mb-2">Pay Securely</h3>
+                    <p class="text-gray-600">Use your Visa/Mastercard</p>
                 </div>
-
+                
                 <!-- Step 3 -->
-                <div class="bg-white rounded-lg p-5 text-center shadow-sm hover:shadow-md transition-shadow duration-300 step-card relative">
-                    <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-base">3</div>
-                    <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
-                        <i class="fas fa-check-circle text-xl"></i>
-                    </div>
-                    <h3 class="text-base font-semibold mb-2 text-dark">Receive Funds Instantly</h3>
-                    <p class="text-gray-600 text-sm">Your mobile wallet is funded instantly with confirmation.</p>
+                <div class="bg-gray-50 p-6 rounded-lg border-t-4 border-orange-500">
+                    <div class="text-orange-500 text-2xl font-bold mb-3">3</div>
+                    <h3 class="text-lg font-bold mb-2">Receive Funds</h3>
+                    <p class="text-gray-600">Instantly in your mobile wallet</p>
                 </div>
             </div>
-
-            <!-- CTA Button -->
-            <div class="text-center mt-8">
-                <a href="{{ url($buttonUrl) }}" class="inline-block bg-primary text-white font-medium px-5 py-2 rounded-lg shadow-sm hover:bg-opacity-90 transition duration-300 text-sm">
-                    <i class="fas fa-wallet mr-2"></i> Start a Transaction
-                </a>
-            </div>
+            
         </div>
     </section>
 
-    <!-- Fee Structure Section -->
+    <!-- Key Benefits Section -->
     <section class="py-10 bg-white">
         <div class="container mx-auto px-4 max-w-6xl">
             <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
@@ -347,53 +281,28 @@
             </div>
         </div>
     </section>
-    <!-- Benefits Section -->
-    <section class="py-10 bg-light">
+    <!-- Key Benefits Section -->
+    <section class="py-12 bg-gray-50">
         <div class="container mx-auto px-4 max-w-6xl">
             <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-dark mb-3">Why Choose Our Card-to-Wallet Service?</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Experience the best way to fund your mobile wallet</p>
+                <h2 class="text-2xl font-bold text-dark mb-3">Why Choose Us</h2>
             </div>
-
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Benefit 1 -->
-                <div class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow duration-300 benefit-card">
-                    <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
-                        <i class="fas fa-shield-alt text-lg"></i>
-                    </div>
-                    <h3 class="text-base font-semibold mb-2 text-dark">Security</h3>
-                    <p class="text-gray-600 text-xs">Your card details are never stored on our platform.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-600">
+                    <h3 class="font-bold mb-2">Zambian Focused</h3>
+                    <p class="text-gray-600 text-sm">Designed specifically for Zambian mobile money users</p>
                 </div>
-
-                <!-- Benefit 2 -->
-                <div class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow duration-300 benefit-card">
-                    <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
-                        <i class="fas fa-bolt text-lg"></i>
-                    </div>
-                    <h3 class="text-base font-semibold mb-2 text-dark">Speed</h3>
-                    <p class="text-gray-600 text-xs">Instant transfers with real-time confirmation.</p>
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-red-600">
+                    <h3 class="font-bold mb-2">Instant Transfers</h3>
+                    <p class="text-gray-600 text-sm">Funds arrive in seconds, not hours</p>
                 </div>
-
-                <!-- Benefit 3 -->
-                <div class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow duration-300 benefit-card">
-                    <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
-                        <i class="fas fa-mobile-alt text-lg"></i>
-                    </div>
-                    <h3 class="text-base font-semibold mb-2 text-dark">Convenience</h3>
-                    <p class="text-gray-600 text-xs">Fund your wallet anytime, anywhere.</p>
-                </div>
-
-                <!-- Benefit 4 -->
-                <div class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow duration-300 benefit-card">
-                    <div class="inline-block p-3 bg-indigo-100 text-primary rounded-full mb-3">
-                        <i class="fas fa-sync-alt text-lg"></i>
-                    </div>
-                    <h3 class="text-base font-semibold mb-2 text-dark">Multiple Wallets</h3>
-                    <p class="text-gray-600 text-xs">Support for all major mobile money providers.</p>
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-orange-500">
+                    <h3 class="font-bold mb-2">Secure Payments</h3>
+                    <p class="text-gray-600 text-sm">Bank-level security for all transactions</p>
                 </div>
             </div>
         </div>
-    </section>
     </section>
 
     <!-- Payment Methods Section -->
@@ -474,8 +383,8 @@
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4 max-w-6xl">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="col-span-1">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
                     <img src="{{ asset('assets/img/logo.png') }}" alt="Card to Wallet Logo" class="h-10 mb-4">
                     <p class="text-gray-400 text-sm mb-4">Your secure bridge between bank cards and mobile wallets in Zambia.</p>
                     <div class="flex space-x-4 mt-4">
@@ -506,25 +415,6 @@
                         </ul>
                     </div>
                 </div>
-
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Contact</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-gray-400"></i>
-                            <span class="text-gray-400">123 Cairo Road, Lusaka, Zambia</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-phone-alt mt-1 mr-3 text-gray-400"></i>
-                            <span class="text-gray-400">+260 97 1234567</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-envelope mt-1 mr-3 text-gray-400"></i>
-                            <span class="text-gray-400">support@cardtowallet.com</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
             </div>
 
             <hr class="border-gray-800 my-8">
@@ -568,18 +458,3 @@
     </script>
 </body>
 </html>
-                    <h3 class="text-lg font-semibold mb-4">Contact</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-gray-400"></i>
-                            <span class="text-gray-400">123 Cairo Road, Lusaka, Zambia</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-phone-alt mt-1 mr-3 text-gray-400"></i>
-                            <span class="text-gray-400">+260 97 1234567</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-envelope mt-1 mr-3 text-gray-400"></i>
-                            <span class="text-gray-400">support@cardtowallet.com</span>
-                        </li>
-                    </ul>

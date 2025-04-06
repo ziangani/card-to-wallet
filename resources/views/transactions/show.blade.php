@@ -450,10 +450,27 @@
                                 <span class="text-gray-600">Amount:</span>
                                 <span class="font-medium">K{{ number_format($transaction->amount, 2) }}</span>
                             </div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-gray-600">Fee (4%):</span>
-                                <span class="font-medium">K{{ number_format($transaction->fee_amount, 2) }}</span>
+                            
+                            <!-- Fee Breakdown -->
+                            <div class="mb-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-gray-600">Fees:</span>
+                                    <span class="font-medium">K{{ number_format($transaction->fee_amount, 2) }}</span>
+                                </div>
+                                
+                                <!-- Simplified Fee Details -->
+                                <div class="pl-4 text-sm">
+                                    <div class="flex justify-between items-center text-gray-500">
+                                        <span>Bank Fee</span>
+                                        <span>K{{ number_format($transaction->getTransactionVariableFee(), 2) }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-gray-500">
+                                        <span>Deposit Fee</span>
+                                        <span>K{{ number_format($transaction->getTransactionFixedFee(), 2) }}</span>
+                                    </div>
+                                </div>
                             </div>
+                            
                             <div class="border-t border-gray-200 my-2 pt-2 flex justify-between items-center">
                                 <span class="text-gray-700 font-medium">Total:</span>
                                 <span class="font-bold text-dark text-lg">K{{ number_format($transaction->total_amount, 2) }}</span>

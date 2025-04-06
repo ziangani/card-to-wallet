@@ -370,7 +370,7 @@
                             <span class="font-medium text-gray-900" id="display-amount">K0.00</span>
                         </div>
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-gray-700">Fee (K7.5 + 4%):</span>
+                            <span class="text-gray-700">Fee ({{ \App\Models\Transaction::getFeeDescription() }}):</span>
                             <span class="font-medium text-gray-900" id="display-fee">K0.00</span>
                         </div>
                         <div class="border-t border-gray-200 my-3 pt-3 flex justify-between items-center">
@@ -422,7 +422,7 @@
                             <span class="font-medium text-gray-900" id="modal-amount">K0.00</span>
                         </div>
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-gray-600">Fee (K7.5 + 4%):</span>
+                            <span class="text-gray-600">Fee ({{ \App\Models\Transaction::getFeeDescription() }}):</span>
                             <span class="font-medium text-gray-900" id="modal-fee">K0.00</span>
                         </div>
                         <div class="border-t border-gray-200 my-2 pt-3 flex justify-between items-center">
@@ -493,8 +493,8 @@
         // Calculate fee and total
         function calculateFee() {
             const amount = parseFloat(amountInput.value) || 0;
-            const variableFee = amount * 0.04; // 4% fee
-            const fixedFee = 7.5; // K7.5 fixed fee
+            const variableFee = amount * {{ \App\Models\Transaction::getVariableFeePercentage() / 100 }}; // {{ \App\Models\Transaction::getVariableFeePercentage() }}% fee
+            const fixedFee = {{ \App\Models\Transaction::getFixedFeeAmount() }}; // K{{ \App\Models\Transaction::getFixedFeeAmount() }} fixed fee
             const totalFee = variableFee + fixedFee;
             const total = amount + totalFee;
 

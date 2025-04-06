@@ -4,11 +4,11 @@
 @section('meta_description', 'Log in to your account to fund mobile wallets with your card')
 
 @section('header_nav')
-<a href="{{ url('/register') }}" class="bg-primary text-white font-medium px-4 py-2 rounded-lg hover:bg-opacity-90 transition duration-300">Register</a>
+<a href="{{ url('/register') }}" class="bg-primary text-white font-medium px-4 py-2 rounded-lg hover:bg-opacity-90 transition duration-300 shadow-button">Register</a>
 @endsection
 
 @section('content')
-<div class="bg-white rounded-xl shadow-md overflow-hidden">
+<div class="bg-white rounded-xl shadow-card overflow-hidden">
     <div class="md:flex">
         <!-- Left Side - Image/Info -->
         <div class="md:w-1/2 auth-gradient text-white p-8 flex flex-col justify-between">
@@ -21,8 +21,8 @@
                 </div>
             </div>
             
-            <div class="mt-8 text-sm text-white text-opacity-80">
-                Don't have an account? <a href="{{ url('/register') }}" class="text-white underline">Register here</a>
+            <div class="mt-8 text-sm text-white text-opacity-90">
+                Don't have an account? <a href="{{ url('/register') }}" class="text-white underline font-medium hover:text-secondary transition duration-300">Register here</a>
             </div>
         </div>
         
@@ -48,7 +48,7 @@
                 <!-- Email/Phone -->
                 <div>
                     <label for="login" class="block text-sm font-medium text-gray-700 mb-1">Email or Phone Number</label>
-                    <input type="text" id="login" name="login" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required autofocus>
+                    <input type="text" id="login" name="login" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition duration-200" required autofocus>
                     @error('login')
                         <p class="text-error text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -58,11 +58,11 @@
                 <div>
                     <div class="flex justify-between items-center mb-1">
                         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <a href="{{ route('password.request') }}" class="text-sm text-primary hover:underline">Forgot password?</a>
+                        <a href="{{ route('password.request') }}" class="text-sm text-primary hover:underline transition duration-200">Forgot password?</a>
                     </div>
                     <div class="relative">
-                        <input type="password" id="password" name="password" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
-                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 toggle-password">
+                        <input type="password" id="password" name="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition duration-200" required>
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 toggle-password transition duration-200">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -73,7 +73,7 @@
                 
                 <!-- Remember Me -->
                 <div class="flex items-center">
-                    <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                    <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded transition duration-200">
                     <label for="remember" class="ml-2 block text-sm text-gray-700">
                         Remember me
                     </label>
@@ -81,7 +81,7 @@
                 
                 <!-- Submit Button -->
                 <div>
-                    <button type="submit" class="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 font-medium">
+                    <button type="submit" class="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 font-medium shadow-button">
                         Log In
                     </button>
                 </div>
@@ -98,19 +98,19 @@
                 </div>
                 
                 <div class="mt-6 grid grid-cols-2 gap-3">
-                    <a href="#" class="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                        <i class="fab fa-google text-red-500 mr-2"></i>
+                    <a href="#" class="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-secondary transition duration-300">
+                        <i class="fab fa-google text-secondary mr-2"></i>
                         Google
                     </a>
-                    <a href="#" class="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                        <i class="fab fa-facebook text-blue-600 mr-2"></i>
+                    <a href="#" class="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-primary transition duration-300">
+                        <i class="fab fa-facebook text-primary mr-2"></i>
                         Facebook
                     </a>
                 </div>
             </div>
             
             <div class="mt-6 text-center text-sm text-gray-600">
-                Don't have an account? <a href="{{ url('/register') }}" class="text-primary hover:underline font-medium">Register here</a>
+                Don't have an account? <a href="{{ url('/register') }}" class="text-primary hover:underline font-medium transition duration-300">Register here</a>
             </div>
         </div>
     </div>

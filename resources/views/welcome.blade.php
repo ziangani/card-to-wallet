@@ -274,7 +274,10 @@
             <a href="{{ url('/') }}" class="flex items-center" aria-label="Home">
                 <img src="{{ asset('assets/img/logo.png') }}" alt="Card to Wallet Logo" class="h-10">
             </a>
-            <nav class="flex items-center space-x-3">
+            <nav class="flex items-center space-x-6">
+                <a href="#how-it-works" class="text-dark hover:text-primary font-medium px-3 py-2 rounded-lg hover:bg-gray-100 transition duration-300">How It Works</a>
+                <a href="#fee-structure" class="text-dark hover:text-primary font-medium px-3 py-2 rounded-lg hover:bg-gray-100 transition duration-300">Pricing</a>
+                <a href="#faq" class="text-dark hover:text-primary font-medium px-3 py-2 rounded-lg hover:bg-gray-100 transition duration-300">FAQ</a>
                 <a href="{{ url('/login') }}" class="text-dark hover:text-primary font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">Login</a>
                 <a href="{{ url('/register') }}" class="bg-primary text-white font-medium px-5 py-2 rounded-lg hover:bg-opacity-90 transition duration-300 shadow-button">Register</a>
             </nav>
@@ -360,7 +363,7 @@
     </section>
 
     <!-- Enhanced Fee Structure Section -->
-    <section class="py-16 bg-gray-50">
+    <section class="py-16 bg-gray-50" id="fee-structure">
         <div class="container mx-auto px-4 max-w-6xl">
             <div class="text-center mb-12">
                 <span class="inline-block px-4 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-3">Transparent Pricing</span>
@@ -372,13 +375,13 @@
                 <div class="md:flex">
                     <div class="md:flex-shrink-0 bg-primary flex items-center justify-center md:w-48 p-8">
                         <div class="text-center">
-                            <div class="text-white text-5xl font-bold mb-2">4%</div>
+                            <div class="text-white text-5xl font-bold mb-2">{{ \App\Models\Transaction::getFeeDescription() }}</div>
                             <div class="text-white text-lg font-medium">Total Fee</div>
                         </div>
                     </div>
                     <div class="p-8">
                         <div class="text-2xl font-semibold text-gray-900 mb-4">Transparent Fee Structure</div>
-                        <p class="text-gray-600 mb-6">We charge a simple, transparent fee of 4% on all transactions. No hidden charges or surprise fees.</p>
+                        <p class="text-gray-600 mb-6">We charge a simple, transparent fee of {{ \App\Models\Transaction::getFeeDescription() }} on all transactions. No hidden charges or surprise fees.</p>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div class="bg-white rounded-xl p-5 border border-gray-200 hover:shadow-md transition-all">
@@ -414,12 +417,12 @@
                                     <div class="font-bold text-xl text-gray-900">K500.00</div>
                                 </div>
                                 <div class="bg-white p-3 rounded-lg border border-gray-100">
-                                    <span class="text-sm text-gray-500">Fee (4%):</span>
-                                    <div class="font-bold text-xl text-gray-900">K20.00</div>
+                                    <span class="text-sm text-gray-500">Fee ({{ \App\Models\Transaction::getFeeDescription() }}):</span>
+                                    <div class="font-bold text-xl text-gray-900">K27.50</div>
                                 </div>
                                 <div class="bg-white p-3 rounded-lg border border-gray-100">
                                     <span class="text-sm text-gray-500">Total charge:</span>
-                                    <div class="font-bold text-xl text-gray-900">K520.00</div>
+                                    <div class="font-bold text-xl text-gray-900">K527.50</div>
                                 </div>
                                 <div class="bg-white p-3 rounded-lg border border-gray-100">
                                     <span class="text-sm text-gray-500">Recipient gets:</span>

@@ -17,26 +17,6 @@ class Transaction extends Model
     protected $table = 'transactions';
 
     /**
-     * Get the variable fee percentage for card to wallet transactions.
-     *
-     * @return float
-     */
-    private static function getVariableFeePercentage()
-    {
-        return 4.0; // 4% variable fee
-    }
-
-    /**
-     * Get the fixed fee amount for card to wallet transactions.
-     *
-     * @return float
-     */
-    private static function getFixedFeeAmount()
-    {
-        return 7.5; // K7.5 fixed fee
-    }
-
-    /**
      * Calculate the total fee for a given amount.
      *
      * @param float $amount
@@ -44,10 +24,139 @@ class Transaction extends Model
      */
     public static function calculateFee($amount)
     {
-        $variableFee = $amount * (self::getVariableFeePercentage() / 100);
-        $fixedFee = self::getFixedFeeAmount();
+        $totalFee = 0;
         
-        return $variableFee + $fixedFee;
+        // Get all charges for CARD_TO_WALLET channel
+        $charges = Charges::where('channel', 'CARD_TO_WALLET')
+            ->where('is_active', true)
+            ->get();
+            
+        foreach ($charges as $charge) {
+            if ($charge->charge_type == 'PERCENTAGE') {
+                $totalFee += $amount * ($charge->charge_value / 100);
+            } else { // FIXED
+                $totalFee += $charge->charge_value;
+            }
+        }
+        
+        return $totalFee;
+    }
+    
+    /**
+     * Get the variable fee percentage for card to wallet transactions.
+     *
+     * @return float
+     */
+    public static function getVariableFeePercentage()
+    {
+        $percentageTotal = 0;
+        
+        // Get all percentage charges for CARD_TO_WALLET channel
+        $charges = Charges::where('channel', 'CARD_TO_WALLET')
+            ->where('charge_type', 'PERCENTAGE')
+            ->where('is_active', true)
+            ->get();
+            
+        foreach ($charges as $charge) {
+            $percentageTotal += $charge->charge_value;
+        }
+        
+        return $percentageTotal;
+    }
+
+    /**
+     * Get the fixed fee amount for card to wallet transactions.
+     *
+     * @return float
+     */
+    public static function getFixedFeeAmount()
+    {
+        $fixedTotal = 0;
+        
+        // Get all fixed charges for CARD_TO_WALLET channel
+        $charges = Charges::where('channel', 'CARD_TO_WALLET')
+            ->where('charge_type', 'FIXED')
+            ->where('is_active', true)
+            ->get();
+            
+        foreach ($charges as $charge) {
+            $fixedTotal += $charge->charge_value;
+        }
+        
+        return $fixedTotal;
+    }
+    
+    /**
+     * Get the variable fee amount for this transaction.
+     *
+     * @return float
+     */
+    public function getTransactionVariableFee()
+    {
+        $variableFee = 0;
+        
+        foreach ($this->charges as $charge) {
+            if ($charge->charge_type === 'PERCENTAGE') {
+                $variableFee += $charge->calculated_amount;
+            }
+        }
+        
+        return $variableFee;
+    }
+    
+    /**
+     * Get the fixed fee amount for this transaction.
+     *
+     * @return float
+     */
+    public function getTransactionFixedFee()
+    {
+        $fixedFee = 0;
+        
+        foreach ($this->charges as $charge) {
+            if ($charge->charge_type === 'FIXED') {
+                $fixedFee += $charge->calculated_amount;
+            }
+        }
+        
+        return $fixedFee;
+    }
+
+    /**
+     * Create transaction charge records for a transaction.
+     *
+     * @param Transaction $transaction
+     * @return void
+     */
+    public static function createTransactionCharges(Transaction $transaction)
+    {
+        // Get all charges for CARD_TO_WALLET channel
+        $charges = Charges::where('channel', 'CARD_TO_WALLET')
+            ->where('is_active', true)
+            ->get();
+
+        foreach ($charges as $charge) {
+            $calculatedAmount = 0;
+            
+            // Calculate amount based on charge type
+            if ($charge->charge_type == 'PERCENTAGE') {
+                $calculatedAmount = $transaction->amount * ($charge->charge_value / 100);
+            } else { // FIXED
+                $calculatedAmount = $charge->charge_value;
+            }
+            
+            // Create transaction charge record
+            TransactionCharge::create([
+                'transaction_id' => $transaction->id,
+                'charge_id' => $charge->id,
+                'charge_name' => $charge->charge_name,
+                'charge_type' => $charge->charge_type,
+                'charge_value' => $charge->charge_value,
+                'base_amount' => $transaction->amount,
+                'calculated_amount' => $calculatedAmount,
+                'merchant_id' => $transaction->merchant_code ?? null,
+            ]);
+        }
     }
 
     /**

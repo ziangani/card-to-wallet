@@ -10,9 +10,9 @@ class cGrate
 {
 
 
-    private string $endpoint = "https://543.cgrate.co.zm/Konik/KonikWs";
-    private string $username = '***REMOVED***';
-    private string $password = '***REMOVED***';
+    private string $endpoint;
+    private string $username;
+    private string $password;
     private $reference = '';
 
     public static $mobileVouchers = [
@@ -47,9 +47,11 @@ class cGrate
     public function __construct($reference, $endpoint = null)
     {
         $this->reference = $reference;
-
-        if ($endpoint != null)
-            $this->endpoint = $endpoint;
+        
+        // Load credentials from config
+        $this->endpoint = $endpoint ?? config('cgrate.endpoint');
+        $this->username = config('cgrate.username');
+        $this->password = config('cgrate.password');
     }
 
 

@@ -407,7 +407,7 @@
                                             </td>
                                             <td class="px-4 py-4">
                                 <div class="text-sm font-medium text-gray-900">K{{ number_format($transaction->amount, 2) }}</div>
-                                <div class="text-xs text-gray-500">Fee: K{{ number_format(Transaction::calculateFee($transaction->amount), 2) }}</div>
+                                <div class="text-xs text-gray-500">Fee: K{{ number_format($transaction->fee_amount, 2) }}</div>
                                             </td>
                                             <td class="px-4 py-4">
                                                 @if($transaction->status === 'completed')

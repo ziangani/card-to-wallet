@@ -128,6 +128,9 @@ class TransactionController extends Controller
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
+        
+        // Create transaction charge records
+        Transaction::createTransactionCharges($transaction);
 
         // Save beneficiary if requested
         if ($transactionData['save_beneficiary'] && !empty($transactionData['recipient_name'])) {
@@ -562,6 +565,9 @@ class TransactionController extends Controller
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
+        
+        // Create transaction charge records
+        Transaction::createTransactionCharges($transaction);
 
         // Save beneficiary if requested
         if ($request->has('save_beneficiary') && !empty($request->recipient_name)) {
@@ -657,6 +663,8 @@ class TransactionController extends Controller
                 'status' => 'PENDING',
                 'currency' => 'ZMW',
                 'amount' => $amount,
+                'fee_amount' => $feeAmount,
+                'total_amount' => $totalAmount,
                 'merchant_code' => 'CARD_TO_WALLET',
                 'payment_providers_id' => $provider->id,
                 'user_id' => Auth::id(),
@@ -669,6 +677,9 @@ class TransactionController extends Controller
                 'reference_3' => $request->wallet_provider_id,
                 'reference_4' => $request->recipient_name ?? 'Unknown',
             ]);
+            
+            // Create transaction charge records
+            Transaction::createTransactionCharges($transaction);
 
             // Store transaction ID in session
             $request->session()->put('transaction_id', $transaction->id);

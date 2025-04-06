@@ -16,13 +16,18 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#3366CC',
-                        secondary: '#FF9900',
+                        primary: '#007751', /* Zambian green */
+                        secondary: '#CE1126', /* Zambian red */
+                        accent: '#000000', /* Black */
                         success: '#28A745',
                         warning: '#FFC107',
                         error: '#DC3545',
                         light: '#F8F9FA',
                         dark: '#343A40',
+                    },
+                    boxShadow: {
+                        'card': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+                        'button': '0 4px 6px -1px rgba(0, 119, 81, 0.1), 0 2px 4px -1px rgba(0, 119, 81, 0.06)',
                     }
                 }
             }
@@ -42,7 +47,7 @@
             font-family: 'Inter', sans-serif;
         }
         .auth-gradient {
-            background: linear-gradient(135deg, #5D5FEF 0%, #4F46E5 50%, #6366F1 100%);
+            background: linear-gradient(135deg, #007751 0%, #005a3d 50%, #007751 100%);
         }
     </style>
     

@@ -525,7 +525,7 @@
                         </div>
                     </a>
 
-                    <a href="{{ route('transactions.export', ['format' => 'excel']) }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                    <a href="{{ route('transactions.export', ['format' => 'csv']) }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                         <div class="w-10 h-10 rounded-full bg-primary bg-opacity-10 flex items-center justify-center text-primary mr-3">
                             <i class="fas fa-file-excel"></i>
                         </div>

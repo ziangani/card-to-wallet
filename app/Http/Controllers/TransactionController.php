@@ -476,12 +476,71 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::where('uuid', $uuid)
             ->where('user_id', Auth::id())
+            ->with(['statuses', 'walletProvider'])
             ->firstOrFail();
+            
+        // Only allow downloading receipts for completed transactions
+        if ($transaction->status !== 'COMPLETED') {
+            return back()->with('error', 'Receipt is only available for completed transactions');
+        }
 
-        // In a real application, this would generate a PDF receipt
-        // For now, we'll just redirect back with a message
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('transactions.receipt_pdf', compact('transaction'));
+        
+        return $pdf->download('receipt-' . $transaction->uuid . '.pdf');
+    }
 
-        return back()->with('success', 'Receipt downloaded successfully');
+    /**
+     * Send transaction receipt via email.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uuid
+     * @return \Illuminate\Http\Response
+     */
+    public function emailReceipt(Request $request, $uuid)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $transaction = Transaction::where('uuid', $uuid)
+            ->where('user_id', Auth::id())
+            ->with(['statuses', 'walletProvider'])
+            ->firstOrFail();
+            
+        // Only allow emailing receipts for completed transactions
+        if ($transaction->status !== 'COMPLETED') {
+            return response()->json(['success' => false, 'message' => 'Receipt is only available for completed transactions'], 400);
+        }
+
+        $email = $request->email;
+        
+        // Generate PDF
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('transactions.receipt_pdf', compact('transaction'));
+        
+        // Send email with PDF attachment
+        \Illuminate\Support\Facades\Mail::send('emails.transaction_receipt', ['transaction' => $transaction], function ($message) use ($transaction, $pdf, $email) {
+            $message->to($email)
+                ->subject('Transaction Receipt - ' . $transaction->uuid)
+                ->attachData($pdf->output(), 'receipt-' . $transaction->uuid . '.pdf');
+        });
+
+        // Log email
+        \App\Models\Emails::create([
+            'from' => config('mail.from.address', 'noreply@example.com'),
+            'email' => $email,
+            'subject' => 'Transaction Receipt - ' . $transaction->uuid,
+            'message' => 'Transaction receipt email sent',
+            'view' => 'emails.transaction_receipt', // Add the view field
+            'status' => 'SENT',
+            'sent_at' => now(),
+            'attempts' => 1,
+            'data' => [
+                'transaction_id' => $transaction->id,
+                'user_id' => Auth::id(),
+            ]
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Receipt sent to ' . $email]);
     }
 
     /**
@@ -522,11 +581,119 @@ class TransactionController extends Controller
     public function export(Request $request)
     {
         $format = $request->format ?? 'pdf';
+        
+        // Get transactions for the current user
+        $query = Transaction::where('user_id', Auth::id());
+        
+        // Apply filters if they exist in the session
+        if ($request->has('date_from') && !empty($request->date_from)) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
 
-        // In a real application, this would generate the export file
-        // For now, we'll just redirect back with a message
+        if ($request->has('date_to') && !empty($request->date_to)) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
 
-        return back()->with('success', 'Transactions exported successfully as ' . strtoupper($format));
+        if ($request->has('status') && !empty($request->status)) {
+            if ($request->status === 'pending') {
+                $query->whereIn('status', ['pending', 'payment_initiated']);
+            } elseif ($request->status === 'failed') {
+                $query->whereIn('status', ['failed', 'payment_failed']);
+            } else {
+                $query->where('status', $request->status);
+            }
+        }
+
+        // Get all transactions for export
+        $transactions = $query->orderBy('created_at', 'desc')->get();
+        
+        // Generate filename with timestamp
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $filename = 'transactions_' . $timestamp;
+        
+        // Export based on requested format
+        if ($format === 'pdf') {
+            // Generate PDF
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('transactions.export_pdf', [
+                'transactions' => $transactions,
+                'user' => Auth::user(),
+                'generated_at' => now()->format('Y-m-d H:i:s')
+            ]);
+            
+            return $pdf->download($filename . '.pdf');
+        } 
+        elseif ($format === 'csv') {
+            // Generate CSV
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '.csv"',
+            ];
+            
+            $callback = function() use ($transactions) {
+                $file = fopen('php://output', 'w');
+                
+                // Add CSV headers
+                fputcsv($file, [
+                    'Date', 'Reference', 'Recipient', 'Phone Number', 'Amount', 'Fee', 'Total', 'Status'
+                ]);
+                
+                // Add transaction data
+                foreach ($transactions as $transaction) {
+                    fputcsv($file, [
+                        $transaction->created_at->format('Y-m-d H:i:s'),
+                        $transaction->uuid,
+                        $transaction->reference_4 ?: 'Unknown',
+                        '+260' . $transaction->reference_1,
+                        number_format($transaction->amount, 2),
+                        number_format($transaction->fee_amount, 2),
+                        number_format($transaction->total_amount, 2),
+                        $transaction->status
+                    ]);
+                }
+                
+                fclose($file);
+            };
+            
+            return response()->stream($callback, 200, $headers);
+        } 
+        elseif ($format === 'excel') {
+            // For Excel export, we'll use a simple CSV with Excel headers
+            // In a production app, you might want to use a library like PhpSpreadsheet
+            $headers = [
+                'Content-Type' => 'application/vnd.ms-excel',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '.xls"',
+            ];
+            
+            $callback = function() use ($transactions) {
+                $file = fopen('php://output', 'w');
+                
+                // Add Excel headers
+                fputcsv($file, [
+                    'Date', 'Reference', 'Recipient', 'Phone Number', 'Amount (ZMW)', 'Fee (ZMW)', 'Total (ZMW)', 'Status'
+                ]);
+                
+                // Add transaction data
+                foreach ($transactions as $transaction) {
+                    fputcsv($file, [
+                        $transaction->created_at->format('Y-m-d H:i:s'),
+                        $transaction->uuid,
+                        $transaction->reference_4 ?: 'Unknown',
+                        '+260' . $transaction->reference_1,
+                        number_format($transaction->amount, 2),
+                        number_format($transaction->fee_amount, 2),
+                        number_format($transaction->total_amount, 2),
+                        $transaction->status
+                    ]);
+                }
+                
+                fclose($file);
+            };
+            
+            return response()->stream($callback, 200, $headers);
+        }
+        
+        // If format is not supported, redirect back with error
+        return back()->with('error', 'Unsupported export format: ' . $format);
     }
 
     /**

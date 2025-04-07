@@ -98,6 +98,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Transaction actions
         Route::get('/download/{uuid}', [TransactionController::class, 'download'])->name('download');
+        Route::post('/email-receipt/{uuid}', [TransactionController::class, 'emailReceipt'])->name('email-receipt');
         Route::get('/retry/{uuid}', [TransactionController::class, 'retry'])->name('retry');
         Route::get('/export', [TransactionController::class, 'export'])->name('export');
     });

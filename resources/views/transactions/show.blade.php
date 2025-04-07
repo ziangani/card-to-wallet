@@ -485,13 +485,23 @@
 
                     <!-- Action Buttons -->
                     <div class="mt-6 flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3">
-                        <a href="{{ route('transactions.download', $transaction->uuid) }}" class="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                            <i class="fas fa-download mr-2"></i> Download Receipt
-                        </a>
+                        @if($transaction->status === 'COMPLETED')
+                            <a href="{{ route('transactions.download', $transaction->uuid) }}" class="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                <i class="fas fa-download mr-2"></i> Download Receipt
+                            </a>
 
-                        <a href="mailto:?subject=Transaction Receipt - {{ $transaction->uuid }}&body=Transaction Details:%0D%0A%0D%0AReference: {{ $transaction->uuid }}%0D%0ADate: {{ $transaction->created_at->format('M d, Y h:i A') }}%0D%0ARecipient: {{ $transaction->reference_4 }} (+260{{ $transaction->reference_1 }})%0D%0AAmount: K{{ number_format($transaction->amount, 2) }}%0D%0AFee: K{{ number_format($transaction->fee_amount, 2) }}%0D%0ATotal: K{{ number_format($transaction->total_amount, 2) }}%0D%0AStatus: {{ ucfirst($transaction->status) }}" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                            <i class="fas fa-envelope mr-2"></i> Email Receipt
-                        </a>
+                            <button type="button" id="email-receipt-btn" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                <i class="fas fa-envelope mr-2"></i> Email Receipt
+                            </button>
+                        @else
+                            <button type="button" disabled class="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-400 cursor-not-allowed">
+                                <i class="fas fa-download mr-2"></i> Download Receipt
+                            </button>
+
+                            <button type="button" disabled class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-500 bg-gray-100 cursor-not-allowed">
+                                <i class="fas fa-envelope mr-2"></i> Email Receipt
+                            </button>
+                        @endif
 
                         @if($transaction->status === 'failed' || $transaction->status === 'payment_failed')
                             <a href="{{ route('transactions.retry', $transaction->uuid) }}" class="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
@@ -603,6 +613,66 @@
         </div>
     </main>
 
+    <!-- Email Receipt Modal -->
+    <div id="email-receipt-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-dark">Email Receipt</h3>
+                    <button type="button" id="close-modal" class="text-gray-400 hover:text-gray-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="email-form-container">
+                    <p class="text-gray-600 mb-4">Enter your email address to receive a copy of this transaction receipt.</p>
+                    
+                    <form id="email-receipt-form">
+                        <div class="mb-4">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="email" name="email" value="{{ auth()->user()->email }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" id="cancel-email" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                Send Receipt
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="email-success" class="hidden">
+                    <div class="text-center py-6">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-success bg-opacity-10 text-success mb-4">
+                            <i class="fas fa-check text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-dark mb-2">Receipt Sent!</h3>
+                        <p class="text-gray-500" id="success-message"></p>
+                        <button type="button" id="close-success" class="mt-6 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            Close
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="email-error" class="hidden">
+                    <div class="text-center py-6">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-error bg-opacity-10 text-error mb-4">
+                            <i class="fas fa-exclamation-triangle text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-dark mb-2">Error</h3>
+                        <p class="text-gray-500" id="error-message">An error occurred while sending the receipt.</p>
+                        <button type="button" id="try-again" class="mt-6 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Mobile sidebar toggle
@@ -656,6 +726,110 @@
                     !mobileUserMenu.contains(event.target) &&
                     !mobileUserMenuButton.contains(event.target)) {
                     mobileUserMenu.classList.add('hidden');
+                }
+            });
+
+            // Email Receipt Modal
+            const emailReceiptBtn = document.getElementById('email-receipt-btn');
+            const emailReceiptModal = document.getElementById('email-receipt-modal');
+            const closeModalBtn = document.getElementById('close-modal');
+            const cancelEmailBtn = document.getElementById('cancel-email');
+            const emailForm = document.getElementById('email-receipt-form');
+            const emailFormContainer = document.getElementById('email-form-container');
+            const emailSuccess = document.getElementById('email-success');
+            const emailError = document.getElementById('email-error');
+            const closeSuccessBtn = document.getElementById('close-success');
+            const tryAgainBtn = document.getElementById('try-again');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+
+            // Open modal
+            if (emailReceiptBtn) {
+                emailReceiptBtn.addEventListener('click', function() {
+                    emailReceiptModal.classList.remove('hidden');
+                    // Reset form state
+                    emailFormContainer.classList.remove('hidden');
+                    emailSuccess.classList.add('hidden');
+                    emailError.classList.add('hidden');
+                });
+            }
+
+            // Close modal functions
+            const closeModal = function() {
+                emailReceiptModal.classList.add('hidden');
+            };
+
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+            if (cancelEmailBtn) cancelEmailBtn.addEventListener('click', closeModal);
+            if (closeSuccessBtn) closeSuccessBtn.addEventListener('click', closeModal);
+
+            // Try again button
+            if (tryAgainBtn) {
+                tryAgainBtn.addEventListener('click', function() {
+                    emailFormContainer.classList.remove('hidden');
+                    emailError.classList.add('hidden');
+                });
+            }
+
+            // Form submission
+            if (emailForm) {
+                emailForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('email').value;
+                    const formData = new FormData();
+                    formData.append('email', email);
+                    formData.append('_token', '{{ csrf_token() }}');
+                    
+                    // Show loading state
+                    const submitBtn = emailForm.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+                    
+                    fetch('{{ route('transactions.email-receipt', $transaction->uuid) }}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Reset button state
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                        
+                        if (data.success) {
+                            // Show success message
+                            emailFormContainer.classList.add('hidden');
+                            emailSuccess.classList.remove('hidden');
+                            successMessage.textContent = data.message;
+                        } else {
+                            // Show error message
+                            emailFormContainer.classList.add('hidden');
+                            emailError.classList.remove('hidden');
+                            errorMessage.textContent = data.message || 'An error occurred while sending the receipt.';
+                        }
+                    })
+                    .catch(error => {
+                        // Reset button state
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                        
+                        // Show error message
+                        emailFormContainer.classList.add('hidden');
+                        emailError.classList.remove('hidden');
+                        errorMessage.textContent = 'An error occurred while sending the receipt.';
+                        console.error('Error:', error);
+                    });
+                });
+            }
+
+            // Close modal when clicking outside
+            emailReceiptModal.addEventListener('click', function(event) {
+                if (event.target === emailReceiptModal) {
+                    closeModal();
                 }
             });
         });

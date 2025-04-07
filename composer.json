@@ -10,6 +10,7 @@
         "ext-dom": "*",
         "ext-openssl": "*",
         "ext-zip": "*",
+        "barryvdh/laravel-dompdf": "^3.1",
         "cybersource/rest-client-php": "^0.0.55",
         "filament/filament": "^3.2",
         "filament/notifications": "^3.2",

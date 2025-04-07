@@ -170,7 +170,7 @@
                 <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-12">
             </a>
         </div>
-        
+
         <div class="p-4">
             <div class="flex items-center space-x-3 mb-6">
                 <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-lg font-semibold">
@@ -181,7 +181,7 @@
                     <p class="text-sm text-gray-500">{{ auth()->user()->email }}</p>
                 </div>
             </div>
-            
+
             <nav class="mt-6">
                 <ul class="space-y-1">
                     <li>
@@ -234,7 +234,7 @@
                 </ul>
             </nav>
         </div>
-        
+
         <div class="p-4 mt-auto border-t">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -252,7 +252,7 @@
         <header class="hidden lg:block bg-white shadow-sm sticky top-0 z-20">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-dark">Transaction Details</h1>
-                
+
                 <div class="flex items-center space-x-4">
                     <div class="relative">
                         <button id="user-menu-button" class="flex items-center space-x-3 focus:outline-none">
@@ -333,7 +333,7 @@
                                 <p class="text-gray-500">{{ $transaction->created_at->format('M d, Y h:i A') }}</p>
                             </div>
                         </div>
-                        
+
                         <div>
                             @if($transaction->status === 'completed')
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-success bg-opacity-10 text-success">
@@ -354,7 +354,7 @@
                             @endif
                         </div>
                     </div>
-                    
+
                     @if($transaction->status === 'failed' || $transaction->status === 'payment_failed')
                         <div class="bg-error bg-opacity-10 text-error rounded-lg p-4 mb-6">
                             <div class="flex">
@@ -368,7 +368,7 @@
                             </div>
                         </div>
                     @endif
-                    
+
                     <!-- Transaction Receipt -->
                     <div class="receipt-container">
                         <div class="flex justify-between items-start mb-6">
@@ -380,19 +380,19 @@
                                 <p class="text-sm text-gray-500">Reference: {{ $transaction->uuid }}</p>
                             </div>
                         </div>
-                        
+
                         <div class="border-t border-dashed border-gray-200 my-4 pt-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <h4 class="text-xs font-medium text-gray-500 uppercase mb-1">Transaction Type</h4>
                                     <p class="text-dark font-medium">Card to Wallet Transfer</p>
                                 </div>
-                                
+
                                 <div>
                                     <h4 class="text-xs font-medium text-gray-500 uppercase mb-1">Date & Time</h4>
                                     <p class="text-dark font-medium">{{ $transaction->created_at->format('M d, Y h:i A') }}</p>
                                 </div>
-                                
+
                                 <div>
                                     <h4 class="text-xs font-medium text-gray-500 uppercase mb-1">Recipient</h4>
                                     <div class="flex items-center">
@@ -409,33 +409,33 @@
                                     </div>
                                     <p class="text-sm text-gray-500">+260{{ $transaction->reference_1 }}</p>
                                 </div>
-                                
+
                                 <div>
                                     <h4 class="text-xs font-medium text-gray-500 uppercase mb-1">Payment Method</h4>
                                     <p class="text-dark font-medium">Credit/Debit Card</p>
                                 </div>
-                                
+
                                 @if($transaction->purpose)
                                     <div>
                                         <h4 class="text-xs font-medium text-gray-500 uppercase mb-1">Purpose</h4>
                                         <p class="text-dark">{{ $transaction->purpose }}</p>
                                     </div>
                                 @endif
-                                
+
                                 @if($transaction->notes)
                                     <div>
                                         <h4 class="text-xs font-medium text-gray-500 uppercase mb-1">Notes</h4>
                                         <p class="text-dark">{{ $transaction->notes }}</p>
                                     </div>
                                 @endif
-                                
+
                                 @if($transaction->provider_reference)
                                     <div>
                                         <h4 class="text-xs font-medium text-gray-500 uppercase mb-1">Provider Reference</h4>
                                         <p class="text-dark font-medium">{{ $transaction->provider_reference }}</p>
                                     </div>
                                 @endif
-                                
+
                                 @if($transaction->mpgs_order_id)
                                     <div>
                                         <h4 class="text-xs font-medium text-gray-500 uppercase mb-1">MPGS Order ID</h4>
@@ -444,20 +444,20 @@
                                 @endif
                             </div>
                         </div>
-                        
+
                         <div class="border-t border-dashed border-gray-200 my-4 pt-4">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="text-gray-600">Amount:</span>
+                                <span class="text-gray-600">Amount Funded:</span>
                                 <span class="font-medium">K{{ number_format($transaction->amount, 2) }}</span>
                             </div>
-                            
+
                             <!-- Fee Breakdown -->
                             <div class="mb-2">
                                 <div class="flex justify-between items-center mb-1">
                                     <span class="text-gray-600">Fees:</span>
                                     <span class="font-medium">K{{ number_format($transaction->fee_amount, 2) }}</span>
                                 </div>
-                                
+
                                 <!-- Simplified Fee Details -->
                                 <div class="pl-4 text-sm">
                                     <div class="flex justify-between items-center text-gray-500">
@@ -470,29 +470,29 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="border-t border-gray-200 my-2 pt-2 flex justify-between items-center">
                                 <span class="text-gray-700 font-medium">Total:</span>
                                 <span class="font-bold text-dark text-lg">K{{ number_format($transaction->total_amount, 2) }}</span>
                             </div>
                         </div>
-                        
+
                         <div class="border-t border-dashed border-gray-200 mt-4 pt-4 text-center">
                             <p class="text-sm text-gray-500 mb-2">Thank you for using our service!</p>
                             <p class="text-xs text-gray-400">For any questions, please contact our support team.</p>
                         </div>
                     </div>
-                    
+
                     <!-- Action Buttons -->
                     <div class="mt-6 flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3">
                         <a href="{{ route('transactions.download', $transaction->uuid) }}" class="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                             <i class="fas fa-download mr-2"></i> Download Receipt
                         </a>
-                        
+
                         <a href="mailto:?subject=Transaction Receipt - {{ $transaction->uuid }}&body=Transaction Details:%0D%0A%0D%0AReference: {{ $transaction->uuid }}%0D%0ADate: {{ $transaction->created_at->format('M d, Y h:i A') }}%0D%0ARecipient: {{ $transaction->reference_4 }} (+260{{ $transaction->reference_1 }})%0D%0AAmount: K{{ number_format($transaction->amount, 2) }}%0D%0AFee: K{{ number_format($transaction->fee_amount, 2) }}%0D%0ATotal: K{{ number_format($transaction->total_amount, 2) }}%0D%0AStatus: {{ ucfirst($transaction->status) }}" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                             <i class="fas fa-envelope mr-2"></i> Email Receipt
                         </a>
-                        
+
                         @if($transaction->status === 'failed' || $transaction->status === 'payment_failed')
                             <a href="{{ route('transactions.retry', $transaction->uuid) }}" class="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
                                 <i class="fas fa-redo mr-2"></i> Retry Transaction
@@ -500,11 +500,11 @@
                         @endif
                     </div>
                 </div>
-                
+
                 <!-- Transaction Timeline -->
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden p-6 mb-6">
                     <h3 class="text-lg font-bold text-dark mb-4">Transaction Timeline</h3>
-                    
+
                     <div class="timeline-container">
                         @foreach($transaction->statuses ?? [] as $status)
                             <div class="timeline-item">
@@ -536,7 +536,7 @@
                                 </div>
                             </div>
                         @endforeach
-                        
+
                         @if(empty($transaction->statuses))
                             <div class="timeline-item">
                                 <div class="timeline-marker {{ $transaction->status === 'completed' ? 'success' : ($transaction->status === 'failed' || $transaction->status === 'payment_failed' ? 'error' : 'active') }}"></div>
@@ -566,11 +566,11 @@
                         @endif
                     </div>
                 </div>
-                
+
                 <!-- Need Help? -->
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden p-6">
                     <h3 class="text-lg font-bold text-dark mb-4">Need Help?</h3>
-                    
+
                     <div class="space-y-4">
                         <div class="flex items-start">
                             <div class="flex-shrink-0 h-6 w-6 rounded-full bg-primary bg-opacity-10 text-primary flex items-center justify-center mr-3">
@@ -581,7 +581,7 @@
                                 <p class="text-sm text-gray-600">If you have any questions about this transaction, our support team is here to help.</p>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start">
                             <div class="flex-shrink-0 h-6 w-6 rounded-full bg-primary bg-opacity-10 text-primary flex items-center justify-center mr-3">
                                 <i class="fas fa-exclamation-circle text-xs"></i>
@@ -592,7 +592,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="mt-6">
                         <a href="{{ route('support') }}" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                             <i class="fas fa-headset mr-2"></i> Contact Support
@@ -608,52 +608,52 @@
             // Mobile sidebar toggle
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebar = document.getElementById('sidebar');
-            
+
             if (sidebarToggle) {
                 sidebarToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('open');
                 });
             }
-            
+
             // Close sidebar when clicking outside
             document.addEventListener('click', function(event) {
-                if (sidebar.classList.contains('open') && 
-                    !sidebar.contains(event.target) && 
+                if (sidebar.classList.contains('open') &&
+                    !sidebar.contains(event.target) &&
                     event.target !== sidebarToggle) {
                     sidebar.classList.remove('open');
                 }
             });
-            
+
             // User menu dropdown
             const userMenuButton = document.getElementById('user-menu-button');
             const userMenu = document.getElementById('user-menu');
-            
+
             if (userMenuButton) {
                 userMenuButton.addEventListener('click', function() {
                     userMenu.classList.toggle('hidden');
                 });
             }
-            
+
             // Mobile user menu dropdown
             const mobileUserMenuButton = document.getElementById('mobile-user-menu-button');
             const mobileUserMenu = document.getElementById('mobile-user-menu');
-            
+
             if (mobileUserMenuButton) {
                 mobileUserMenuButton.addEventListener('click', function() {
                     mobileUserMenu.classList.toggle('hidden');
                 });
             }
-            
+
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(event) {
-                if (userMenu && !userMenu.classList.contains('hidden') && 
-                    !userMenu.contains(event.target) && 
+                if (userMenu && !userMenu.classList.contains('hidden') &&
+                    !userMenu.contains(event.target) &&
                     !userMenuButton.contains(event.target)) {
                     userMenu.classList.add('hidden');
                 }
-                
-                if (mobileUserMenu && !mobileUserMenu.classList.contains('hidden') && 
-                    !mobileUserMenu.contains(event.target) && 
+
+                if (mobileUserMenu && !mobileUserMenu.classList.contains('hidden') &&
+                    !mobileUserMenu.contains(event.target) &&
                     !mobileUserMenuButton.contains(event.target)) {
                     mobileUserMenu.classList.add('hidden');
                 }

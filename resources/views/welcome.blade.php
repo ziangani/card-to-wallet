@@ -569,6 +569,55 @@
                     <img src="{{ asset('assets/img/logo.png') }}" alt="Card to Wallet Logo" class="h-12 mb-6">
                     <p class="text-gray-400 text-base mb-6 max-w-md">Zambia's instant mobile money funding platform. Fast, reliable, and trusted by thousands.</p>
                     <div class="flex space-x-5 mt-6">
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition duration-300" aria-label="Facebook">
-                            <i class="fab fa-facebook-f text-lg"></i>
-                        </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition duration-300" aria-label="Facebook">
+                        <i class="fab fa-facebook-f text-lg"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition duration-300" aria-label="Twitter">
+                        <i class="fab fa-twitter text-lg"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition duration-300" aria-label="Instagram">
+                        <i class="fab fa-instagram text-lg"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition duration-300" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in text-lg"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-6">Quick Links</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <ul class="space-y-3">
+                            <li><a href="{{ url('/') }}" class="text-gray-400 hover:text-white transition duration-300">Home</a></li>
+                            <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition duration-300">How It Works</a></li>
+                            <li><a href="#fee-structure" class="text-gray-400 hover:text-white transition duration-300">Pricing</a></li>
+                            <li><a href="#faq" class="text-gray-400 hover:text-white transition duration-300">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul class="space-y-3">
+                            <li><a href="{{ url('/login') }}" class="text-gray-400 hover:text-white transition duration-300">Login</a></li>
+                            <li><a href="{{ url('/register') }}" class="text-gray-400 hover:text-white transition duration-300">Register</a></li>
+                            <li><a href="{{ url('/terms') }}" class="text-gray-400 hover:text-white transition duration-300">Terms of Service</a></li>
+                            <li><a href="{{ url('/privacy') }}" class="text-gray-400 hover:text-white transition duration-300">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 mt-12 pt-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-gray-400">&copy; {{ date('Y') }} {{ config('app.name') }}. All Rights Reserved.</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <img src="{{ asset('assets/img/visa.png') }}" alt="Visa" class="h-8">
+                    <img src="{{ asset('assets/img/mastercard.png') }}" alt="Mastercard" class="h-8">
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

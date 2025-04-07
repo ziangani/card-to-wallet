@@ -5,12 +5,12 @@
                 <h2 class="text-xl font-bold text-dark mb-1">Recent Transactions</h2>
                 <p class="text-gray-600">Your latest 5 transactions</p>
             </div>
-            
+
             <a href="{{ route('transactions.history') }}" class="text-primary hover:underline mt-2 md:mt-0">
                 <i class="fas fa-history mr-1"></i> View all transactions
             </a>
         </div>
-        
+
         @if(count($recentTransactions ?? []) > 0)
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -53,10 +53,10 @@
                                         </div>
                                         <div class="ml-3">
                                             <div class="text-sm font-medium text-gray-900">
-                                                {{ $transaction->recipient_name ?: 'Unknown' }}
+                                                {{ $transaction->reference_4 ?: 'Unknown' }}
                                             </div>
                                             <div class="text-xs text-gray-500">
-                                                +260{{ $transaction->wallet_number }}
+                                                +260{{ $transaction->reference_1 }}
                                             </div>
                                         </div>
                                     </div>

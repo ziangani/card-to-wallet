@@ -373,13 +373,13 @@
                         <span class="font-medium">K{{ number_format($transaction->amount, 2) }}</span>
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-gray-600">Fee (4%):</span>
-                        <span class="font-medium">K{{ number_format(($transaction->amount * 0.04), 2) }}</span>
+                        <span class="text-gray-600">Fees:</span>
+                        <span class="font-medium">K{{ number_format(($transaction->fee_amount), 2) }}</span>
                     </div>
                     <div class="border-t border-gray-200 my-2 pt-2 flex justify-between items-center">
                         <span class="text-gray-700 font-medium">Total:</span>
                         <span
-                            class="font-bold text-dark text-lg">K{{ number_format((($transaction->amount * 0.04)+$transaction->amount), 2) }}</span>
+                            class="font-bold text-dark text-lg">K{{ number_format($transaction->total_amount, 2) }}</span>
                     </div>
                 </div>
 

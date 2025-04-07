@@ -24,15 +24,6 @@ class Charges extends Model
 
     protected $guarded = ['id'];
 
-    public function merchant(): BelongsTo
-    {
-        return $this->belongsTo(Merchants::class, 'merchant_id', 'code');
-    }
-
-    public function company(): BelongsTo
-    {
-        return $this->belongsTo(CompanyDetail::class, 'company_id');
-    }
 
     public function creator(): BelongsTo
     {
@@ -43,6 +34,7 @@ class Charges extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
 
     public function calculateCharge($amount): float
     {

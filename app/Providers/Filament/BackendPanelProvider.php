@@ -29,16 +29,31 @@ class BackendPanelProvider extends PanelProvider
             ->login()
             ->colors([
                 'primary' => Color::Amber,
+                'danger' => Color::Rose,
+                'info' => Color::Blue,
+                'success' => Color::Emerald,
+                'warning' => Color::Orange,
             ])
+            ->brandName('Card-to-Wallet')
+            ->navigationGroups([
+                'Transactions',
+                'User Management',
+                'Finance',
+                'Settings',
+            ])
+            // ->topNavigation()
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
+            // Re-enable widget discovery so widgets can be used on resource pages
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            // Explicitly define which widgets should appear on the dashboard
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                \App\Filament\Widgets\StatsOverview::class,
+                \App\Filament\Widgets\TransactionChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

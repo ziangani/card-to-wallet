@@ -300,7 +300,7 @@
                     <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
                         <div class="flex items-center mb-4 md:mb-0">
                             <div class="flex-shrink-0 mr-4">
-                                @if($transaction->status === 'completed')
+                                @if($transaction->status === 'COMPLETED')
                                     <div class="w-16 h-16 rounded-full bg-success bg-opacity-10 flex items-center justify-center text-success">
                                         <i class="fas fa-check-circle text-2xl"></i>
                                     </div>
@@ -320,7 +320,7 @@
                             </div>
                             <div>
                                 <h2 class="text-xl font-bold text-dark">
-                                    @if($transaction->status === 'completed')
+                                    @if($transaction->status === 'COMPLETED')
                                         Transaction Successful
                                     @elseif($transaction->status === 'pending' || $transaction->status === 'payment_initiated')
                                         Transaction Pending
@@ -335,7 +335,7 @@
                         </div>
 
                         <div>
-                            @if($transaction->status === 'completed')
+                            @if($transaction->status === 'COMPLETED')
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-success bg-opacity-10 text-success">
                                     Completed
                                 </span>
@@ -508,20 +508,20 @@
                     <div class="timeline-container">
                         @foreach($transaction->statuses ?? [] as $status)
                             <div class="timeline-item">
-                                <div class="timeline-marker {{ $status->status === 'completed' ? 'success' : ($status->status === 'failed' || $status->status === 'payment_failed' ? 'error' : 'active') }}"></div>
+                                <div class="timeline-marker {{ $status->status === 'COMPLETED' ? 'success' : ($status->status === 'failed' || $status->status === 'payment_failed' ? 'error' : 'active') }}"></div>
                                 <div class="ml-2">
                                     <h4 class="font-medium text-dark">
                                         @if($status->status === 'pending')
                                             Transaction Initiated
                                         @elseif($status->status === 'payment_initiated')
                                             Payment Initiated
-                                        @elseif($status->status === 'payment_completed')
+                                        @elseif($status->status === 'payment_COMPLETED')
                                             Payment Completed
                                         @elseif($status->status === 'payment_failed')
                                             Payment Failed
                                         @elseif($status->status === 'funding_initiated')
                                             Wallet Funding Initiated
-                                        @elseif($status->status === 'completed')
+                                        @elseif($status->status === 'COMPLETED')
                                             Transaction Completed
                                         @elseif($status->status === 'failed')
                                             Transaction Failed
@@ -539,7 +539,7 @@
 
                         @if(empty($transaction->statuses))
                             <div class="timeline-item">
-                                <div class="timeline-marker {{ $transaction->status === 'completed' ? 'success' : ($transaction->status === 'failed' || $transaction->status === 'payment_failed' ? 'error' : 'active') }}"></div>
+                                <div class="timeline-marker {{ $transaction->status === 'COMPLETED' ? 'success' : ($transaction->status === 'failed' || $transaction->status === 'payment_failed' ? 'error' : 'active') }}"></div>
                                 <div class="ml-2">
                                     <h4 class="font-medium text-dark">
                                         @if($transaction->status === 'pending')
@@ -552,7 +552,7 @@
                                             Payment Failed
                                         @elseif($transaction->status === 'funding_initiated')
                                             Wallet Funding Initiated
-                                        @elseif($transaction->status === 'completed')
+                                        @elseif($transaction->status === 'COMPLETED')
                                             Transaction Completed
                                         @elseif($transaction->status === 'failed')
                                             Transaction Failed

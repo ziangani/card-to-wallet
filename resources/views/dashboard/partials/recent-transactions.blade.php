@@ -66,7 +66,7 @@
                                     <div class="text-xs text-gray-500">Fee: K{{ number_format($transaction->fee_amount, 2) }}</div>
                                 </td>
                                 <td class="px-4 py-4">
-                                    @if($transaction->status === 'completed')
+                                    @if($transaction->status === 'COMPLETED')
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success bg-opacity-10 text-success">
                                             Completed
                                         </span>

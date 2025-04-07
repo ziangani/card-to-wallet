@@ -44,10 +44,10 @@ class DashboardController extends Controller
         // Get transaction statistics
         $totalTransactions = Transaction::where('user_id', $user->id)->count();
         $successfulTransactions = Transaction::where('user_id', $user->id)
-            ->where('status', 'completed')
+            ->where('status', 'COMPLETED')
             ->count();
         $totalAmount = Transaction::where('user_id', $user->id)
-            ->where('status', 'completed')
+            ->where('status', 'COMPLETED')
             ->sum('amount');
 
         return view('dashboard.index', compact(

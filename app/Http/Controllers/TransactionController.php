@@ -128,7 +128,7 @@ class TransactionController extends Controller
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
-        
+
         // Create transaction charge records
         Transaction::createTransactionCharges($transaction);
 
@@ -271,12 +271,12 @@ class TransactionController extends Controller
             // Verify the success indicator
             if ($resultIndicator === $transaction->reference_2) {
                 // Payment successful
-                $transaction->status = 'completed';
+                $transaction->status = 'COMPLETED';
                 $transaction->save();
 
                 // Record transaction status
                 $transaction->statuses()->create([
-                    'status' => 'completed',
+                    'status' => 'COMPLETED',
                     'notes' => 'Payment completed successfully'
                 ]);
 
@@ -330,12 +330,12 @@ class TransactionController extends Controller
 
         if ($paymentSuccess) {
             // Update transaction status
-            $transaction->status = 'completed';
+            $transaction->status = 'COMPLETED';
             $transaction->save();
 
             // Record transaction status
             $transaction->statuses()->create([
-                'status' => 'completed',
+                'status' => 'COMPLETED',
                 'notes' => 'Payment completed successfully',
             ]);
 
@@ -436,10 +436,10 @@ class TransactionController extends Controller
         // Get statistics
         $totalTransactions = Transaction::where('user_id', Auth::id())->count();
         $successfulTransactions = Transaction::where('user_id', Auth::id())
-            ->where('status', 'completed')
+            ->where('status', 'COMPLETED')
             ->count();
         $totalAmount = Transaction::where('user_id', Auth::id())
-            ->where('status', 'completed')
+            ->where('status', 'COMPLETED')
             ->sum('amount');
 
         return view('transactions.history', compact(
@@ -565,7 +565,7 @@ class TransactionController extends Controller
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
-        
+
         // Create transaction charge records
         Transaction::createTransactionCharges($transaction);
 
@@ -677,7 +677,7 @@ class TransactionController extends Controller
                 'reference_3' => $request->wallet_provider_id,
                 'reference_4' => $request->recipient_name ?? 'Unknown',
             ]);
-            
+
             // Create transaction charge records
             Transaction::createTransactionCharges($transaction);
 

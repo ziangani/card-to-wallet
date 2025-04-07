@@ -321,7 +321,7 @@
                                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                                 <select id="status" name="status" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
                                     <option value="">All Statuses</option>
-                                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                                    <option value="COMPLETED" {{ request('status') == 'COMPLETED' ? 'selected' : '' }}>Completed</option>
                                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                                     <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
                                 </select>
@@ -410,7 +410,7 @@
                                 <div class="text-xs text-gray-500">Fee: K{{ number_format($transaction->fee_amount, 2) }}</div>
                                             </td>
                                             <td class="px-4 py-4">
-                                                @if($transaction->status === 'completed')
+                                                @if($transaction->status === 'COMPLETED')
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success bg-opacity-10 text-success">
                                                         Completed
                                                     </span>

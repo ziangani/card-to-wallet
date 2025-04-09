@@ -149,6 +149,9 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
             Route::get('/deposit', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'deposit'])->name('deposit');
             Route::post('/notify-deposit', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'notifyDeposit'])->name('notify-deposit');
             Route::post('/process-card-deposit', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'processCardDeposit'])->name('process-card-deposit');
+            Route::get('/card-payment', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'cardPayment'])->name('card-payment');
+            Route::post('/mpgs-checkout', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'mpgsCheckout'])->name('mpgs-checkout');
+            Route::get('/card-callback/{uuid}', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'cardCallback'])->name('card-callback');
         });
         
         // Disbursement routes

@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\CorporateRateTier;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\CorporateRateTier;
 
 class CorporateRateTierSeeder extends Seeder
 {
@@ -13,15 +12,13 @@ class CorporateRateTierSeeder extends Seeder
      */
     public function run(): void
     {
-        CorporateRateTier::insert([
+        $rateTiers = [
             [
                 'name' => 'Standard',
                 'monthly_volume_minimum' => 0.00,
                 'fee_percentage' => 3.50,
                 'description' => 'Default rate for corporate accounts',
                 'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now()
             ],
             [
                 'name' => 'Silver',
@@ -29,8 +26,6 @@ class CorporateRateTierSeeder extends Seeder
                 'fee_percentage' => 3.00,
                 'description' => 'Reduced rate for medium volume',
                 'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now()
             ],
             [
                 'name' => 'Gold',
@@ -38,8 +33,6 @@ class CorporateRateTierSeeder extends Seeder
                 'fee_percentage' => 2.50,
                 'description' => 'Preferred rate for high volume',
                 'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now()
             ],
             [
                 'name' => 'Platinum',
@@ -47,9 +40,19 @@ class CorporateRateTierSeeder extends Seeder
                 'fee_percentage' => 2.00,
                 'description' => 'Premium rate for very high volume',
                 'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now()
             ],
-        ]);
+        ];
+
+        foreach ($rateTiers as $tier) {
+            CorporateRateTier::updateOrCreate(
+                ['name' => $tier['name']],
+                [
+                    'monthly_volume_minimum' => $tier['monthly_volume_minimum'],
+                    'fee_percentage' => $tier['fee_percentage'],
+                    'description' => $tier['description'],
+                    'is_active' => $tier['is_active'],
+                ]
+            );
+        }
     }
 }

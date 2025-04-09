@@ -27,41 +27,41 @@ class BulkDisbursementController extends Controller
     {
         $user = Auth::user();
         $company = $user->company;
-        
+
         // Get disbursements with filtering
         $query = BulkDisbursement::where('company_id', $company->id);
-        
+
         // Filter by status
         if ($request->has('status') && $request->status != 'all') {
             $query->where('status', $request->status);
         }
-        
+
         // Filter by date range
         if ($request->has('start_date') && $request->has('end_date')) {
             $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
         }
-        
+
         // Filter by amount range
         if ($request->has('min_amount')) {
             $query->where('total_amount', '>=', $request->min_amount);
         }
-        
+
         if ($request->has('max_amount')) {
             $query->where('total_amount', '<=', $request->max_amount);
         }
-        
+
         // Order by
         $query->orderBy('created_at', 'desc');
-        
+
         // Paginate
         $disbursements = $query->paginate(10);
-        
+
         return view('corporate.disbursements.index', compact(
             'company',
             'disbursements'
         ));
     }
-    
+
     /**
      * Show the form for creating a new bulk disbursement.
      *
@@ -73,14 +73,14 @@ class BulkDisbursementController extends Controller
         $company = $user->company;
         $wallet = $company->corporateWallet;
         $walletProviders = WalletProvider::where('is_active', true)->get();
-        
+
         return view('corporate.disbursements.create', compact(
             'company',
             'wallet',
             'walletProviders'
         ));
     }
-    
+
     /**
      * Validate the uploaded file.
      *
@@ -94,19 +94,19 @@ class BulkDisbursementController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
         ]);
-        
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        
+
         $user = Auth::user();
         $company = $user->company;
         $wallet = $company->corporateWallet;
-        
+
         // Handle file upload
         $file = $request->file('file');
         $filePath = $file->store('disbursements/' . $company->id, 'public');
-        
+
         // Create a draft disbursement
         $disbursement = BulkDisbursement::create([
             'uuid' => Str::uuid(),
@@ -123,34 +123,34 @@ class BulkDisbursementController extends Controller
             'initiated_by' => $user->id,
             'reference_number' => 'BULK-' . strtoupper(Str::random(8)),
         ]);
-        
+
         // Store the disbursement ID in the session for the next step
         session(['disbursement_id' => $disbursement->id]);
-        
+
         // Process the file
         $errors = [];
         $validItems = [];
         $totalAmount = 0;
         $totalFee = 0;
         $rowNumber = 0;
-        
+
         // Get the company's fee percentage
         $feePercentage = $company->getCurrentFeePercentage();
-        
+
         // Get wallet providers
-        $walletProviders = WalletProvider::where('is_active', true)->pluck('id', 'code')->toArray();
-        
+        $walletProviders = WalletProvider::where('is_active', true)->pluck('id', 'api_code')->toArray();
+
         // Read the file
         $fileExtension = $file->getClientOriginalExtension();
-        
+
         if ($fileExtension == 'csv' || $fileExtension == 'txt') {
             // Process CSV file
             $csv = Reader::createFromPath(Storage::disk('public')->path($filePath), 'r');
             $csv->setHeaderOffset(0);
-            
+
             $headers = $csv->getHeader();
             $expectedHeaders = ['wallet_number', 'amount', 'recipient_name'];
-            
+
             // Check if the headers are valid
             $missingHeaders = array_diff($expectedHeaders, $headers);
             if (!empty($missingHeaders)) {
@@ -161,21 +161,21 @@ class BulkDisbursementController extends Controller
             } else {
                 foreach ($csv->getRecords() as $record) {
                     $rowNumber++;
-                    
+
                     // Validate the record
                     $rowErrors = $this->validateRow($record, $rowNumber, $walletProviders);
-                    
+
                     if (!empty($rowErrors)) {
                         $errors = array_merge($errors, $rowErrors);
                     } else {
                         // Calculate fee
                         $amount = floatval($record['amount']);
                         $fee = $amount * ($feePercentage / 100);
-                        
+
                         // Determine wallet provider
                         $walletNumber = $record['wallet_number'];
                         $walletProviderId = $this->determineWalletProvider($walletNumber, $walletProviders);
-                        
+
                         // Add to valid items
                         $validItems[] = [
                             'bulk_disbursement_id' => $disbursement->id,
@@ -189,7 +189,7 @@ class BulkDisbursementController extends Controller
                             'reference' => 'ITEM-' . strtoupper(Str::random(8)),
                             'row_number' => $rowNumber,
                         ];
-                        
+
                         $totalAmount += $amount;
                         $totalFee += $fee;
                     }
@@ -203,23 +203,23 @@ class BulkDisbursementController extends Controller
                 'error' => 'XLSX file processing is not implemented in this example.',
             ];
         }
-        
+
         // Update the disbursement with the calculated totals
         $disbursement->update([
             'total_amount' => $totalAmount,
             'total_fee' => $totalFee,
             'transaction_count' => count($validItems),
         ]);
-        
+
         // Store the validation results in the session
         session([
             'validation_errors' => $errors,
             'valid_items' => $validItems,
         ]);
-        
+
         return redirect()->route('corporate.disbursements.show-validation');
     }
-    
+
     /**
      * Show the validation results.
      *
@@ -230,69 +230,195 @@ class BulkDisbursementController extends Controller
         $user = Auth::user();
         $company = $user->company;
         $wallet = $company->corporateWallet;
-        
+        $walletProviders = WalletProvider::where('is_active', true)->get();
+
         // Get the disbursement ID from the session
         $disbursementId = session('disbursement_id');
-        
+
         if (!$disbursementId) {
             return redirect()->route('corporate.disbursements.create')
                 ->with('error', 'No disbursement in progress. Please start a new one.');
         }
-        
+
         // Get the disbursement
         $disbursement = BulkDisbursement::findOrFail($disbursementId);
-        
+
         // Get the validation results from the session
         $errors = session('validation_errors', []);
         $validItems = session('valid_items', []);
-        
-        return view('corporate.disbursements.validate', compact(
+
+        // Prepare validation results for the view
+        $validationResults = [
+            'total_rows' => count($validItems) + count($errors),
+            'valid_count' => count($validItems),
+            'error_count' => count($errors),
+            'total_amount' => array_sum(array_column($validItems, 'amount')),
+            'total_fee' => array_sum(array_column($validItems, 'fee')),
+            'fee_percentage' => $company->getCurrentFeePercentage(),
+            'sample_data' => array_slice($validItems, 0, 10), // Show first 10 items
+            'error_summary' => $this->summarizeErrors($errors),
+        ];
+
+        return view('corporate.disbursements.show-validation', compact(
             'company',
             'wallet',
+            'walletProviders',
             'disbursement',
-            'errors',
-            'validItems'
+            'validationResults'
         ));
     }
-    
+
+    /**
+     * Summarize validation errors by type.
+     *
+     * @param  array  $errors
+     * @return array
+     */
+    private function summarizeErrors($errors)
+    {
+        $summary = [];
+
+        foreach ($errors as $error) {
+            $errorMessage = $error['error'];
+            if (!isset($summary[$errorMessage])) {
+                $summary[$errorMessage] = 0;
+            }
+            $summary[$errorMessage]++;
+        }
+
+        return $summary;
+    }
+
     /**
      * Show the review page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function review()
+    public function review(Request $request)
     {
         $user = Auth::user();
         $company = $user->company;
         $wallet = $company->corporateWallet;
-        
+        $walletProviders = WalletProvider::where('is_active', true)->get();
+
         // Get the disbursement ID from the session
         $disbursementId = session('disbursement_id');
-        
+
         if (!$disbursementId) {
             return redirect()->route('corporate.disbursements.create')
                 ->with('error', 'No disbursement in progress. Please start a new one.');
         }
-        
+
         // Get the disbursement
         $disbursement = BulkDisbursement::findOrFail($disbursementId);
-        
+
         // Get the valid items from the session
         $validItems = session('valid_items', []);
-        
+
+        // Check if we're skipping errors
+        $skippedErrors = 0;
+        if ($request->has('skip_errors')) {
+            $errors = session('validation_errors', []);
+            $skippedErrors = count($errors);
+        }
+
         // Check if the wallet has sufficient balance
-        $totalWithFee = $disbursement->getTotalWithFee();
-        $hasSufficientBalance = $wallet->hasSufficientBalance($totalWithFee);
-        
+        $totalWithFee = $disbursement->total_amount + $disbursement->total_fee;
+        $hasSufficientBalance = $wallet->balance >= $totalWithFee;
+
+        // Get the fee percentage
+        $feePercentage = $company->getCurrentFeePercentage();
+
+        // Check if approval is required
+        $requiresApproval = true; // Default to requiring approval
+        $minApprovers = 1; // Default minimum approvers
+
+        // Get the approval workflow for bulk disbursements
+        $approvalWorkflow = $company->approvalWorkflows()
+            ->where('entity_type', 'bulk_disbursement')
+            ->where('is_active', true)
+            ->first();
+
+        if ($approvalWorkflow) {
+            // Check if amount threshold is set and if the disbursement amount is below it
+            if ($approvalWorkflow->amount_threshold && $totalWithFee < $approvalWorkflow->amount_threshold) {
+                $requiresApproval = false;
+            }
+
+            $minApprovers = $approvalWorkflow->min_approvers;
+        }
+
+        // Count available approvers
+        $availableApprovers = $company->users()
+            ->whereHas('corporateRoles', function($query) {
+                $query->where('name', 'approver')->orWhere('name', 'admin');
+            })
+            ->where('id', '!=', $user->id) // Exclude current user
+            ->count();
+
+        // Group items by provider for the breakdown
+        $providerBreakdown = [];
+        foreach ($validItems as $item) {
+            $providerId = $item['wallet_provider_id'];
+            $provider = WalletProvider::find($providerId);
+
+            if ($provider) {
+                $code = $provider->api_code;
+                $name = $provider->name;
+
+                if (!isset($providerBreakdown[$code])) {
+                    $providerBreakdown[$code] = [
+                        'code' => $code,
+                        'name' => $name,
+                        'count' => 0,
+                        'amount' => 0,
+                    ];
+                }
+
+                $providerBreakdown[$code]['count']++;
+                $providerBreakdown[$code]['amount'] += $item['amount'];
+            }
+        }
+
+        // Convert to indexed array for the view
+        $providerBreakdown = array_values($providerBreakdown);
+
+        // Paginate the items for the view
+        $perPage = 10;
+        $page = $request->input('page', 1);
+        $offset = ($page - 1) * $perPage;
+        $itemsForPage = array_slice($validItems, $offset, $perPage);
+        $items = new \Illuminate\Pagination\LengthAwarePaginator(
+            $itemsForPage,
+            count($validItems),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        // Convert array items to objects for consistency in the view
+        foreach ($items as $key => $item) {
+            $items[$key] = (object) $item;
+            $items[$key]->walletProvider = WalletProvider::find($item['wallet_provider_id']);
+        }
+
         return view('corporate.disbursements.review', compact(
             'company',
             'wallet',
+            'walletProviders',
             'disbursement',
-            'validItems',
-            'hasSufficientBalance'
+            'items',
+            'skippedErrors',
+            'hasSufficientBalance',
+            'feePercentage',
+            'requiresApproval',
+            'minApprovers',
+            'availableApprovers',
+            'providerBreakdown'
         ));
     }
-    
+
     /**
      * Submit the disbursement.
      *
@@ -304,36 +430,36 @@ class BulkDisbursementController extends Controller
         $user = Auth::user();
         $company = $user->company;
         $wallet = $company->corporateWallet;
-        
+
         // Get the disbursement ID from the session
         $disbursementId = session('disbursement_id');
-        
+
         if (!$disbursementId) {
             return redirect()->route('corporate.disbursements.create')
                 ->with('error', 'No disbursement in progress. Please start a new one.');
         }
-        
+
         // Get the disbursement
         $disbursement = BulkDisbursement::findOrFail($disbursementId);
-        
+
         // Get the valid items from the session
         $validItems = session('valid_items', []);
-        
+
         // Check if the wallet has sufficient balance
         $totalWithFee = $disbursement->getTotalWithFee();
         if (!$wallet->hasSufficientBalance($totalWithFee)) {
             return redirect()->route('corporate.disbursements.review')
                 ->with('error', 'Insufficient wallet balance. Please deposit funds and try again.');
         }
-        
+
         // Create the disbursement items
         foreach ($validItems as $item) {
             DisbursementItem::create($item);
         }
-        
+
         // Submit the disbursement for approval
         $disbursement->submitForApproval();
-        
+
         // Create an approval request
         $approvalRequest = ApprovalRequest::create([
             'uuid' => Str::uuid(),
@@ -347,40 +473,61 @@ class BulkDisbursementController extends Controller
             'description' => 'Bulk disbursement: ' . $disbursement->name,
             'expires_at' => now()->addDays(7),
         ]);
-        
+
         // Clear the session data
         session()->forget(['disbursement_id', 'validation_errors', 'valid_items']);
-        
+
         return redirect()->route('corporate.disbursements.success')
             ->with('disbursement_id', $disbursement->id);
     }
-    
+
     /**
      * Show the success page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function success()
+    public function success(Request $request)
     {
         $user = Auth::user();
         $company = $user->company;
-        
-        // Get the disbursement ID from the session
-        $disbursementId = session('disbursement_id');
-        
+        $wallet = $company->corporateWallet;
+
+        // Get the disbursement ID from the session or flash data
+        $disbursementId = $request->session()->get('disbursement_id', $request->session()->get('_old_input.disbursement_id'));
+
         if (!$disbursementId) {
             return redirect()->route('corporate.disbursements.index');
         }
-        
+
         // Get the disbursement
         $disbursement = BulkDisbursement::findOrFail($disbursementId);
-        
+
+        // Get approval workflow details
+        $minApprovers = 1; // Default value
+
+        // Get the approval workflow for bulk disbursements
+        $approvalWorkflow = $company->approvalWorkflows()
+            ->where('entity_type', 'bulk_disbursement')
+            ->where('is_active', true)
+            ->first();
+
+        if ($approvalWorkflow) {
+            $minApprovers = $approvalWorkflow->min_approvers;
+        }
+
+        // Get the fee percentage
+        $feePercentage = $company->getCurrentFeePercentage();
+
         return view('corporate.disbursements.success', compact(
             'company',
-            'disbursement'
+            'wallet',
+            'disbursement',
+            'minApprovers',
+            'feePercentage'
         ));
     }
-    
+
     /**
      * Display the specified bulk disbursement.
      *
@@ -391,21 +538,21 @@ class BulkDisbursementController extends Controller
     {
         $user = Auth::user();
         $company = $user->company;
-        
+
         // Get the disbursement
         $disbursement = BulkDisbursement::where('company_id', $company->id)
             ->findOrFail($id);
-        
+
         // Get the disbursement items
         $items = $disbursement->items()->paginate(10);
-        
+
         return view('corporate.disbursements.show', compact(
             'company',
             'disbursement',
             'items'
         ));
     }
-    
+
     /**
      * Download the error report.
      *
@@ -415,23 +562,23 @@ class BulkDisbursementController extends Controller
     {
         // Get the validation errors from the session
         $errors = session('validation_errors', []);
-        
+
         // Create a CSV file
         $csv = Writer::createFromString('');
         $csv->insertOne(['Row', 'Error']);
-        
+
         foreach ($errors as $error) {
             $csv->insertOne([$error['row'], $error['error']]);
         }
-        
+
         // Create a temporary file
         $tempFile = tempnam(sys_get_temp_dir(), 'errors');
         file_put_contents($tempFile, $csv->getContent());
-        
+
         // Return the file as a download
         return response()->download($tempFile, 'validation_errors.csv')->deleteFileAfterSend(true);
     }
-    
+
     /**
      * Download a template file.
      *
@@ -446,11 +593,11 @@ class BulkDisbursementController extends Controller
             $csv->insertOne(['wallet_number', 'amount', 'recipient_name']);
             $csv->insertOne(['260971234567', '100.00', 'John Doe']);
             $csv->insertOne(['260961234567', '200.00', 'Jane Smith']);
-            
+
             // Create a temporary file
             $tempFile = tempnam(sys_get_temp_dir(), 'template');
             file_put_contents($tempFile, $csv->getContent());
-            
+
             // Return the file as a download
             return response()->download($tempFile, 'disbursement_template.csv')->deleteFileAfterSend(true);
         } else if ($format == 'xlsx') {
@@ -458,10 +605,10 @@ class BulkDisbursementController extends Controller
             // For simplicity, we'll just return an error for now
             return redirect()->back()->with('error', 'XLSX template is not available yet.');
         }
-        
+
         return redirect()->back()->with('error', 'Invalid template format.');
     }
-    
+
     /**
      * Validate a row from the CSV file.
      *
@@ -473,7 +620,7 @@ class BulkDisbursementController extends Controller
     private function validateRow($row, $rowNumber, $walletProviders)
     {
         $errors = [];
-        
+
         // Check if the required fields are present
         if (!isset($row['wallet_number']) || empty($row['wallet_number'])) {
             $errors[] = [
@@ -499,7 +646,7 @@ class BulkDisbursementController extends Controller
                 }
             }
         }
-        
+
         if (!isset($row['amount']) || empty($row['amount'])) {
             $errors[] = [
                 'row' => $rowNumber,
@@ -515,10 +662,10 @@ class BulkDisbursementController extends Controller
                 ];
             }
         }
-        
+
         return $errors;
     }
-    
+
     /**
      * Check if a wallet number is valid.
      *
@@ -529,12 +676,12 @@ class BulkDisbursementController extends Controller
     {
         // Remove any non-numeric characters
         $walletNumber = preg_replace('/[^0-9]/', '', $walletNumber);
-        
+
         // Check if the wallet number is valid
         // For simplicity, we'll just check if it's a 12-digit number starting with 260
         return strlen($walletNumber) == 12 && substr($walletNumber, 0, 3) == '260';
     }
-    
+
     /**
      * Determine the wallet provider for a wallet number.
      *
@@ -546,22 +693,22 @@ class BulkDisbursementController extends Controller
     {
         // Remove any non-numeric characters
         $walletNumber = preg_replace('/[^0-9]/', '', $walletNumber);
-        
+
         // Check the prefix to determine the provider
         // For simplicity, we'll just check the first 5 digits
         $prefix = substr($walletNumber, 0, 5);
-        
+
         // Map prefixes to provider codes
         $prefixMap = [
             '26097' => 'AIRTEL', // Airtel
             '26096' => 'MTN',    // MTN
             '26095' => 'ZAMTEL', // Zamtel
         ];
-        
+
         if (isset($prefixMap[$prefix]) && isset($walletProviders[$prefixMap[$prefix]])) {
             return $walletProviders[$prefixMap[$prefix]];
         }
-        
+
         return null;
     }
 }

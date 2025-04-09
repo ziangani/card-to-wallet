@@ -1,6 +1,7 @@
+
 @extends('corporate.layouts.app')
 
-@section('title', 'Validate Disbursement - ' . config('app.name'))
+@section('title', 'Validate Disbursement' )
 @section('meta_description', 'Validate your bulk disbursement data')
 @section('header_title', 'Validate Disbursement')
 
@@ -15,48 +16,45 @@
         <p class="text-gray-500">Review and fix any issues with your recipient data</p>
     </div>
 
-    <!-- Step Indicator -->
-    <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
+   <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
         <div class="p-6">
             <div class="flex items-center justify-between">
                 <div class="flex-1">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-corporate-success text-white flex items-center justify-center font-semibold">
-                            <i class="fas fa-check"></i>
-                        </div>
+                        <div class="w-8 h-8 rounded-full bg-corporate-primary text-white flex items-center justify-center text-sm font-medium">1</div>
                         <div class="ml-3">
-                            <h3 class="font-medium text-corporate-success">Upload File</h3>
-                            <p class="text-xs text-gray-500">Prepare and upload recipient data</p>
-                        </div>
-                    </div>
-                    <div class="h-1 bg-corporate-success mt-3"></div>
-                </div>
-                <div class="flex-1">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-corporate-primary text-white flex items-center justify-center font-semibold">2</div>
-                        <div class="ml-3">
-                            <h3 class="font-medium text-corporate-primary">Validate</h3>
-                            <p class="text-xs text-gray-500">Review and fix any errors</p>
+                            <p class="text-sm font-medium text-corporate-primary">Upload File</p>
+                            <p class="text-xs text-gray-500">Upload recipient data</p>
                         </div>
                     </div>
                     <div class="h-1 bg-corporate-primary mt-3"></div>
                 </div>
                 <div class="flex-1">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold">3</div>
+                        <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-sm font-medium">2</div>
                         <div class="ml-3">
-                            <h3 class="font-medium text-gray-500">Review</h3>
-                            <p class="text-xs text-gray-500">Confirm disbursement details</p>
+                            <p class="text-sm font-medium text-gray-500">Validate</p>
+                            <p class="text-xs text-gray-500">Review validation results</p>
                         </div>
                     </div>
                     <div class="h-1 bg-gray-200 mt-3"></div>
                 </div>
                 <div class="flex-1">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold">4</div>
+                        <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-sm font-medium">3</div>
                         <div class="ml-3">
-                            <h3 class="font-medium text-gray-500">Submit</h3>
-                            <p class="text-xs text-gray-500">Process the disbursement</p>
+                            <p class="text-sm font-medium text-gray-500">Review</p>
+                            <p class="text-xs text-gray-500">Confirm details</p>
+                        </div>
+                    </div>
+                    <div class="h-1 bg-gray-200 mt-3"></div>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-sm font-medium">4</div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-500">Submit</p>
+                            <p class="text-xs text-gray-500">Process disbursement</p>
                         </div>
                     </div>
                     <div class="h-1 bg-gray-200 mt-3"></div>

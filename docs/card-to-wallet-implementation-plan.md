@@ -70,6 +70,41 @@ This document outlines the implementation plan for repurposing the TechPay Core 
 - Transaction limits based on verification level
 - No card storage on platform
 
+## Corporate Module
+
+### 1. Corporate Models
+- **Company**: Stores company information and verification status
+- **CorporateWallet**: Manages corporate wallet balance and transactions
+- **CorporateRole**: Defines roles for corporate users (admin, approver, initiator)
+- **CorporateUserRole**: Links users to roles within a company
+- **BulkDisbursement**: Manages bulk payment operations
+- **DisbursementItem**: Stores individual transactions within a bulk disbursement
+- **ApprovalWorkflow**: Configures approval requirements for different actions
+- **ApprovalRequest**: Tracks approval processes for various entities
+- **ApprovalAction**: Records individual approval or rejection actions
+- **CompanyDocument**: Stores company verification documents
+- **CorporateRateTier**: Defines fee tiers based on transaction volume
+- **CompanyRateAssignment**: Assigns rate tiers to companies
+
+### 2. Corporate Controllers
+- **CorporateController**: Manages corporate dashboard and metrics
+- **CorporateWalletController**: Handles wallet operations and deposits
+- **BulkDisbursementController**: Processes bulk payments to mobile wallets
+- **ApprovalController**: Manages approval workflows and actions
+- **CorporateUserController**: Handles user management within companies
+- **CorporateSettingsController**: Manages company settings and configurations
+- **CorporateReportController**: Generates reports for corporate activities
+
+### 3. Corporate Features
+- **Corporate Registration**: Business registration with company details
+- **Role-Based Access Control**: Different permissions for corporate users
+- **Wallet Management**: Centralized wallet for corporate transactions
+- **Bulk Disbursements**: Process multiple payments in a single operation
+- **Approval Workflows**: Multi-level approvals for sensitive operations
+- **Corporate Reporting**: Detailed reports for corporate activities
+- **User Management**: Invite and manage users with different roles
+- **Rate Tiers**: Volume-based pricing for corporate clients
+
 ## Next Steps
 
 1. **Frontend Implementation**:
@@ -81,6 +116,8 @@ This document outlines the implementation plan for repurposing the TechPay Core 
    - Test MPGS integration
    - Test mobile money provider APIs
    - Test transaction flow end-to-end
+   - Test corporate bulk disbursement process
+   - Test approval workflows
 
 3. **Deployment**:
    - Set up production environment

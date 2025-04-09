@@ -23,6 +23,14 @@
                         error: '#DC3545',
                         light: '#F8F9FA',
                         dark: '#343A40',
+                        // Corporate-specific colors
+                        'corporate-primary': '#3366CC',
+                        'corporate-primary-dark': '#2952A3',
+                        'corporate-secondary': '#FF9900',
+                        'corporate-accent': '#5D3FD3',
+                        'corporate-success': '#28A745',
+                        'corporate-warning': '#FFC107',
+                        'corporate-error': '#DC3545',
                     }
                 }
             }

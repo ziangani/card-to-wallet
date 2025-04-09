@@ -7,12 +7,12 @@
 @section('content')
     <div class="mb-6">
         <div class="flex items-center mb-2">
-            <a href="{{ route('corporate.disbursements.validate') }}" class="text-corporate-primary hover:underline">
+            <a href="{{ route('corporate.disbursements.show-validation') }}" class="text-corporate-primary hover:underline">
                 <i class="fas fa-arrow-left mr-2"></i> Back to Validation
             </a>
         </div>
         <h2 class="text-xl font-bold text-corporate-primary">Review Disbursement</h2>
-        <p class="text-gray-500">Confirm the details before submitting your bulk disbursement</p>
+        <p class="text-gray-500">Confirm details before submitting</p>
     </div>
 
     <!-- Step Indicator -->
@@ -21,44 +21,44 @@
             <div class="flex items-center justify-between">
                 <div class="flex-1">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-corporate-success text-white flex items-center justify-center font-semibold">
+                        <div class="w-8 h-8 rounded-full bg-corporate-success text-white flex items-center justify-center text-sm font-medium">
                             <i class="fas fa-check"></i>
                         </div>
                         <div class="ml-3">
-                            <h3 class="font-medium text-corporate-success">Upload File</h3>
-                            <p class="text-xs text-gray-500">Prepare and upload recipient data</p>
+                            <p class="text-sm font-medium text-corporate-success">Upload File</p>
+                            <p class="text-xs text-gray-500">Upload recipient data</p>
                         </div>
                     </div>
                     <div class="h-1 bg-corporate-success mt-3"></div>
                 </div>
                 <div class="flex-1">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-corporate-success text-white flex items-center justify-center font-semibold">
+                        <div class="w-8 h-8 rounded-full bg-corporate-success text-white flex items-center justify-center text-sm font-medium">
                             <i class="fas fa-check"></i>
                         </div>
                         <div class="ml-3">
-                            <h3 class="font-medium text-corporate-success">Validate</h3>
-                            <p class="text-xs text-gray-500">Review and fix any errors</p>
+                            <p class="text-sm font-medium text-corporate-success">Validate</p>
+                            <p class="text-xs text-gray-500">Review validation results</p>
                         </div>
                     </div>
                     <div class="h-1 bg-corporate-success mt-3"></div>
                 </div>
                 <div class="flex-1">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-corporate-primary text-white flex items-center justify-center font-semibold">3</div>
+                        <div class="w-8 h-8 rounded-full bg-corporate-primary text-white flex items-center justify-center text-sm font-medium">3</div>
                         <div class="ml-3">
-                            <h3 class="font-medium text-corporate-primary">Review</h3>
-                            <p class="text-xs text-gray-500">Confirm disbursement details</p>
+                            <p class="text-sm font-medium text-corporate-primary">Review</p>
+                            <p class="text-xs text-gray-500">Confirm details</p>
                         </div>
                     </div>
                     <div class="h-1 bg-corporate-primary mt-3"></div>
                 </div>
                 <div class="flex-1">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold">4</div>
+                        <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-sm font-medium">4</div>
                         <div class="ml-3">
-                            <h3 class="font-medium text-gray-500">Submit</h3>
-                            <p class="text-xs text-gray-500">Process the disbursement</p>
+                            <p class="text-sm font-medium text-gray-500">Submit</p>
+                            <p class="text-xs text-gray-500">Process disbursement</p>
                         </div>
                     </div>
                     <div class="h-1 bg-gray-200 mt-3"></div>
@@ -67,52 +67,82 @@
         </div>
     </div>
 
+    <!-- Main Content -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Main Content -->
+        <!-- Left Column - Disbursement Details -->
         <div class="lg:col-span-2 space-y-6">
-            <!-- Disbursement Details -->
+            <!-- Disbursement Summary -->
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-corporate-primary mb-4">Disbursement Details</h3>
+                    <h3 class="text-lg font-semibold text-corporate-primary mb-4">Disbursement Summary</h3>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <p class="text-sm text-gray-500 mb-1">Disbursement Name</p>
-                            <p class="text-base font-medium text-gray-900">April Salaries</p>
+                            <p class="text-sm text-gray-500 mb-1">Name</p>
+                            <p class="text-base font-medium text-gray-900">{{ $disbursement->name }}</p>
                         </div>
+                        @if($disbursement->description)
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Description</p>
+                                <p class="text-base text-gray-900">{{ $disbursement->description }}</p>
+                            </div>
+                        @endif
                         <div>
                             <p class="text-sm text-gray-500 mb-1">Reference Number</p>
-                            <p class="text-base font-medium text-gray-900">BD-25040801</p>
+                            <p class="text-base font-medium text-gray-900">{{ $disbursement->reference_number }}</p>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500 mb-1">Created By</p>
                             <div class="flex items-center">
                                 <div class="w-6 h-6 rounded-full bg-corporate-primary text-white flex items-center justify-center text-xs mr-2">
-                                    JD
+                                    {{ substr(auth()->user()->first_name, 0, 1) . substr(auth()->user()->last_name, 0, 1) }}
                                 </div>
-                                <p class="text-base font-medium text-gray-900">John Doe</p>
+                                <p class="text-base font-medium text-gray-900">{{ auth()->user()->name }}</p>
                             </div>
                         </div>
-                        <div>
-                            <p class="text-sm text-gray-500 mb-1">Date</p>
-                            <p class="text-base font-medium text-gray-900">April 8, 2025</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <p class="text-sm text-gray-500 mb-1">Total Recipients</p>
+                            <p class="text-xl font-bold text-corporate-primary">{{ number_format($disbursement->transaction_count) }}</p>
                         </div>
-                        <div class="md:col-span-2">
-                            <p class="text-sm text-gray-500 mb-1">Description</p>
-                            <p class="text-base text-gray-900">Monthly salary payments for all staff members.</p>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <p class="text-sm text-gray-500 mb-1">Total Amount</p>
+                            <p class="text-xl font-bold text-corporate-primary">{{ $disbursement->currency }} {{ number_format($disbursement->total_amount, 2) }}</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <p class="text-sm text-gray-500 mb-1">Total Fee</p>
+                            <p class="text-xl font-bold text-corporate-primary">{{ $disbursement->currency }} {{ number_format($disbursement->total_fee, 2) }}</p>
                         </div>
                     </div>
+                    
+                    @if($skippedErrors)
+                        <div class="mt-6 bg-corporate-warning bg-opacity-10 text-corporate-warning rounded-lg p-4">
+                            <h4 class="font-medium mb-2"><i class="fas fa-exclamation-triangle mr-2"></i> Proceeding with Valid Entries Only</h4>
+                            <p class="text-sm">{{ $skippedErrors }} invalid entries have been excluded from this disbursement.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
-
-            <!-- Recipients Preview -->
+            
+            <!-- Recipient Data -->
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-corporate-primary">Recipients Preview</h3>
+                        <h3 class="text-lg font-semibold text-corporate-primary">Recipient Data</h3>
                         <div class="flex items-center">
-                            <span class="text-sm text-gray-500 mr-2">Showing 10 of 345 recipients</span>
-                            <a href="#" class="text-sm text-corporate-accent hover:underline">View All</a>
+                            <form action="{{ route('corporate.disbursements.review') }}" method="GET" class="flex space-x-2">
+                                <select name="provider_filter" class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-corporate-primary focus:border-corporate-primary text-sm">
+                                    <option value="">All Providers</option>
+                                    @foreach($walletProviders as $provider)
+                                        <option value="{{ $provider->code }}" {{ request('provider_filter') == $provider->code ? 'selected' : '' }}>{{ $provider->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="px-3 py-2 bg-corporate-primary text-white rounded-lg text-sm hover:bg-opacity-90">
+                                    Filter
+                                </button>
+                            </form>
                         </div>
                     </div>
                     
@@ -120,213 +150,220 @@
                         <table class="min-w-full corporate-table">
                             <thead>
                                 <tr class="bg-gray-50">
-                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mobile Number</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wallet Number</th>
                                     <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
                                     <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
-                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fee</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
-                                <tr>
-                                    <td class="whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">+260 977123456</div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/img/mtn.jpg') }}" alt="MTN" class="w-6 h-6 rounded-full mr-2">
-                                            <div class="text-sm text-gray-900">MTN</div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-sm text-gray-900">John Banda</div>
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="text-sm font-medium text-gray-900">K 500.00</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">+260 966123456</div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/img/airtel.png') }}" alt="Airtel" class="w-6 h-6 rounded-full mr-2">
-                                            <div class="text-sm text-gray-900">AIRTEL</div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-sm text-gray-900">Mary Phiri</div>
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="text-sm font-medium text-gray-900">K 750.00</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">+260 977456789</div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/img/mtn.jpg') }}" alt="MTN" class="w-6 h-6 rounded-full mr-2">
-                                            <div class="text-sm text-gray-900">MTN</div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-sm text-gray-900">David Mulenga</div>
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="text-sm font-medium text-gray-900">K 600.00</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">+260 955123456</div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/img/zamtel.jpg') }}" alt="Zamtel" class="w-6 h-6 rounded-full mr-2">
-                                            <div class="text-sm text-gray-900">ZAMTEL</div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-sm text-gray-900">Sarah Tembo</div>
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="text-sm font-medium text-gray-900">K 450.00</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">+260 977987654</div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/img/mtn.jpg') }}" alt="MTN" class="w-6 h-6 rounded-full mr-2">
-                                            <div class="text-sm text-gray-900">MTN</div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-sm text-gray-900">James Zulu</div>
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="text-sm font-medium text-gray-900">K 550.00</div>
-                                    </td>
-                                </tr>
-                                <!-- More rows would be here -->
+                                @forelse($items as $item)
+                                    <tr>
+                                        <td class="whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">{{ $item->wallet_number }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="flex items-center">
+                                                @if($item->walletProvider)
+                                                    <img src="{{ asset('assets/img/' . strtolower($item->walletProvider->code) . '.jpg') }}" alt="{{ $item->walletProvider->name }}" class="w-6 h-6 rounded-full mr-2">
+                                                    <div class="text-sm text-gray-900">{{ $item->walletProvider->name }}</div>
+                                                @else
+                                                    <div class="text-sm text-gray-900">Unknown</div>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="text-sm text-gray-900">{{ $item->recipient_name ?? 'N/A' }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="text-sm font-medium text-gray-900">{{ $item->currency }} {{ number_format($item->amount, 2) }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="text-sm text-gray-900">{{ $item->currency }} {{ number_format($item->fee, 2) }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="text-sm text-gray-900">{{ $item->reference ?? 'N/A' }}</div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                            No items found for this disbursement.
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Sidebar -->
-        <div class="space-y-6">
-            <!-- Summary Card -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <div class="p-6">
-                    <h3 class="text-lg font-semibold text-corporate-primary mb-4">Disbursement Summary</h3>
                     
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center pb-3 border-b border-gray-200">
-                            <span class="text-gray-600">Total Recipients</span>
-                            <span class="font-medium text-gray-900">345</span>
-                        </div>
-                        <div class="flex justify-between items-center pb-3 border-b border-gray-200">
-                            <span class="text-gray-600">Subtotal</span>
-                            <span class="font-medium text-gray-900">K 175,450.00</span>
-                        </div>
-                        <div class="flex justify-between items-center pb-3 border-b border-gray-200">
-                            <div>
-                                <span class="text-gray-600">Fee</span>
-                                <span class="text-xs text-gray-500 block">(2.5% - Gold Tier)</span>
-                            </div>
-                            <span class="font-medium text-gray-900">K 4,386.25</span>
-                        </div>
-                        <div class="flex justify-between items-center pt-2">
-                            <span class="text-lg font-semibold text-corporate-primary">Total Amount</span>
-                            <span class="text-lg font-bold text-corporate-primary">K 179,836.25</span>
-                        </div>
+                    <div class="mt-6">
+                        {{ $items->appends(request()->query())->links() }}
                     </div>
                 </div>
             </div>
-
+            
+            <!-- Approval Requirements -->
+            @if($requiresApproval)
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-corporate-primary mb-4">Approval Requirements</h3>
+                        
+                        <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xs mr-3">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-blue-700">This disbursement requires approval</h4>
+                                    <p class="text-sm text-blue-600 mt-1">
+                                        Based on your company's approval workflow, this disbursement requires approval from {{ $minApprovers }} {{ Str::plural('approver', $minApprovers) }} before processing.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Minimum Approvers Required</p>
+                                <p class="text-base font-medium text-gray-900">{{ $minApprovers }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Available Approvers</p>
+                                <p class="text-base font-medium text-gray-900">{{ $availableApprovers }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Approval Workflow</p>
+                                <p class="text-base font-medium text-gray-900">Bulk Disbursement</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Approval Expiry</p>
+                                <p class="text-base font-medium text-gray-900">48 hours after submission</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            
+            <!-- Action Buttons -->
+            <div class="flex justify-between">
+                <a href="{{ route('corporate.disbursements.show-validation') }}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Validation
+                </a>
+                
+                <form action="{{ route('corporate.disbursements.submit') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="px-6 py-3 bg-corporate-primary text-white rounded-lg hover:bg-opacity-90 transition">
+                        @if($requiresApproval)
+                            Submit for Approval <i class="fas fa-arrow-right ml-2"></i>
+                        @else
+                            Process Disbursement <i class="fas fa-arrow-right ml-2"></i>
+                        @endif
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Right Column - Summary & Info -->
+        <div class="space-y-6">
             <!-- Wallet Balance -->
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-corporate-primary mb-4">Wallet Balance</h3>
-                    
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 rounded-full bg-corporate-primary bg-opacity-10 flex items-center justify-center text-corporate-primary mr-4">
+                            <i class="fas fa-wallet text-xl"></i>
+                        </div>
                         <div>
-                            <p class="text-sm text-gray-500 mb-1">Available Balance</p>
-                            <p class="text-2xl font-bold text-corporate-primary">K 250,000.00</p>
-                        </div>
-                        <div class="w-12 h-12 rounded-full bg-corporate-primary bg-opacity-10 flex items-center justify-center text-corporate-primary">
-                            <i class="fas fa-wallet"></i>
+                            <p class="text-sm text-gray-500">Available Balance</p>
+                            <p class="text-2xl font-bold text-corporate-primary">{{ $wallet->currency }} {{ number_format($wallet->balance, 2) }}</p>
                         </div>
                     </div>
                     
-                    <div class="bg-corporate-success bg-opacity-10 text-corporate-success rounded-lg p-3 text-sm">
-                        <i class="fas fa-check-circle mr-2"></i> Sufficient balance for this disbursement
+                    <!-- Transaction Summary -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h4 class="font-medium text-corporate-primary mb-3">Transaction Summary</h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Total Amount:</span>
+                                <span class="text-sm font-medium text-gray-900">{{ $disbursement->currency }} {{ number_format($disbursement->total_amount, 2) }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Fee ({{ number_format($feePercentage, 2) }}%):</span>
+                                <span class="text-sm font-medium text-gray-900">{{ $disbursement->currency }} {{ number_format($disbursement->total_fee, 2) }}</span>
+                            </div>
+                            <div class="flex justify-between pt-2 border-t border-gray-100">
+                                <span class="text-sm font-medium text-gray-700">Total Debit:</span>
+                                <span class="text-sm font-bold text-corporate-primary">{{ $disbursement->currency }} {{ number_format($disbursement->total_amount + $disbursement->total_fee, 2) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @if(($disbursement->total_amount + $disbursement->total_fee) > $wallet->balance)
+                        <div class="mt-4 bg-corporate-error bg-opacity-10 text-corporate-error rounded-lg p-3 text-sm">
+                            <i class="fas fa-exclamation-circle mr-2"></i> Insufficient balance. Please add funds to your wallet.
+                            <div class="mt-2">
+                                <a href="{{ route('corporate.wallet.deposit') }}" class="text-corporate-error underline">
+                                    Add Funds
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+            
+            <!-- Provider Breakdown -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-corporate-primary mb-4">Provider Breakdown</h3>
+                    
+                    <div class="space-y-4">
+                        @foreach($providerBreakdown as $provider)
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="flex items-center">
+                                    <img src="{{ asset('assets/img/' . strtolower($provider['code']) . '.jpg') }}" alt="{{ $provider['name'] }}" class="w-8 h-8 rounded-full mr-3">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">{{ $provider['name'] }}</p>
+                                        <div class="flex items-center text-xs text-gray-500 mt-1">
+                                            <span>{{ number_format($provider['count']) }} {{ Str::plural('recipient', $provider['count']) }}</span>
+                                            <span class="mx-2">•</span>
+                                            <span>{{ $disbursement->currency }} {{ number_format($provider['amount'], 2) }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
-
-            <!-- Approval Requirements -->
+            
+            <!-- Important Information -->
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-corporate-primary mb-4">Approval Requirements</h3>
+                    <h3 class="text-lg font-semibold text-corporate-primary mb-4">Important Information</h3>
                     
-                    <div class="bg-corporate-warning bg-opacity-10 text-corporate-warning rounded-lg p-3 text-sm mb-4">
-                        <i class="fas fa-exclamation-circle mr-2"></i> This disbursement requires approval from at least 1 approver
-                    </div>
-                    
-                    <p class="text-sm text-gray-600 mb-4">Based on your company's approval policy, disbursements over K50,000 require approval before processing.</p>
-                    
-                    <div class="space-y-3">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-full bg-corporate-primary text-white flex items-center justify-center text-xs mr-3">
-                                JS
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">Jane Smith</p>
-                                <p class="text-xs text-gray-500">Approver</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-full bg-corporate-primary text-white flex items-center justify-center text-xs mr-3">
-                                RM
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">Robert Mumba</p>
-                                <p class="text-xs text-gray-500">Approver</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <div class="p-6">
-                    <form action="{{ route('corporate.disbursements.submit') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="disbursement_id" value="BD-25040801">
-                        
-                        <div class="mb-4">
-                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
-                            <textarea id="notes" name="notes" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-corporate-primary focus:border-corporate-primary" placeholder="Add any notes for approvers"></textarea>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-1">Processing Time</h4>
+                            <p class="text-sm text-gray-600">Transactions are typically processed within 5-15 minutes after approval.</p>
                         </div>
                         
-                        <div class="flex flex-col space-y-3">
-                            <button type="submit" class="w-full px-4 py-2 bg-corporate-primary text-white rounded-lg hover:bg-opacity-90 transition">
-                                Submit for Approval
-                            </button>
-                            <a href="{{ route('corporate.disbursements.index') }}" class="w-full px-4 py-2 border border-gray-300 text-center text-gray-700 rounded-lg hover:bg-gray-50 transition">
-                                Cancel
-                            </a>
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-1">Transaction Notifications</h4>
+                            <p class="text-sm text-gray-600">Recipients will receive SMS notifications from their wallet providers.</p>
                         </div>
-                    </form>
+                        
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-1">Reporting</h4>
+                            <p class="text-sm text-gray-600">A detailed report will be available once processing is complete.</p>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <h4 class="font-medium text-blue-700 mb-1">Need Help?</h4>
+                            <p class="text-sm text-blue-600">If you encounter any issues, please contact our support team at <a href="mailto:support@cardtowallet.com" class="underline">support@cardtowallet.com</a></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

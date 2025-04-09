@@ -196,11 +196,7 @@ class CorporateWalletController extends Controller
     public function processCardDeposit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|numeric|min:1',
-            'card_number' => 'required|string',
-            'card_expiry' => 'required|string',
-            'card_cvv' => 'required|string',
-            'card_holder' => 'required|string',
+            'amount' => 'required|numeric|min:100',
         ]);
         
         if ($validator->fails()) {
@@ -211,33 +207,209 @@ class CorporateWalletController extends Controller
         $company = $user->company;
         $wallet = $company->corporateWallet;
         
-        // Generate a unique reference number
+        // Generate a unique reference number and UUID
         $reference = 'CARD-' . strtoupper(Str::random(8));
+        $uuid = (string)Str::uuid();
         
-        // In a real implementation, this would integrate with a payment gateway
-        // For now, we'll simulate a successful deposit
-        
-        // Update the wallet balance
-        $wallet->balance += $request->amount;
-        $wallet->save();
-        
-        // Create a completed deposit transaction
-        $transaction = CorporateWalletTransaction::create([
-            'uuid' => Str::uuid(),
-            'corporate_wallet_id' => $wallet->id,
-            'transaction_type' => 'deposit',
-            'amount' => $request->amount,
-            'balance_after' => $wallet->balance,
-            'currency' => $wallet->currency,
-            'description' => 'Card deposit',
-            'reference_number' => $reference,
-            'performed_by' => $user->id,
-            'status' => 'completed',
-            'related_entity_type' => 'card_deposit',
-            'related_entity_id' => null,
-        ]);
-        
-        return redirect()->route('corporate.wallet.index')
-            ->with('success', 'Deposit of ' . $wallet->currency . ' ' . number_format($request->amount, 2) . ' completed successfully.');
+        try {
+            // Get MPGS provider
+            $provider = \App\Models\PaymentProviders::where('code', \App\Integrations\MPGS\MasterCardCheckout::TECHPAY_CODE)->first();
+
+            if (!$provider) {
+                return redirect()->back()->with('error', 'Payment provider not configured.');
+            }
+
+            // Initialize MPGS client
+            $client = new \App\Integrations\MPGS\MasterCardCheckout($provider);
+
+            // Generate return URL
+            $return_url = route('corporate.wallet.card-callback', ['uuid' => $uuid]);
+
+            // Create a pending deposit transaction
+            $transaction = CorporateWalletTransaction::create([
+                'uuid' => $uuid,
+                'corporate_wallet_id' => $wallet->id,
+                'transaction_type' => 'deposit',
+                'amount' => $request->amount,
+                'balance_after' => $wallet->balance, // Will be updated when payment is completed
+                'currency' => $wallet->currency,
+                'description' => 'Card deposit',
+                'reference_number' => $reference,
+                'performed_by' => $user->id,
+                'status' => 'pending',
+                'related_entity_type' => 'card_deposit',
+                'related_entity_id' => null,
+            ]);
+            
+            // Store transaction ID in session
+            $request->session()->put('corporate_transaction_id', $transaction->id);
+            
+            // Redirect to payment page
+            return redirect()->route('corporate.wallet.card-payment');
+            
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Card deposit error: ' . $e->getMessage());
+            
+            return redirect()->back()->with('error', 'An error occurred while processing your payment: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Show the card payment page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function cardPayment(Request $request)
+    {
+        if (!$request->session()->has('corporate_transaction_id')) {
+            return redirect()->route('corporate.wallet.deposit', ['method' => 'card'])
+                ->with('error', 'No transaction in progress.');
+        }
+
+        $transaction = CorporateWalletTransaction::findOrFail($request->session()->get('corporate_transaction_id'));
+
+        // Get MPGS provider for card payments
+        $mpgsProvider = \App\Models\PaymentProviders::where('code', \App\Integrations\MPGS\MasterCardCheckout::TECHPAY_CODE)->first();
+        $mpgs_endpoint = $mpgsProvider ? $mpgsProvider->api_url : '';
+
+        return view('corporate.wallet.card-payment', compact('transaction', 'mpgs_endpoint'));
+    }
+    
+    /**
+     * Process the MPGS checkout.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function mpgsCheckout(Request $request)
+    {
+        if (!$request->session()->has('corporate_transaction_id')) {
+            return response()->json([
+                'status' => 'ERROR',
+                'statusMessage' => 'Invalid transaction'
+            ], 400);
+        }
+
+        $transaction = CorporateWalletTransaction::findOrFail($request->session()->get('corporate_transaction_id'));
+
+        try {
+            // Get MPGS provider
+            $provider = \App\Models\PaymentProviders::where('code', \App\Integrations\MPGS\MasterCardCheckout::TECHPAY_CODE)->first();
+
+            if (!$provider) {
+                return response()->json([
+                    'status' => 'ERROR',
+                    'statusMessage' => 'Payment provider not found'
+                ], 400);
+            }
+
+            // Initialize MPGS client
+            $client = new \App\Integrations\MPGS\MasterCardCheckout($provider);
+
+            // Generate return URL
+            $return_url = route('corporate.wallet.card-callback', ['uuid' => $transaction->uuid]);
+
+            // Initiate checkout
+            $response = $client->initiateCheckout(
+                $transaction->amount,
+                config('app.name') . ' - Corporate Wallet Deposit',
+                $transaction->uuid,
+                'Corporate Wallet Deposit',
+                $transaction->id,
+                $return_url,
+                $transaction->currency
+            );
+
+            // Update transaction with MPGS session info
+            $transaction->update([
+                'reference_number' => $transaction->uuid,
+                'notes' => json_encode([
+                    'success_indicator' => $response['successIndicator'],
+                    'session_id' => $response['sessionId']
+                ]),
+                'status' => 'payment_initiated',
+            ]);
+
+            return response()->json([
+                'status' => 'SUCCESS',
+                'statusMessage' => 'Payment initiated successfully',
+                'session' => $response['sessionId']
+            ]);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('MPGS checkout error: ' . $e->getMessage());
+
+            return response()->json([
+                'status' => 'ERROR',
+                'statusMessage' => 'Could not initiate payment: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Handle MPGS callback.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function cardCallback(Request $request, $uuid)
+    {
+        try {
+            $resultIndicator = $request->resultIndicator;
+
+            $transaction = CorporateWalletTransaction::where('uuid', $uuid)
+                ->first();
+
+            if (!$transaction) {
+                \Illuminate\Support\Facades\Log::error('MPGS callback error: Transaction not found');
+                return redirect()->route('corporate.wallet.deposit', ['method' => 'card'])
+                    ->with('error', 'Transaction not found');
+            }
+
+            // Get the notes with success indicator
+            $notes = json_decode($transaction->notes, true);
+            $successIndicator = $notes['success_indicator'] ?? null;
+
+            // Verify the success indicator
+            if ($resultIndicator === $successIndicator) {
+                // Payment successful
+                $wallet = $transaction->corporateWallet;
+                
+                // Update wallet balance
+                $wallet->balance += $transaction->amount;
+                $wallet->save();
+                
+                // Update transaction
+                $transaction->update([
+                    'status' => 'completed',
+                    'balance_after' => $wallet->balance
+                ]);
+
+                // Clear session data
+                $request->session()->forget('corporate_transaction_id');
+
+                return redirect()->route('corporate.wallet.index')
+                    ->with('success', 'Deposit of ' . $transaction->currency . ' ' . number_format($transaction->amount, 2) . ' completed successfully.');
+            } else {
+                // Payment failed
+                $transaction->update([
+                    'status' => 'failed',
+                    'description' => $transaction->description . ' (Failed: Payment was declined)'
+                ]);
+
+                // Clear session data
+                $request->session()->forget('corporate_transaction_id');
+
+                return redirect()->route('corporate.wallet.deposit', ['method' => 'card'])
+                    ->with('error', 'Payment was declined by the payment gateway.');
+            }
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('MPGS callback error: ' . $e->getMessage());
+            return redirect()->route('corporate.wallet.deposit', ['method' => 'card'])
+                ->with('error', 'An error occurred while processing your payment');
+        }
     }
 }

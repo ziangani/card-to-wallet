@@ -3,184 +3,181 @@
 @section('title', 'Corporate Dashboard')
 
 @section('content')
-<div class="row">
-    <!-- Balance Card -->
-    <div class="col-md-6 col-lg-4">
-        <div class="balance-card">
-            <div class="balance-label">Current Balance</div>
-            <div class="balance-amount">K {{ number_format($balance, 2) }}</div>
-            <div class="mt-3">
-                <a href="{{ route('corporate.wallet.deposit') }}" class="btn btn-light btn-sm me-2">Deposit Funds</a>
-                <a href="{{ route('corporate.wallet.transactions') }}" class="btn btn-outline-light btn-sm">View Transactions</a>
-            </div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Current Balance Card -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <h2 class="text-gray-600 text-sm font-medium mb-2">Current Balance</h2>
+        <div class="text-3xl font-bold mb-4">K {{ number_format($balance, 2) }}</div>
+        <div class="flex space-x-2">
+            <a href="{{ route('corporate.wallet.deposit') }}" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded hover:bg-blue-700 transition-colors">Deposit Funds</a>
+            <a href="{{ route('corporate.wallet.transactions') }}" class="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors">View Transactions</a>
         </div>
     </div>
     
-    <!-- Stats Cards -->
-    <div class="col-md-6 col-lg-8">
-        <div class="row">
-            <!-- Monthly Volume -->
-            <div class="col-md-6">
-                <div class="card corporate-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">Monthly Volume</h6>
-                            <i class="fas fa-chart-line text-primary"></i>
-                        </div>
-                        <h3 class="mb-1">K {{ number_format($monthlyVolume, 2) }}</h3>
-                        <div class="text-muted small">This month</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Recipients -->
-            <div class="col-md-6">
-                <div class="card corporate-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">Recipients</h6>
-                            <i class="fas fa-users text-primary"></i>
-                        </div>
-                        <h3 class="mb-1">{{ number_format($recipientCount) }}</h3>
-                        <div class="text-muted small">This month</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Pending Approvals -->
-            <div class="col-md-6 mt-3">
-                <div class="card corporate-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">Pending Approvals</h6>
-                            <i class="fas fa-check-double text-primary"></i>
-                        </div>
-                        <h3 class="mb-1">{{ $pendingApprovalsCount }}</h3>
-                        <div class="text-muted small">
-                            @if($pendingApprovalsCount > 0)
-                                <a href="{{ route('corporate.approvals.index') }}" class="text-primary">View all</a>
-                            @else
-                                No pending approvals
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Quick Actions -->
-            <div class="col-md-6 mt-3">
-                <div class="card corporate-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">Quick Actions</h6>
-                            <i class="fas fa-bolt text-primary"></i>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <a href="{{ route('corporate.disbursements.create') }}" class="btn btn-sm btn-corporate-accent">New Disbursement</a>
-                            <a href="{{ route('corporate.reports.generate') }}" class="btn btn-sm btn-outline-secondary">Generate Report</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Monthly Volume Card -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex justify-between items-center mb-2">
+            <h2 class="text-gray-600 text-sm font-medium">Monthly Volume</h2>
+            <i class="fas fa-chart-line text-primary"></i>
+        </div>
+        <div class="text-3xl font-bold mb-1">K {{ number_format($monthlyVolume, 2) }}</div>
+        <div class="text-gray-500 text-sm">This month</div>
+    </div>
+    
+    <!-- Recipients Card -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex justify-between items-center mb-2">
+            <h2 class="text-gray-600 text-sm font-medium">Recipients</h2>
+            <i class="fas fa-users text-primary"></i>
+        </div>
+        <div class="text-3xl font-bold mb-1">{{ number_format($recipientCount) }}</div>
+        <div class="text-gray-500 text-sm">This month</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+    <!-- Pending Approvals Card -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex justify-between items-center mb-2">
+            <h2 class="text-gray-600 text-sm font-medium">Pending Approvals</h2>
+            <i class="fas fa-check-double text-primary"></i>
+        </div>
+        <div class="text-3xl font-bold mb-1">{{ $pendingApprovalsCount }}</div>
+        <div class="text-sm">
+            @if($pendingApprovalsCount > 0)
+                <a href="{{ route('corporate.approvals.index') }}" class="text-primary hover:underline">View all</a>
+            @else
+                <span class="text-gray-500">No pending approvals</span>
+            @endif
+        </div>
+    </div>
+    
+    <!-- Quick Actions Card -->
+    <div class="bg-white rounded-lg shadow-sm p-6 lg:col-span-2">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-gray-600 text-sm font-medium">Quick Actions</h2>
+            <i class="fas fa-bolt text-primary"></i>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <a href="{{ route('corporate.disbursements.create') }}" class="flex items-center justify-center px-4 py-3 bg-primary text-white text-sm font-medium rounded hover:bg-blue-700 transition-colors">
+                <i class="fas fa-money-bill-wave mr-2"></i> New Disbursement
+            </a>
+            <a href="{{ route('corporate.reports.generate') }}" class="flex items-center justify-center px-4 py-3 border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors">
+                <i class="fas fa-file-alt mr-2"></i> Generate Report
+            </a>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
     <!-- Recent Disbursements -->
-    <div class="col-lg-8">
-        <div class="card corporate-card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">Recent Disbursements</h6>
-                <a href="{{ route('corporate.disbursements.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover data-table mb-0">
-                        <thead>
-                            <tr>
-                                <th>Reference</th>
-                                <th>Date</th>
-                                <th>Recipients</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($recentDisbursements as $disbursement)
-                                <tr>
-                                    <td>{{ $disbursement->reference_number }}</td>
-                                    <td>{{ $disbursement->created_at->format('M d, Y') }}</td>
-                                    <td>{{ $disbursement->transaction_count }}</td>
-                                    <td>K {{ number_format($disbursement->total_amount, 2) }}</td>
-                                    <td>
-                                        <span class="status-badge {{ strtolower($disbursement->status) }}">
-                                            {{ ucfirst($disbursement->status) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('corporate.disbursements.show', $disbursement->id) }}" class="btn btn-sm btn-link">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center py-3">No disbursements found</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="bg-white rounded-lg shadow-sm lg:col-span-2">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+            <h2 class="font-medium text-dark">Recent Disbursements</h2>
+            <a href="{{ route('corporate.disbursements.index') }}" class="text-primary hover:underline text-sm">View All</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gray-50">
+                        <th class="px-6 py-3 text-left font-medium text-gray-500">Reference</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500">Date</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500">Recipients</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500">Amount</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500">Status</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($recentDisbursements as $disbursement)
+                        <tr class="hover:bg-gray-50 border-b border-gray-100">
+                            <td class="px-6 py-4">{{ $disbursement->reference_number }}</td>
+                            <td class="px-6 py-4">{{ $disbursement->created_at->format('M d, Y') }}</td>
+                            <td class="px-6 py-4">{{ $disbursement->transaction_count }}</td>
+                            <td class="px-6 py-4">K {{ number_format($disbursement->total_amount, 2) }}</td>
+                            <td class="px-6 py-4">
+                                @php
+                                    $statusClasses = [
+                                        'pending' => 'bg-warning text-dark',
+                                        'approved' => 'bg-success text-white',
+                                        'rejected' => 'bg-error text-white',
+                                        'completed' => 'bg-success text-white',
+                                        'failed' => 'bg-error text-white',
+                                        'processing' => 'bg-primary text-white',
+                                    ];
+                                    $status = strtolower($disbursement->status);
+                                    $statusClass = $statusClasses[$status] ?? 'bg-gray-200 text-gray-800';
+                                @endphp
+                                <span class="px-2 py-1 text-xs font-medium rounded-full {{ $statusClass }}">
+                                    {{ ucfirst($disbursement->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="{{ route('corporate.disbursements.show', $disbursement->id) }}" class="text-primary hover:text-blue-700">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">No disbursements found</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
     
     <!-- Recent Activity -->
-    <div class="col-lg-4">
-        <div class="card corporate-card">
-            <div class="card-header">
-                <h6 class="mb-0">Recent Activity</h6>
-            </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    @foreach($recentActivity as $activity)
-                        <div class="list-group-item px-3 py-3">
-                            <div class="d-flex">
-                                <div class="activity-icon me-3">
-                                    @switch($activity['type'])
-                                        @case('disbursement_created')
-                                            <i class="fas fa-money-bill-wave text-primary"></i>
-                                            @break
-                                        @case('disbursement_approved')
-                                            <i class="fas fa-check-circle text-success"></i>
-                                            @break
-                                        @case('wallet_deposit')
-                                            <i class="fas fa-wallet text-info"></i>
-                                            @break
-                                        @case('rate_tier_changed')
-                                            <i class="fas fa-chart-line text-warning"></i>
-                                            @break
-                                        @default
-                                            <i class="fas fa-bell text-secondary"></i>
-                                    @endswitch
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <div class="fw-bold">{{ $activity['description'] }}</div>
-                                            <div class="text-muted small">{{ $activity['details'] }}</div>
-                                        </div>
-                                        <div class="text-muted small">{{ $activity['timestamp']->diffForHumans() }}</div>
+    <div class="bg-white rounded-lg shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="font-medium text-dark">Recent Activity</h2>
+        </div>
+        <div class="divide-y divide-gray-100">
+            @foreach($recentActivity as $activity)
+                <div class="p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0 mr-3">
+                            @switch($activity['type'])
+                                @case('disbursement_created')
+                                    <div class="w-10 h-10 rounded-full bg-primary bg-opacity-10 flex items-center justify-center text-primary">
+                                        <i class="fas fa-money-bill-wave"></i>
                                     </div>
-                                    <div class="text-muted small mt-1">By {{ $activity['user'] }}</div>
-                                </div>
-                            </div>
+                                    @break
+                                @case('disbursement_approved')
+                                    <div class="w-10 h-10 rounded-full bg-success bg-opacity-10 flex items-center justify-center text-success">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    @break
+                                @case('wallet_deposit')
+                                    <div class="w-10 h-10 rounded-full bg-primary bg-opacity-10 flex items-center justify-center text-primary">
+                                        <i class="fas fa-wallet"></i>
+                                    </div>
+                                    @break
+                                @case('rate_tier_changed')
+                                    <div class="w-10 h-10 rounded-full bg-warning bg-opacity-10 flex items-center justify-center text-warning">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    @break
+                                @default
+                                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                                        <i class="fas fa-bell"></i>
+                                    </div>
+                            @endswitch
                         </div>
-                    @endforeach
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="font-medium text-dark">{{ $activity['description'] }}</div>
+                                    <div class="text-sm text-gray-500">{{ $activity['details'] }}</div>
+                                </div>
+                                <div class="text-xs text-gray-500">{{ $activity['timestamp']->diffForHumans() }}</div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">By {{ $activity['user'] }}</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </div>

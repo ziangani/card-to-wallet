@@ -104,6 +104,11 @@ class LoginController extends Controller
         if (!$user->is_phone_verified) {
             return redirect()->route('verification.phone');
         }
+        
+        // Redirect based on user type
+        if ($user->user_type === 'corporate') {
+            return redirect()->route('corporate.dashboard');
+        }
 
         return redirect()->intended($this->redirectPath());
     }

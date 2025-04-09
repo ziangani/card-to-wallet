@@ -199,6 +199,22 @@
             <div class="mt-6 text-center text-sm text-gray-600">
                 Already have an account? <a href="{{ url('/login') }}" class="text-primary hover:underline font-medium transition duration-300">Login here</a>
             </div>
+            
+            <div class="mt-4 text-center">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Or</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="{{ url('/corporate/register') }}" class="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-primary bg-white border border-primary rounded-lg hover:bg-primary hover:text-white transition duration-300">
+                        <i class="fas fa-building mr-2"></i> Register as a Corporate User
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -36,6 +36,10 @@ Route::middleware('guest')->group(function () {
     // Registration routes
     Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
+    Route::get('/corporate/register', [App\Http\Controllers\Auth\RegisterController::class, 'showCorporateRegistrationForm'])->name('corporate.register');
+    Route::post('/corporate/register', [App\Http\Controllers\Auth\RegisterController::class, 'registerCorporate'])->name('register.corporate');
+    Route::get('/corporate/register', [App\Http\Controllers\Auth\RegisterController::class, 'showCorporateRegistrationForm'])->name('register.corporate');
+    Route::post('/corporate/register', [App\Http\Controllers\Auth\RegisterController::class, 'registerCorporate'])->name('register.corporate');
 
     // Password reset routes
     Route::get('/password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');

@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             DefaultChargesSeeder::class,
-            WalletProviderSeeder::class
+            WalletProviderSeeder::class,
+            CorporateRoleSeeder::class,
+            CorporateRateTierSeeder::class
         ]);
 
         // User::factory()->create([

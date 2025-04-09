@@ -117,8 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Step navigation function
-    window.goToStep = function(step) {
+    // Step navigation
+    function goToStep(step) {
         // Hide all steps
         stepContents.forEach(content => content.classList.add('hidden'));
 
@@ -141,7 +141,272 @@ document.addEventListener('DOMContentLoaded', function() {
                 stepCircle.classList.remove('bg-gray-200', 'text-gray-600', 'bg-green-500');
                 stepCircle.classList.add('bg-primary', 'text-white');
                 stepCircle.textContent = stepNumber;
+                s.classList.add('active');
+            } else {
+                // Future step
+                stepCircle.classList.remove('bg-primary', 'text-white', 'bg-green-500');
+                stepCircle.classList.add('bg-gray-200', 'text-gray-600');
+                stepCircle.textContent = stepNumber;
+                s.classList.remove('active', 'completed');
             }
         });
-    };
+
+        // Update step lines
+        const stepLines = document.querySelectorAll('.step-line');
+        stepLines.forEach((line, index) => {
+            if (index < step - 1) {
+                line.classList.remove('bg-gray-200');
+                line.classList.add('bg-green-500');
+            } else {
+                line.classList.remove('bg-green-500');
+                line.classList.add('bg-gray-200');
+            }
+        });
+
+        // Update current step
+        currentStep = step;
+        document.querySelector('input[name="current_step"]').value = currentStep;
+
+        // Scroll to top of form
+        document.querySelector('.bg-white.rounded-xl').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Email validation
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // Phone number validation
+    function isValidPhone(phone) {
+        // Remove any non-digit characters
+        const cleanPhone = phone.replace(/\D/g, '');
+        // Check if length is between 12 and 14 digits
+        return cleanPhone.length >= 12 && cleanPhone.length <= 14;
+    }
+
+    // Step 1 Next Button
+    document.getElementById('step1Next').addEventListener('click', function() {
+        // Validate Step 1
+        const firstName = document.getElementById('first_name').value.trim();
+        const lastName = document.getElementById('last_name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone_number').value.trim();
+        const password = document.getElementById('password').value;
+        const passwordConfirmation = document.getElementById('password_confirmation').value;
+
+        // Field validation
+        if (!firstName || !lastName || !email || !phone || !password || !passwordConfirmation) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        // Email validation
+        if (!isValidEmail(email)) {
+            alert('Please enter a valid email address');
+            return;
+        }
+
+        // Phone validation
+        if (!isValidPhone(phone)) {
+            alert('Please enter a valid Zambian phone number (e.g., +260971234567)');
+            return;
+        }
+
+        // Password validation
+        if (password.length < 8) {
+            alert('Password must be at least 8 characters long');
+            return;
+        }
+
+        if (password !== passwordConfirmation) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        goToStep(2);
+    });
+
+    // Step 2 Back Button
+    document.getElementById('step2Back').addEventListener('click', function() {
+        goToStep(1);
+    });
+
+    // Step 2 Next Button
+    document.getElementById('step2Next').addEventListener('click', function() {
+        // Validate Step 2
+        const companyName = document.getElementById('company_name').value.trim();
+        const registrationNumber = document.getElementById('registration_number').value.trim();
+        const companyAddress = document.getElementById('company_address').value.trim();
+        const companyCity = document.getElementById('company_city').value.trim();
+        const companyPhone = document.getElementById('company_phone').value.trim();
+        const companyEmail = document.getElementById('company_email').value.trim();
+        const industry = document.getElementById('industry').value;
+
+        // Field validation
+        if (!companyName || !registrationNumber || !companyAddress || !companyCity || !companyPhone || !companyEmail || !industry) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        // Email validation
+        if (!isValidEmail(companyEmail)) {
+            alert('Please enter a valid company email address');
+            return;
+        }
+
+        // Phone validation
+        if (!isValidPhone(companyPhone)) {
+            alert('Please enter a valid Zambian phone number for the company');
+            return;
+        }
+
+        // Website validation (if provided)
+        const website = document.getElementById('company_website').value.trim();
+        if (website && !website.startsWith('http://') && !website.startsWith('https://')) {
+            alert('Website URL must start with http:// or https://');
+            return;
+        }
+
+        goToStep(3);
+    });
+
+    // Step 3 Back Button
+    document.getElementById('step3Back').addEventListener('click', function() {
+        goToStep(2);
+    });
+
+    // Step 3 Next Button
+    document.getElementById('step3Next').addEventListener('click', function() {
+        // Validate Step 3
+        const certificateFile = document.getElementById('certificate_file').files.length;
+        const businessLicenseFile = document.getElementById('business_license_file').files.length;
+        const directorIdFile = document.getElementById('director_id_file').files.length;
+
+        // Required document validation
+        if (!certificateFile || !businessLicenseFile || !directorIdFile) {
+            alert('Please upload all required documents');
+            return;
+        }
+
+        // Update review section
+        updateReviewSection();
+
+        goToStep(4);
+    });
+
+    // Step 4 Back Button
+    document.getElementById('step4Back').addEventListener('click', function() {
+        goToStep(3);
+    });
+
+    // Update Review Section
+    function updateReviewSection() {
+        // Personal Information
+        document.getElementById('review-name').textContent =
+            document.getElementById('first_name').value + ' ' + document.getElementById('last_name').value;
+        document.getElementById('review-email').textContent = document.getElementById('email').value;
+        document.getElementById('review-phone').textContent = document.getElementById('phone_number').value;
+
+        // Company Information
+        document.getElementById('review-company-name').textContent = document.getElementById('company_name').value;
+        document.getElementById('review-registration-number').textContent = document.getElementById('registration_number').value;
+        document.getElementById('review-tax-id').textContent = document.getElementById('tax_id').value || 'Not provided';
+        document.getElementById('review-industry').textContent = document.getElementById('industry').options[document.getElementById('industry').selectedIndex].text;
+        document.getElementById('review-company-address').textContent = document.getElementById('company_address').value;
+        document.getElementById('review-company-city').textContent = document.getElementById('company_city').value;
+        document.getElementById('review-company-country').textContent = document.getElementById('company_country').value;
+        document.getElementById('review-company-phone').textContent = document.getElementById('company_phone').value;
+        document.getElementById('review-company-email').textContent = document.getElementById('company_email').value;
+        document.getElementById('review-company-website').textContent = document.getElementById('company_website').value || 'Not provided';
+
+        // Documents
+        document.getElementById('review-certificate').textContent =
+            document.getElementById('certificate_file').files.length ? document.getElementById('certificate_file').files[0].name : 'Not uploaded';
+        document.getElementById('review-tax-clearance').textContent =
+            document.getElementById('tax_clearance_file').files.length ? document.getElementById('tax_clearance_file').files[0].name : 'Not uploaded';
+        document.getElementById('review-business-license').textContent =
+            document.getElementById('business_license_file').files.length ? document.getElementById('business_license_file').files[0].name : 'Not uploaded';
+        document.getElementById('review-director-id').textContent =
+            document.getElementById('director_id_file').files.length ? document.getElementById('director_id_file').files[0].name : 'Not uploaded';
+    }
+
+    // Form Submission
+    const form = document.getElementById('corporateRegisterForm');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Validate final step
+        if (!document.getElementById('terms').checked || !document.getElementById('verification').checked) {
+            alert('Please accept the terms and confirm your information');
+            return;
+        }
+
+        // Show processing state
+        document.getElementById('step-4').classList.add('hidden');
+        document.getElementById('processing-state').classList.remove('hidden');
+
+        // Create FormData object
+        const formData = new FormData(form);
+
+        // Add file data explicitly to ensure proper upload
+        const fileInputs = ['certificate_file', 'tax_clearance_file', 'business_license_file', 'director_id_file'];
+        fileInputs.forEach(inputId => {
+            const fileInput = document.getElementById(inputId);
+            if (fileInput.files.length > 0) {
+                formData.set(inputId, fileInput.files[0]);
+            }
+        });
+
+        // Send AJAX request
+        fetch('/corporate/register', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+            },
+            credentials: 'same-origin',
+        })
+        .then(response => {
+            if (!response.ok) {
+                // Handle HTTP errors
+                if (response.status === 422) {
+                    // Validation errors
+                    return response.json().then(data => {
+                        throw new Error(Object.values(data.errors).flat().join('\n'));
+                    });
+                }
+                throw new Error('Something went wrong during registration. Please try again later.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Hide processing state
+            document.getElementById('processing-state').classList.add('hidden');
+
+            if (data.success) {
+                // Show success modal
+                document.getElementById('success-modal').classList.remove('hidden');
+            } else {
+                // Show error message
+                alert(data.message || 'An error occurred during registration. Please try again.');
+                document.getElementById('step-4').classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Hide processing state and show form again
+            document.getElementById('processing-state').classList.add('hidden');
+            document.getElementById('step-4').classList.remove('hidden');
+            alert(error.message || 'An error occurred during registration. Please try again.');
+        });
+    });
+
+    // Close success modal when clicking outside
+    document.getElementById('success-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.add('hidden');
+        }
+    });
 });

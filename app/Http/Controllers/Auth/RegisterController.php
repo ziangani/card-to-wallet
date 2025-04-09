@@ -46,52 +46,134 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $rules = [
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone_number' => ['required', 'string', 'max:20', 'unique:users'],
-            'date_of_birth' => ['required', 'date', 'before:today'],
+            'phone_number' => ['required', 'string', 'max:20'],
+            'date_of_birth' => ['nullable', 'date', 'before:today'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'terms' => ['required', 'accepted'],
-        ]);
+        ];
+
+        // Add corporate-specific validation rules
+        if (isset($data['account_type']) && $data['account_type'] === 'corporate') {
+            $rules['company_name'] = ['required', 'string', 'max:255'];
+            $rules['registration_number'] = ['required', 'string', 'max:100'];
+            $rules['tax_id'] = ['nullable', 'string', 'max:100'];
+            $rules['industry'] = ['nullable', 'string', 'max:100'];
+            $rules['company_address'] = ['required', 'string', 'max:255'];
+            $rules['company_city'] = ['required', 'string', 'max:100'];
+            $rules['company_phone'] = ['required', 'string', 'max:20'];
+            $rules['company_email'] = ['required', 'string', 'email', 'max:255'];
+        }
+
+        return Validator::make($data, $rules);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \App\Models\User
      */
     protected function create(array $data)
     {
-        return User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'name' => $data['first_name'] . ' ' . $data['last_name'],
-            'email' => $data['email'],
-            'phone_number' => $data['phone_number'],
-            'date_of_birth' => $data['date_of_birth'],
-            'password' => Hash::make($data['password']),
-            'verification_level' => 'basic',
-            'is_active' => true,
-            'is_email_verified' => false,
-            'is_phone_verified' => false,
-        ]);
+        try {
+
+            \DB::beginTransaction();
+            $user = User::create([
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'name' => $data['first_name'] . ' ' . $data['last_name'],
+                'email' => $data['email'],
+                'phone_number' => $data['phone_number'],
+                'date_of_birth' => $data['date_of_birth'] ?? date('Y-m-d'),
+                'password' => Hash::make($data['password']),
+                'verification_level' => 'basic',
+                'is_active' => true,
+                'is_email_verified' => false,
+                'is_phone_verified' => false,
+                'user_type' => isset($data['account_type']) && $data['account_type'] === 'corporate' ? 'corporate' : 'individual',
+            ]);
+
+            // Create company record for corporate accounts
+            if (isset($data['account_type']) && $data['account_type'] === 'corporate') {
+                $company = \App\Models\Company::create([
+                    'uuid' => \Illuminate\Support\Str::uuid(),
+                    'name' => $data['company_name'],
+                    'registration_number' => $data['registration_number'],
+                    'tax_id' => $data['tax_id'] ?? null,
+                    'industry' => $data['industry'] ?? null,
+                    'address' => $data['company_address'],
+                    'city' => $data['company_city'],
+                    'country' => 'Zambia',
+                    'phone_number' => $data['company_phone'],
+                    'email' => $data['company_email'],
+                    'verification_status' => 'pending',
+                    'status' => 'active',
+                ]);
+
+                // Associate user with company
+                $user->company_id = $company->id;
+                $user->save();
+
+                // Assign admin role to user
+                $adminRole = \App\Models\CorporateRole::where('name', 'admin')->first();
+                if ($adminRole) {
+                    \App\Models\CorporateUserRole::create([
+                        'company_id' => $company->id,
+                        'user_id' => $user->id,
+                        'role_id' => $adminRole->id,
+                        'is_primary' => true,
+                        'assigned_by' => $user->id,
+                        'assigned_at' => now(),
+                    ]);
+                }
+
+                // Create corporate wallet
+                \App\Models\CorporateWallet::create([
+                    'company_id' => $company->id,
+                    'balance' => 0,
+                    'currency' => 'ZMW',
+                    'status' => 'active',
+                ]);
+
+                // Create default approval workflows
+                $company->createDefaultApprovalWorkflows($company->id);
+            }
+            return $user;
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            throw $e; // Rethrow the exception to be handled by the caller
+        } finally {
+            \DB::commit();
+        }
     }
 
     /**
      * Handle a registration request for the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function register(Request $request)
+    public function showCorporateRegistrationForm()
+    {
+        return view('corporate.auth.register');
+    }
+
+    /**
+     * Handle a corporate registration request for the application.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function registerCorporate(Request $request)
     {
         try {
             $validator = $this->validator($request->all());
@@ -114,7 +196,7 @@ class RegisterController extends Controller
 
             // Mark that verification has been sent
             session()->flash('status', 'verification-link-sent');
-            
+
             $redirectUrl = route('verification.notice');
 
             return response()->json([

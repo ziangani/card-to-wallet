@@ -5,415 +5,387 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ config('app.name') }} - Corporate Portal</title>
-    
+
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-    
-    <!-- Bootstrap CSS -->
-    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link href="{{ asset('assets/libs/fontawesome/css/all.min.css') }}" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
-    
-    <!-- Corporate specific CSS -->
+    <link rel="icon" href="{{ asset('assets/img/logo.png') }}">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3366CC',
+                        secondary: '#FF9900',
+                        success: '#28A745',
+                        warning: '#FFC107',
+                        error: '#DC3545',
+                        light: '#F8F9FA',
+                        dark: '#343A40',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- jQuery (if needed) -->
+    @stack('pre-styles')
+
     <style>
-        :root {
-            --corporate-primary: #2C3E50;
-            --corporate-secondary: #34495E;
-            --corporate-accent: #3498DB;
-            --approval-green: #27AE60;
-            --pending-amber: #F39C12;
-            --rejection-red: #C0392B;
-        }
-        
         body {
-            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
         }
-        
-        .corporate-sidebar {
-            background-color: var(--corporate-primary);
-            min-height: 100vh;
-            color: #fff;
-            padding-top: 1rem;
+        .sidebar {
+            width: 280px;
+            transition: all 0.3s ease;
         }
-        
-        .corporate-sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 0.75rem 1rem;
-            border-radius: 0.25rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .corporate-sidebar .nav-link:hover {
-            color: #fff;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .corporate-sidebar .nav-link.active {
-            color: #fff;
-            background-color: var(--corporate-accent);
-        }
-        
-        .corporate-sidebar .nav-link i {
-            width: 1.5rem;
-            text-align: center;
-            margin-right: 0.5rem;
-        }
-        
-        .corporate-header {
-            background-color: #fff;
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem 1.5rem;
-        }
-        
-        .corporate-content {
-            padding: 1.5rem;
-        }
-        
-        .corporate-card {
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            margin-bottom: 1.5rem;
-        }
-        
-        .corporate-card .card-header {
-            background-color: #fff;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-            padding: 1rem 1.25rem;
-            font-weight: 500;
-        }
-        
-        .status-badge {
-            padding: 0.35em 0.65em;
-            font-size: 0.75em;
-            font-weight: 500;
-            border-radius: 0.25rem;
-        }
-        
-        .status-badge.pending {
-            background-color: var(--pending-amber);
-            color: #fff;
-        }
-        
-        .status-badge.approved {
-            background-color: var(--approval-green);
-            color: #fff;
-        }
-        
-        .status-badge.rejected {
-            background-color: var(--rejection-red);
-            color: #fff;
-        }
-        
-        .status-badge.completed {
-            background-color: var(--approval-green);
-            color: #fff;
-        }
-        
-        .status-badge.failed {
-            background-color: var(--rejection-red);
-            color: #fff;
-        }
-        
-        .status-badge.processing {
-            background-color: var(--corporate-accent);
-            color: #fff;
-        }
-        
-        .btn-corporate-primary {
-            background-color: var(--corporate-primary);
-            border-color: var(--corporate-primary);
-            color: #fff;
-        }
-        
-        .btn-corporate-primary:hover {
-            background-color: #1a252f;
-            border-color: #1a252f;
-            color: #fff;
-        }
-        
-        .btn-corporate-accent {
-            background-color: var(--corporate-accent);
-            border-color: var(--corporate-accent);
-            color: #fff;
-        }
-        
-        .btn-corporate-accent:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
-            color: #fff;
-        }
-        
-        .table-corporate th {
-            background-color: #f8f9fa;
-            font-weight: 500;
-        }
-        
-        .data-table {
-            font-size: 0.875rem;
-        }
-        
-        .data-table th {
-            font-weight: 500;
-            padding: 0.75rem;
-        }
-        
-        .data-table td {
-            padding: 0.75rem;
-            vertical-align: middle;
-        }
-        
-        .balance-card {
-            background-color: var(--corporate-primary);
-            color: #fff;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .balance-card .balance-amount {
-            font-size: 2rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        
-        .balance-card .balance-label {
-            font-size: 0.875rem;
-            opacity: 0.8;
-        }
-        
-        .activity-item {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-        
-        .activity-item .activity-icon {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background-color: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-        }
-        
-        .activity-item .activity-content {
-            flex: 1;
-        }
-        
-        .activity-item .activity-title {
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-        }
-        
-        .activity-item .activity-subtitle {
-            font-size: 0.875rem;
-            color: #6c757d;
-        }
-        
-        .activity-item .activity-time {
-            font-size: 0.75rem;
-            color: #6c757d;
-        }
-        
-        @media (max-width: 767.98px) {
-            .corporate-sidebar {
+        @media (max-width: 1023px) {
+            .sidebar {
+                width: 0;
                 position: fixed;
-                top: 0;
-                left: -250px;
-                width: 250px;
-                z-index: 1030;
-                transition: left 0.3s ease;
+                z-index: 40;
+                overflow: hidden;
             }
-            
-            .corporate-sidebar.show {
-                left: 0;
+            .sidebar.open {
+                width: 280px;
             }
-            
-            .corporate-content {
-                margin-left: 0 !important;
+        }
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        @media (min-width: 1024px) {
+            .main-content {
+                margin-left: 280px;
             }
         }
     </style>
-    
+
     @stack('styles')
 </head>
-<body>
-    <div class="d-flex">
-        <!-- Sidebar -->
-        <div class="corporate-sidebar" style="width: 250px;">
-            <div class="px-3 mb-4">
-                <h5 class="mb-0">{{ config('app.name') }}</h5>
-                <div class="small">Corporate Portal</div>
-            </div>
-            
-            <div class="px-3 mb-3">
-                <div class="small text-uppercase opacity-75 mb-2">Main Menu</div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a href="{{ route('corporate.dashboard') }}" class="nav-link {{ request()->routeIs('corporate.dashboard') ? 'active' : '' }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('corporate.wallet.index') }}" class="nav-link {{ request()->routeIs('corporate.wallet.*') ? 'active' : '' }}">
-                            <i class="fas fa-wallet"></i> Wallet
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('corporate.disbursements.index') }}" class="nav-link {{ request()->routeIs('corporate.disbursements.*') ? 'active' : '' }}">
-                            <i class="fas fa-money-bill-wave"></i> Disbursements
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('corporate.approvals.index') }}" class="nav-link {{ request()->routeIs('corporate.approvals.*') ? 'active' : '' }}">
-                            <i class="fas fa-check-double"></i> Approvals
-                            @if(isset($pendingApprovalsCount) && $pendingApprovalsCount > 0)
-                                <span class="badge bg-danger ms-2">{{ $pendingApprovalsCount }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('corporate.reports.index') }}" class="nav-link {{ request()->routeIs('corporate.reports.*') ? 'active' : '' }}">
-                            <i class="fas fa-chart-bar"></i> Reports
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="px-3 mb-3">
-                <div class="small text-uppercase opacity-75 mb-2">Administration</div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a href="{{ route('corporate.users.index') }}" class="nav-link {{ request()->routeIs('corporate.users.*') ? 'active' : '' }}">
-                            <i class="fas fa-users"></i> Users
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('corporate.settings.profile') }}" class="nav-link {{ request()->routeIs('corporate.settings.*') ? 'active' : '' }}">
-                            <i class="fas fa-cog"></i> Settings
-                        </a>
-                    </li>
-                </ul>
+<body class="bg-light">
+    <!-- Mobile Header -->
+    <header class="lg:hidden bg-white shadow-sm sticky top-0 z-30">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <button id="sidebar-toggle" class="text-dark hover:text-primary p-2">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <a href="{{ route('corporate.dashboard') }}" class="flex items-center">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-10">
+            </a>
+            <div class="relative">
+                <button id="mobile-user-menu-button" class="flex items-center focus:outline-none">
+                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                    </div>
+                </button>
+                <!-- Mobile User Dropdown Menu -->
+                <div id="mobile-user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                    <a href="{{ route('corporate.settings.profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                        <i class="fas fa-user mr-2"></i> Profile
+                    </a>
+                    <a href="{{ route('corporate.settings.security') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                        <i class="fas fa-shield-alt mr-2"></i> Security
+                    </a>
+                    <div class="border-t border-gray-200 my-1"></div>
+                    <form method="POST" action="{{ route('logout') }}" class="block">
+                        @csrf
+                        <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-        
-        <!-- Main Content -->
-        <div class="flex-grow-1" style="margin-left: 250px;">
-            <!-- Header -->
-            <div class="corporate-header d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="mb-0">@yield('title', 'Dashboard')</h5>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar bg-white shadow-md h-screen fixed top-0 left-0 overflow-y-auto z-40">
+        <div class="p-4 border-b">
+            <a href="{{ route('corporate.dashboard') }}" class="flex items-center justify-center">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-12">
+            </a>
+        </div>
+
+        <div class="p-4">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-lg font-semibold">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                 </div>
-                
-                <div class="d-flex align-items-center">
-                    <div class="dropdown me-3">
-                        <a href="#" class="text-dark position-relative" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-bell"></i>
+                <div>
+                    <h3 class="font-semibold text-dark">{{ Auth::user()->name }}</h3>
+                    <p class="text-sm text-gray-500">{{ Auth::user()->company->name ?? 'Corporate User' }}</p>
+                </div>
+            </div>
+
+            <nav class="mt-6">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="{{ route('corporate.dashboard') }}" class="flex items-center px-4 py-3 text-dark hover:bg-primary hover:text-white rounded-lg transition-colors {{ request()->routeIs('corporate.dashboard') ? 'bg-primary text-white' : '' }}">
+                            <i class="fas fa-tachometer-alt w-6"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('corporate.wallet.index') }}" class="flex items-center px-4 py-3 text-dark hover:bg-primary hover:text-white rounded-lg transition-colors {{ request()->routeIs('corporate.wallet.*') ? 'bg-primary text-white' : '' }}">
+                            <i class="fas fa-wallet w-6"></i>
+                            <span>Wallet</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('corporate.disbursements.index') }}" class="flex items-center px-4 py-3 text-dark hover:bg-primary hover:text-white rounded-lg transition-colors {{ request()->routeIs('corporate.disbursements.*') ? 'bg-primary text-white' : '' }}">
+                            <i class="fas fa-money-bill-wave w-6"></i>
+                            <span>Disbursements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('corporate.approvals.index') }}" class="flex items-center px-4 py-3 text-dark hover:bg-primary hover:text-white rounded-lg transition-colors {{ request()->routeIs('corporate.approvals.*') ? 'bg-primary text-white' : '' }}">
+                            <i class="fas fa-check-double w-6"></i>
+                            <span>Approvals</span>
                             @if(isset($pendingApprovalsCount) && $pendingApprovalsCount > 0)
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-warning text-dark">
                                     {{ $pendingApprovalsCount }}
                                 </span>
                             @endif
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
-                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                    </li>
+                    <li>
+                        <a href="{{ route('corporate.reports.index') }}" class="flex items-center px-4 py-3 text-dark hover:bg-primary hover:text-white rounded-lg transition-colors {{ request()->routeIs('corporate.reports.*') ? 'bg-primary text-white' : '' }}">
+                            <i class="fas fa-chart-bar w-6"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="mt-6">
+                <div class="text-xs uppercase text-gray-500 font-semibold mb-2">Administration</div>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="{{ route('corporate.users.index') }}" class="flex items-center px-4 py-3 text-dark hover:bg-primary hover:text-white rounded-lg transition-colors {{ request()->routeIs('corporate.users.*') ? 'bg-primary text-white' : '' }}">
+                            <i class="fas fa-users w-6"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('corporate.settings.profile') }}" class="flex items-center px-4 py-3 text-dark hover:bg-primary hover:text-white rounded-lg transition-colors {{ request()->routeIs('corporate.settings.*') ? 'bg-primary text-white' : '' }}">
+                            <i class="fas fa-cog w-6"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="p-4 mt-auto border-t">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="flex items-center px-4 py-3 text-dark hover:bg-gray-100 rounded-lg transition-colors w-full">
+                    <i class="fas fa-sign-out-alt w-6"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content min-h-screen bg-light pb-12">
+        <!-- Desktop Header -->
+        <header class="hidden lg:block bg-white shadow-sm sticky top-0 z-20">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-dark">@yield('title', 'Dashboard')</h1>
+
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="notifications-button" class="text-gray-600 hover:text-primary p-2 relative">
+                            <i class="fas fa-bell text-xl"></i>
                             @if(isset($pendingApprovalsCount) && $pendingApprovalsCount > 0)
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('corporate.approvals.index') }}">
-                                        <i class="fas fa-check-double me-2 text-primary"></i>
-                                        {{ $pendingApprovalsCount }} pending approval(s)
-                                    </a>
-                                </li>
-                            @else
-                                <li><span class="dropdown-item">No new notifications</span></li>
+                                <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-error rounded-full">
+                                    {{ $pendingApprovalsCount }}
+                                </span>
                             @endif
-                        </ul>
-                    </div>
-                    
-                    <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="me-2">
-                                <div class="fw-bold">{{ Auth::user()->name }}</div>
-                                <div class="small text-muted">{{ Auth::user()->company->name ?? 'Corporate User' }}</div>
+                        </button>
+                        <!-- Notifications Dropdown -->
+                        <div id="notifications-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-2 z-50">
+                            <div class="px-4 py-2 border-b border-gray-200">
+                                <h3 class="font-semibold text-dark">Notifications</h3>
                             </div>
-                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <div class="max-h-64 overflow-y-auto">
+                                @if(isset($pendingApprovalsCount) && $pendingApprovalsCount > 0)
+                                    <a href="{{ route('corporate.approvals.index') }}" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100">
+                                        <div class="flex items-start">
+                                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-warning bg-opacity-20 flex items-center justify-center text-warning">
+                                                <i class="fas fa-check-double"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm font-medium text-dark">Pending Approvals</p>
+                                                <p class="text-xs text-gray-500">You have {{ $pendingApprovalsCount }} pending approval(s)</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                @else
+                                    <div class="px-4 py-3 text-sm text-gray-500">No new notifications</div>
+                                @endif
+                            </div>
+                            <div class="px-4 py-2 border-t border-gray-200 text-center">
+                                <a href="#" class="text-sm text-accent hover:underline">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <button id="user-menu-button" class="flex items-center space-x-3 focus:outline-none">
+                            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </div>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><h6 class="dropdown-header">{{ Auth::user()->name }}</h6></li>
-                            <li><a class="dropdown-item" href="{{ route('corporate.settings.profile') }}"><i class="fas fa-user me-2"></i> Profile</a></li>
-                            <li><a class="dropdown-item" href="{{ route('corporate.settings.security') }}"><i class="fas fa-lock me-2"></i> Security</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i> Logout</button>
-                                </form>
-                            </li>
-                        </ul>
+                            <div class="hidden md:block text-left">
+                                <h3 class="font-medium text-dark">{{ Auth::user()->name }}</h3>
+                                <p class="text-xs text-gray-500">{{ Auth::user()->company->name ?? 'Corporate User' }}</p>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <!-- User Dropdown Menu -->
+                        <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                            <a href="{{ route('corporate.settings.profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i> Profile
+                            </a>
+                            <a href="{{ route('corporate.settings.security') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                <i class="fas fa-shield-alt mr-2"></i> Security
+                            </a>
+                            <div class="border-t border-gray-200 my-1"></div>
+                            <form method="POST" action="{{ route('logout') }}" class="block">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Content -->
-            <div class="corporate-content">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </header>
+
+        <!-- Page Content -->
+        <div class="container mx-auto px-4 py-6">
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-success bg-opacity-10 text-success rounded-lg flex items-start">
+                    <i class="fas fa-check-circle mt-1 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Success</h3>
+                        <p>{{ session('success') }}</p>
                     </div>
-                @endif
-                
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="mb-6 p-4 bg-error bg-opacity-10 text-error rounded-lg flex items-start">
+                    <i class="fas fa-exclamation-circle mt-1 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Error</h3>
+                        <p>{{ session('error') }}</p>
                     </div>
-                @endif
-                
-                @if(session('warning'))
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        {{ session('warning') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('warning'))
+                <div class="mb-6 p-4 bg-warning bg-opacity-10 text-warning rounded-lg flex items-start">
+                    <i class="fas fa-exclamation-triangle mt-1 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Warning</h3>
+                        <p>{{ session('warning') }}</p>
                     </div>
-                @endif
-                
-                @yield('content')
-            </div>
+                </div>
+            @endif
+
+            @yield('content')
         </div>
-    </div>
-    
-    <!-- Bootstrap JS -->
-    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    
-    <!-- jQuery -->
-    <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
-    
-    <!-- Custom JS -->
+    </main>
+
     <script>
-        // Mobile sidebar toggle
         document.addEventListener('DOMContentLoaded', function() {
-            const toggleSidebar = document.querySelector('.toggle-sidebar');
-            const sidebar = document.querySelector('.corporate-sidebar');
-            
-            if (toggleSidebar && sidebar) {
-                toggleSidebar.addEventListener('click', function() {
-                    sidebar.classList.toggle('show');
+            // Mobile sidebar toggle
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
                 });
             }
+
+            // Close sidebar when clicking outside
+            document.addEventListener('click', function(event) {
+                if (sidebar.classList.contains('open') &&
+                    !sidebar.contains(event.target) &&
+                    event.target !== sidebarToggle) {
+                    sidebar.classList.remove('open');
+                }
+            });
+
+            // User menu dropdown
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userMenu = document.getElementById('user-menu');
+
+            if (userMenuButton && userMenu) {
+                userMenuButton.addEventListener('click', function() {
+                    userMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Mobile user menu dropdown
+            const mobileUserMenuButton = document.getElementById('mobile-user-menu-button');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
+
+            if (mobileUserMenuButton && mobileUserMenu) {
+                mobileUserMenuButton.addEventListener('click', function() {
+                    mobileUserMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Notifications dropdown
+            const notificationsButton = document.getElementById('notifications-button');
+            const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+            if (notificationsButton && notificationsDropdown) {
+                notificationsButton.addEventListener('click', function() {
+                    notificationsDropdown.classList.toggle('hidden');
+                });
+            }
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(event) {
+                if (userMenu && !userMenu.classList.contains('hidden') &&
+                    !userMenu.contains(event.target) &&
+                    !userMenuButton.contains(event.target)) {
+                    userMenu.classList.add('hidden');
+                }
+
+                if (mobileUserMenu && !mobileUserMenu.classList.contains('hidden') &&
+                    !mobileUserMenu.contains(event.target) &&
+                    !mobileUserMenuButton.contains(event.target)) {
+                    mobileUserMenu.classList.add('hidden');
+                }
+
+                if (notificationsDropdown && !notificationsDropdown.classList.contains('hidden') &&
+                    !notificationsDropdown.contains(event.target) &&
+                    !notificationsButton.contains(event.target)) {
+                    notificationsDropdown.classList.add('hidden');
+                }
+            });
         });
     </script>
-    
+
     @stack('scripts')
 </body>
 </html>

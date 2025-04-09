@@ -23,14 +23,11 @@ class Company extends Model
         'address',
         'city',
         'country',
-        'postal_code',
         'phone_number',
         'email',
         'website',
-        'logo_path',
         'verification_status',
-        'status',
-        'notes',
+        'status'
     ];
 
     /**
@@ -189,11 +186,11 @@ class Company extends Model
     public function getCurrentRateTier()
     {
         $rateAssignment = $this->rateAssignment;
-        
+
         if (!$rateAssignment) {
             return null;
         }
-        
+
         return $rateAssignment->rateTier;
     }
 
@@ -205,11 +202,11 @@ class Company extends Model
     public function getCurrentFeePercentage()
     {
         $rateAssignment = $this->rateAssignment;
-        
+
         if (!$rateAssignment) {
             return 3.5; // Default fee percentage
         }
-        
+
         return $rateAssignment->getEffectiveFeePercentage();
     }
 
@@ -291,5 +288,31 @@ class Company extends Model
     public function scopeRejected($query)
     {
         return $query->where('verification_status', 'rejected');
+    }
+
+    /**
+     * Create default approval workflows for the company.
+     *
+     * @param  int  $companyId
+     * @return void
+     */
+    public function createDefaultApprovalWorkflows($companyId)
+    {
+        $workflowTypes = [
+            'bulk_disbursement' => 1,
+            'user_role' => 1,
+            'rate_change' => 1,
+            'wallet_withdrawal' => 1,
+        ];
+
+        foreach ($workflowTypes as $type => $minApprovers) {
+            ApprovalWorkflow::create([
+                'company_id' => $companyId,
+                'entity_type' => $type,
+                'min_approvers' => $minApprovers,
+                'amount_threshold' => null,
+                'is_active' => true,
+            ]);
+        }
     }
 }

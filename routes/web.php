@@ -132,4 +132,69 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
     Route::prefix('transactions')->name('transactions.')->group(function () {
         Route::post('/quick', [TransactionController::class, 'processQuick'])->name('quick');
     });
+    
+    // Corporate routes
+    Route::prefix('corporate')->name('corporate.')->middleware(['auth', 'verified', 'corporate.access'])->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [App\Http\Controllers\Corporate\CorporateController::class, 'index'])->name('dashboard');
+        
+        // Wallet routes
+        Route::prefix('wallet')->name('wallet.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'index'])->name('index');
+            Route::get('/transactions', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'transactions'])->name('transactions');
+            Route::get('/deposit', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'deposit'])->name('deposit');
+            Route::post('/notify-deposit', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'notifyDeposit'])->name('notify-deposit');
+            Route::post('/process-card-deposit', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'processCardDeposit'])->name('process-card-deposit');
+        });
+        
+        // Disbursement routes
+        Route::prefix('disbursements')->name('disbursements.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'create'])->name('create');
+            Route::post('/validate', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'validateFile'])->name('validate');
+            Route::get('/validate', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'showValidation'])->name('show-validation');
+            Route::get('/review', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'review'])->name('review');
+            Route::post('/submit', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'submit'])->name('submit');
+            Route::get('/success', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'success'])->name('success');
+            Route::get('/show/{id}', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'show'])->name('show');
+            Route::get('/download-errors', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'downloadErrors'])->name('download-errors');
+            Route::get('/template/{format}', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'downloadTemplate'])->name('template');
+        });
+        
+        // Approval routes
+        Route::prefix('approvals')->name('approvals.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Corporate\ApprovalController::class, 'index'])->name('index');
+            Route::get('/{id}', [App\Http\Controllers\Corporate\ApprovalController::class, 'show'])->name('show');
+            Route::post('/{id}/approve', [App\Http\Controllers\Corporate\ApprovalController::class, 'approve'])->name('approve');
+            Route::post('/{id}/reject', [App\Http\Controllers\Corporate\ApprovalController::class, 'reject'])->name('reject');
+        });
+        
+        // User management routes
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Corporate\CorporateUserController::class, 'index'])->name('index');
+            Route::get('/invite', [App\Http\Controllers\Corporate\CorporateUserController::class, 'invite'])->name('invite');
+            Route::post('/invite', [App\Http\Controllers\Corporate\CorporateUserController::class, 'processInvite'])->name('process-invite');
+            Route::get('/{id}/edit', [App\Http\Controllers\Corporate\CorporateUserController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [App\Http\Controllers\Corporate\CorporateUserController::class, 'update'])->name('update');
+        });
+        
+        // Reports routes
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Corporate\CorporateReportController::class, 'index'])->name('index');
+            Route::get('/generate', [App\Http\Controllers\Corporate\CorporateReportController::class, 'generate'])->name('generate');
+            Route::get('/download/{id}', [App\Http\Controllers\Corporate\CorporateReportController::class, 'download'])->name('download');
+        });
+        
+        // Settings routes
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::get('/profile', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'profile'])->name('profile');
+            Route::put('/profile', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'updateProfile'])->name('update-profile');
+            Route::get('/security', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'security'])->name('security');
+            Route::put('/password', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'updatePassword'])->name('update-password');
+            Route::get('/roles', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'roles'])->name('roles');
+            Route::put('/roles', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'updateRoles'])->name('update-roles');
+            Route::get('/approvals', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'approvals'])->name('approvals');
+            Route::put('/approvals', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'updateApprovals'])->name('update-approvals');
+        });
+    });
 });

@@ -20,6 +20,14 @@ return Application::configure(basePath: dirname(__DIR__))
             '/checkout/*/process',
             'checkout/*/3ds/callback'
         ]);
+        
+        // Register corporate access middleware
+        $middleware->alias([
+            'corporate.access' => \App\Http\Middleware\CorporateAccess::class,
+            'corporate.role' => \App\Http\Middleware\CorporateRoleCheck::class,
+            'approval.required' => \App\Http\Middleware\ApprovalRequired::class,
+        ]);
+        
         //$middleware->append(\App\Http\Middleware\AuthenticateMerchant::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {

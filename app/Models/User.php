@@ -23,7 +23,9 @@ class User extends Authenticatable implements HasName, FilamentUser, MustVerifyE
         'EXCO' => 'EXCO',
         'ACCOUNT_MANAGER' => 'ACCOUNT_MANAGER',
         'MERCHANT' => 'MERCHANT',
-        'SYSADMIN' => 'SYSADMIN'
+        'SYSADMIN' => 'SYSADMIN',
+        'individual' => 'individual',
+        'corporate' => 'corporate'
     ];
 
     /**
@@ -48,6 +50,7 @@ class User extends Authenticatable implements HasName, FilamentUser, MustVerifyE
         'user_type',
         'merchant_id',
         'company_detail_id',
+        'company_id',
         'address',
         'city',
         'country'
@@ -121,5 +124,92 @@ class User extends Authenticatable implements HasName, FilamentUser, MustVerifyE
     {
         $roles = is_array($roles) ? $roles : [$roles];
         return static::whereIn('user_type', $roles)->get();
+    }
+    
+    /**
+     * Get the company that owns the user.
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+    
+    /**
+     * Get the corporate user roles for the user.
+     */
+    public function corporateUserRoles()
+    {
+        return $this->hasMany(CorporateUserRole::class);
+    }
+    
+    /**
+     * Get the corporate roles for the user.
+     */
+    public function corporateRoles()
+    {
+        return $this->belongsToMany(CorporateRole::class, 'corporate_user_roles', 'user_id', 'role_id')
+            ->withPivot('company_id', 'is_primary', 'assigned_by', 'assigned_at')
+            ->withTimestamps();
+    }
+    
+    /**
+     * Check if the user is a corporate user.
+     *
+     * @return bool
+     */
+    public function isCorporate()
+    {
+        return $this->user_type === 'corporate';
+    }
+    
+    /**
+     * Check if the user is an individual user.
+     *
+     * @return bool
+     */
+    public function isIndividual()
+    {
+        return $this->user_type === 'individual';
+    }
+    
+    /**
+     * Check if the user has a specific corporate role.
+     *
+     * @param  string  $role
+     * @return bool
+     */
+    public function hasCorporateRole($role)
+    {
+        return $this->corporateRoles()->where('name', $role)->exists();
+    }
+    
+    /**
+     * Check if the user is a corporate admin.
+     *
+     * @return bool
+     */
+    public function isCorporateAdmin()
+    {
+        return $this->hasCorporateRole('admin');
+    }
+    
+    /**
+     * Check if the user is a corporate approver.
+     *
+     * @return bool
+     */
+    public function isCorporateApprover()
+    {
+        return $this->hasCorporateRole('approver');
+    }
+    
+    /**
+     * Check if the user is a corporate initiator.
+     *
+     * @return bool
+     */
+    public function isCorporateInitiator()
+    {
+        return $this->hasCorporateRole('initiator');
     }
 }

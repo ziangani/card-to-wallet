@@ -11,6 +11,7 @@ enum PaymentChannel: string
     case UBA = 'UBA';
     case CASHOUT = 'CASHOUT';
     case CARD_TO_WALLET = 'CARD_TO_WALLET';
+    case CORPORATE_DEPOSIT = 'CORPORATE_DEPOSIT';
 
     public function label(): string
     {
@@ -22,6 +23,7 @@ enum PaymentChannel: string
             self::UBA => 'UBA',
             self::CASHOUT => 'Techpay Cash out',
             self::CARD_TO_WALLET => 'Card to Wallet',
+            self::CORPORATE_DEPOSIT => 'Corporate Deposit',
         };
     }
 

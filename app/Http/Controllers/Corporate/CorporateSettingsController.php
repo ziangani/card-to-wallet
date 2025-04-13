@@ -207,8 +207,12 @@ class CorporateSettingsController extends Controller
             return redirect()->back()->with('error', 'You do not have permission to update roles.');
         }
         
-        // In a real implementation, this would update role permissions
-        // For now, we'll just return a success message
+        // Get the permissions data from the request
+        $permissions = $request->input('permissions', []);
+        
+        // Store the permissions in the session for now
+        // In a real implementation, you would store these in the database
+        session(['role_permissions' => $permissions]);
         
         return redirect()->route('corporate.settings.roles')
             ->with('success', 'Roles updated successfully.');
@@ -293,6 +297,37 @@ class CorporateSettingsController extends Controller
     }
     
     /**
+     * Delete a company document.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deleteDocument($id)
+    {
+        $user = Auth::user();
+        $company = $user->company;
+        
+        // Find the document
+        $document = CompanyDocument::where('company_id', $company->id)->findOrFail($id);
+        
+        // Check if the document is rejected (only rejected documents can be deleted)
+        if ($document->status !== 'rejected') {
+            return redirect()->back()->with('error', 'Only rejected documents can be deleted.');
+        }
+        
+        // Delete the file from storage
+        if ($document->file_path) {
+            Storage::disk('public')->delete($document->file_path);
+        }
+        
+        // Delete the document record
+        $document->delete();
+        
+        return redirect()->route('corporate.settings.profile')
+            ->with('success', 'Document deleted successfully.');
+    }
+    
+    /**
      * Display the rates settings.
      *
      * @return \Illuminate\View\View
@@ -310,10 +345,26 @@ class CorporateSettingsController extends Controller
         // Get current rate assignment
         $rateAssignment = $company->rateAssignment;
         
+        // Calculate monthly transaction volume (last 30 days)
+        $monthlyVolume = 0;
+        $wallet = $company->corporateWallet;
+        
+        if ($wallet) {
+            $startDate = now()->subDays(30);
+            $endDate = now();
+            
+            // Sum up all completed transactions in the last 30 days
+            $monthlyVolume = $wallet->transactions()
+                ->completed()
+                ->createdBetween($startDate, $endDate)
+                ->sum('amount');
+        }
+        
         return view('corporate.settings.rates', compact(
             'company',
             'rateTiers',
-            'rateAssignment'
+            'rateAssignment',
+            'monthlyVolume'
         ));
     }
 }

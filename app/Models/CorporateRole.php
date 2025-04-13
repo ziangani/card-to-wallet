@@ -206,4 +206,47 @@ class CorporateRole extends Model
     {
         return $query->orderBy('created_at', 'desc');
     }
+    
+    /**
+     * Check if the role has a specific permission.
+     *
+     * @param string $permission
+     * @return bool
+     */
+    public function hasPermission($permission)
+    {
+        // Define default permissions for each role
+        $rolePermissions = [
+            'admin' => [
+                'view_wallet', 'deposit_funds', 'withdraw_funds',
+                'view_disbursements', 'create_disbursements', 'approve_disbursements',
+                'view_users', 'invite_users', 'manage_roles',
+                'view_reports', 'generate_reports',
+                'view_settings', 'update_company', 'manage_workflows',
+                'view_approvals', 'approve_requests', 'reject_requests'
+            ],
+            'approver' => [
+                'view_wallet', 
+                'view_disbursements', 'approve_disbursements',
+                'view_users',
+                'view_reports',
+                'view_settings',
+                'view_approvals', 'approve_requests', 'reject_requests'
+            ],
+            'initiator' => [
+                'view_wallet', 'deposit_funds',
+                'view_disbursements', 'create_disbursements',
+                'view_users',
+                'view_reports',
+                'view_settings',
+                'view_approvals'
+            ]
+        ];
+        
+        // Get permissions for this role
+        $permissions = $rolePermissions[$this->name] ?? [];
+        
+        // Check if the requested permission is in the list
+        return in_array($permission, $permissions);
+    }
 }

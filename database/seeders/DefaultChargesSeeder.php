@@ -50,5 +50,16 @@ class DefaultChargesSeeder extends Seeder
             'is_default' => true,
             'is_active' => true
         ]);
+
+        // Corporate Deposit default charges
+        Charges::create([
+            'channel' => 'CORPORATE_DEPOSIT',
+            'charge_name' => 'PLATFORM_FEE',
+            'description' => 'Fee for corporate wallet deposits',
+            'charge_type' => 'PERCENTAGE',
+            'charge_value' => 4.00,
+            'is_default' => true,
+            'is_active' => true
+        ]);
     }
 }

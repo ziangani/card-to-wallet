@@ -275,10 +275,10 @@
                             <span class="text-sm text-gray-500">Total Amount:</span>
                             <span class="text-sm font-medium text-gray-900">{{ $disbursement->currency }} {{ number_format($disbursement->total_amount, 2) }}</span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-sm text-gray-500">Fee ({{ number_format($feePercentage, 2) }}%):</span>
-                            <span class="text-sm font-medium text-gray-900">{{ $disbursement->currency }} {{ number_format($disbursement->total_fee, 2) }}</span>
-                        </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Fee ({{ \App\Models\Transaction::getCorporateFeeDescription() }}):</span>
+                                <span class="text-sm font-medium text-gray-900">{{ $disbursement->currency }} {{ number_format($disbursement->total_fee, 2) }}</span>
+                            </div>
                         <div class="flex justify-between pt-2 border-t border-gray-100">
                             <span class="text-sm font-medium text-gray-700">Total Debit:</span>
                             <span class="text-sm font-bold text-corporate-primary">{{ $disbursement->currency }} {{ number_format($disbursement->total_amount + $disbursement->total_fee, 2) }}</span>

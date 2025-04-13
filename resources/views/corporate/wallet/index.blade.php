@@ -25,7 +25,7 @@
                     <p class="text-2xl font-bold text-primary">{{ $wallet->currency }} {{ number_format($wallet->balance, 2) }}</p>
                 </div>
             </div>
-            
+
             <div class="flex space-x-2">
                 <a href="{{ route('corporate.wallet.deposit') }}" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 text-center">
                     <i class="fas fa-plus mr-2"></i> Deposit
@@ -36,7 +36,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Transaction Stats -->
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
@@ -59,7 +59,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Quick Actions -->
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
@@ -77,7 +77,7 @@
                     </div>
                     <i class="fas fa-chevron-right ml-auto text-gray-400"></i>
                 </a>
-                
+
                 <a href="{{ route('corporate.wallet.deposit', ['method' => 'bank']) }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
                     <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-3">
                         <i class="fas fa-university"></i>
@@ -88,7 +88,7 @@
                     </div>
                     <i class="fas fa-chevron-right ml-auto text-gray-400"></i>
                 </a>
-                
+
                 <a href="{{ route('corporate.disbursements.create') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
                     <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mr-3">
                         <i class="fas fa-paper-plane"></i>
@@ -114,7 +114,7 @@
             </a>
         </div>
     </div>
-    
+
     @if($recentTransactions->isEmpty())
         <div class="p-6 text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 text-gray-400 mb-4">
@@ -166,15 +166,15 @@
                             </td>
                             <td class="px-6 py-4 text-right whitespace-nowrap">
                                 @php
-                                    $amountClass = in_array($transaction->transaction_type, ['deposit', 'adjustment']) && $transaction->amount > 0 
-                                        ? 'text-green-600' 
-                                        : (in_array($transaction->transaction_type, ['withdrawal', 'fee']) || $transaction->amount < 0 
-                                            ? 'text-red-600' 
+                                    $amountClass = in_array($transaction->transaction_type, ['deposit', 'adjustment']) && $transaction->amount > 0
+                                        ? 'text-green-600'
+                                        : (in_array($transaction->transaction_type, ['withdrawal', 'fee']) || $transaction->amount < 0
+                                            ? 'text-red-600'
                                             : 'text-gray-900');
-                                    $amountPrefix = in_array($transaction->transaction_type, ['deposit', 'adjustment']) && $transaction->amount > 0 
-                                        ? '+' 
-                                        : (in_array($transaction->transaction_type, ['withdrawal', 'fee']) || $transaction->amount < 0 
-                                            ? '-' 
+                                    $amountPrefix = in_array($transaction->transaction_type, ['deposit', 'adjustment']) && $transaction->amount > 0
+                                        ? '+'
+                                        : (in_array($transaction->transaction_type, ['withdrawal', 'fee']) || $transaction->amount < 0
+                                            ? '-'
                                             : '');
                                     $displayAmount = abs($transaction->amount);
                                 @endphp
@@ -232,15 +232,11 @@
                     </li>
                 </ul>
             </div>
-            
+
             <div>
                 <h4 class="text-base font-medium text-gray-900 mb-4">Wallet Details</h4>
                 <div class="bg-gray-50 rounded-lg p-4">
                     <dl class="space-y-3">
-                        <div class="flex justify-between">
-                            <dt class="text-sm text-gray-500">Wallet ID</dt>
-                            <dd class="text-sm font-medium text-gray-900">{{ $wallet->id }}</dd>
-                        </div>
                         <div class="flex justify-between">
                             <dt class="text-sm text-gray-500">Company</dt>
                             <dd class="text-sm font-medium text-gray-900">{{ $company->name }}</dd>

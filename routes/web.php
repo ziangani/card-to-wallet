@@ -166,6 +166,7 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
             Route::get('/show/{id}', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'show'])->name('show');
             Route::get('/download-errors', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'downloadErrors'])->name('download-errors');
             Route::get('/template/{format}', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'downloadTemplate'])->name('template');
+            Route::get('/get-validation-results', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'getValidationResults'])->name('get-validation-results');
         });
         
         // Approval routes
@@ -188,7 +189,7 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
         // Reports routes
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::get('/', [App\Http\Controllers\Corporate\CorporateReportController::class, 'index'])->name('index');
-            Route::get('/generate', [App\Http\Controllers\Corporate\CorporateReportController::class, 'generate'])->name('generate');
+            Route::post('/generate', [App\Http\Controllers\Corporate\CorporateReportController::class, 'generate'])->name('generate');
             Route::get('/download/{id}', [App\Http\Controllers\Corporate\CorporateReportController::class, 'download'])->name('download');
         });
         
@@ -196,12 +197,14 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
         Route::prefix('settings')->name('settings.')->group(function () {
             Route::get('/profile', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'profile'])->name('profile');
             Route::put('/profile', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'updateProfile'])->name('update-profile');
+            Route::delete('/documents/{id}', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'deleteDocument'])->name('delete-document');
             Route::get('/security', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'security'])->name('security');
             Route::put('/password', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'updatePassword'])->name('update-password');
             Route::get('/roles', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'roles'])->name('roles');
             Route::put('/roles', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'updateRoles'])->name('update-roles');
             Route::get('/approvals', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'approvals'])->name('approvals');
             Route::put('/approvals', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'updateApprovals'])->name('update-approvals');
+            Route::get('/rates', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'rates'])->name('rates');
         });
     });
 });

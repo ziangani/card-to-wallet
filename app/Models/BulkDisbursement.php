@@ -94,7 +94,7 @@ class BulkDisbursement extends Model
      */
     public function approvalRequest()
     {
-        return $this->morphOne(ApprovalRequest::class, 'approvable');
+        return $this->morphOne(ApprovalRequest::class, 'approvable', 'entity_type', 'entity_id');
     }
 
     /**

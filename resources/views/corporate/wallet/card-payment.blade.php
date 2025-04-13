@@ -32,7 +32,7 @@
                         <p class="text-base font-medium text-gray-900">{{ $transaction->reference_number }}</p>
                     </div>
                 </div>
-                
+
                 <div class="bg-gray-50 rounded-lg p-4 mb-6">
                     <div class="flex items-center">
                         <div class="w-10 h-10 rounded-full bg-primary bg-opacity-10 flex items-center justify-center text-primary mr-4">
@@ -44,25 +44,25 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- MPGS Payment Form -->
                 <div id="payment-form" class="border border-gray-200 rounded-lg p-6">
                     <div id="loading" class="text-center py-6">
                         <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
                         <p class="text-gray-600">Initializing secure payment...</p>
                     </div>
-                    
+
                     <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                         <p></p>
                     </div>
-                    
+
                     <!-- MPGS Checkout will be loaded here -->
                     <div id="mpgs-checkout"></div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Sidebar -->
     <div class="space-y-6">
         <!-- Payment Summary -->
@@ -77,19 +77,19 @@
                         <span class="text-sm font-medium text-gray-900">{{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-sm text-gray-500">Processing Fee</span>
-                        <span class="text-sm font-medium text-gray-900">{{ $transaction->currency }} 0.00</span>
+                        <span class="text-sm text-gray-500">Processing Fee (4%)</span>
+                        <span class="text-sm font-medium text-gray-900">{{ $transaction->currency }} {{ number_format($transaction->amount * 0.04, 2) }}</span>
                     </div>
                     <div class="border-t border-gray-200 pt-3 mt-3">
                         <div class="flex justify-between">
                             <span class="text-base font-medium text-gray-900">Total</span>
-                            <span class="text-base font-bold text-primary">{{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}</span>
+                            <span class="text-base font-bold text-primary">{{ $transaction->currency }} {{ number_format($transaction->amount * 1.04, 2) }}</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Secure Payment -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200">
@@ -114,7 +114,7 @@
                         <span>Your wallet will be credited immediately after successful payment</span>
                     </li>
                 </ul>
-                
+
                 <div class="flex justify-center mt-6 space-x-4">
                     <img src="https://cdn.jsdelivr.net/gh/stephenhutchings/typicons.font@master/src/svg/credit-card.svg" alt="Visa" class="h-8 opacity-60">
                     <img src="https://cdn.jsdelivr.net/gh/stephenhutchings/typicons.font@master/src/svg/credit-card.svg" alt="Mastercard" class="h-8 opacity-60">
@@ -133,14 +133,14 @@
         const loadingElement = document.getElementById('loading');
         const errorElement = document.getElementById('error-message');
         const errorText = errorElement.querySelector('p');
-        
+
         // Function to show error
         function showError(message) {
             loadingElement.classList.add('hidden');
             errorElement.classList.remove('hidden');
             errorText.textContent = message;
         }
-        
+
         // Initialize MPGS checkout
         function initializeCheckout() {
             // Make AJAX request to get session ID
@@ -155,30 +155,14 @@
             .then(data => {
                 if (data.status === 'SUCCESS') {
                     loadingElement.classList.add('hidden');
-                    
+
                     // Initialize MPGS Checkout
                     Checkout.configure({
-                        merchant: '{{ config('app.name') }}',
-                        session: { 
+                        session: {
                             id: data.session
-                        },
-                        interaction: {
-                            merchant: {
-                                name: '{{ config('app.name') }}',
-                                address: {
-                                    line1: 'Lusaka',
-                                    line2: 'Zambia'            
-                                }
-                            },
-                            displayControl: {
-                                billingAddress: 'HIDE',
-                                customerEmail: 'HIDE',
-                                orderSummary: 'HIDE',
-                                shipping: 'HIDE'
-                            }
                         }
                     });
-                    
+
                     // Open the payment page
                     Checkout.showPaymentPage();
                 } else {
@@ -190,10 +174,10 @@
                 showError('An error occurred while initializing payment. Please try again.');
             });
         }
-        
+
         // Load MPGS script
         const script = document.createElement('script');
-        script.src = mpgsEndpoint + '/checkout/version/60/checkout.js';
+        script.src = mpgsEndpoint + '/static/checkout/checkout.min.js';
         script.async = true;
         script.onload = initializeCheckout;
         script.onerror = function() {

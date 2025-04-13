@@ -27,6 +27,7 @@ class CorporateWalletTransaction extends Model
         'status',
         'related_entity_type',
         'related_entity_id',
+        'notes'
     ];
 
     /**
@@ -39,6 +40,7 @@ class CorporateWalletTransaction extends Model
         'balance_after' => 'decimal:2',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'notes' => 'array',
     ];
 
     /**
@@ -198,7 +200,7 @@ class CorporateWalletTransaction extends Model
     public function getFormattedAmount()
     {
         $prefix = '';
-        
+
         if ($this->transaction_type === 'withdrawal' || $this->transaction_type === 'fee') {
             $prefix = '-';
         } elseif ($this->transaction_type === 'deposit') {
@@ -206,7 +208,7 @@ class CorporateWalletTransaction extends Model
         } elseif ($this->transaction_type === 'adjustment') {
             $prefix = $this->amount >= 0 ? '+' : '';
         }
-        
+
         return $prefix . number_format(abs($this->amount), 2) . ' ' . $this->currency;
     }
 

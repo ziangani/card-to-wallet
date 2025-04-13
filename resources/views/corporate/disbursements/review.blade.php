@@ -75,8 +75,8 @@
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-corporate-primary mb-4">Disbursement Summary</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div>
                             <p class="text-sm text-gray-500 mb-1">Name</p>
                             <p class="text-base font-medium text-gray-900">{{ $disbursement->name }}</p>
@@ -101,7 +101,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-gray-50 rounded-lg p-4">
                             <p class="text-sm text-gray-500 mb-1">Total Recipients</p>
@@ -116,7 +116,7 @@
                             <p class="text-xl font-bold text-corporate-primary">{{ $disbursement->currency }} {{ number_format($disbursement->total_fee, 2) }}</p>
                         </div>
                     </div>
-                    
+
                     @if($skippedErrors)
                         <div class="mt-6 bg-corporate-warning bg-opacity-10 text-corporate-warning rounded-lg p-4">
                             <h4 class="font-medium mb-2"><i class="fas fa-exclamation-triangle mr-2"></i> Proceeding with Valid Entries Only</h4>
@@ -125,7 +125,7 @@
                     @endif
                 </div>
             </div>
-            
+
             <!-- Recipient Data -->
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
@@ -136,7 +136,7 @@
                                 <select name="provider_filter" class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-corporate-primary focus:border-corporate-primary text-sm">
                                     <option value="">All Providers</option>
                                     @foreach($walletProviders as $provider)
-                                        <option value="{{ $provider->code }}" {{ request('provider_filter') == $provider->code ? 'selected' : '' }}>{{ $provider->name }}</option>
+                                        <option value="{{ $provider->api_code }}" {{ request('provider_filter') == $provider->api_code ? 'selected' : '' }}>{{ $provider->name }}</option>
                                     @endforeach
                                 </select>
                                 <button type="submit" class="px-3 py-2 bg-corporate-primary text-white rounded-lg text-sm hover:bg-opacity-90">
@@ -145,17 +145,17 @@
                             </form>
                         </div>
                     </div>
-                    
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full corporate-table">
                             <thead>
                                 <tr class="bg-gray-50">
-                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wallet Number</th>
-                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
-                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
-                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fee</th>
-                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3">Wallet Number</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3">Provider</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3">Recipient</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3">Amount</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3">Fee</th>
+                                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3">Reference</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
@@ -164,26 +164,26 @@
                                         <td class="whitespace-nowrap">
                                             <div class="text-sm text-gray-900">{{ $item->wallet_number }}</div>
                                         </td>
-                                        <td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 @if($item->walletProvider)
-                                                    <img src="{{ asset('assets/img/' . strtolower($item->walletProvider->code) . '.jpg') }}" alt="{{ $item->walletProvider->name }}" class="w-6 h-6 rounded-full mr-2">
+                                                    <img src="{{ asset('assets/img/' . strtolower($item->walletProvider->api_code) . '.png') }}" alt="{{ $item->walletProvider->name }}" class="w-6 h-6 rounded-full mr-2">
                                                     <div class="text-sm text-gray-900">{{ $item->walletProvider->name }}</div>
                                                 @else
                                                     <div class="text-sm text-gray-900">Unknown</div>
                                                 @endif
                                             </div>
                                         </td>
-                                        <td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm text-gray-900">{{ $item->recipient_name ?? 'N/A' }}</div>
                                         </td>
-                                        <td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">{{ $item->currency }} {{ number_format($item->amount, 2) }}</div>
                                         </td>
-                                        <td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm text-gray-900">{{ $item->currency }} {{ number_format($item->fee, 2) }}</div>
                                         </td>
-                                        <td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm text-gray-900">{{ $item->reference ?? 'N/A' }}</div>
                                         </td>
                                     </tr>
@@ -197,19 +197,19 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div class="mt-6">
                         {{ $items->appends(request()->query())->links() }}
                     </div>
                 </div>
             </div>
-            
+
             <!-- Approval Requirements -->
             @if($requiresApproval)
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <div class="p-6">
                         <h3 class="text-lg font-semibold text-corporate-primary mb-4">Approval Requirements</h3>
-                        
+
                         <div class="bg-blue-50 p-4 rounded-lg mb-6">
                             <div class="flex items-start">
                                 <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xs mr-3">
@@ -223,7 +223,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <p class="text-sm text-gray-500 mb-1">Minimum Approvers Required</p>
@@ -245,13 +245,13 @@
                     </div>
                 </div>
             @endif
-            
+
             <!-- Action Buttons -->
             <div class="flex justify-between">
                 <a href="{{ route('corporate.disbursements.show-validation') }}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
                     <i class="fas fa-arrow-left mr-2"></i> Back to Validation
                 </a>
-                
+
                 <form action="{{ route('corporate.disbursements.submit') }}" method="POST">
                     @csrf
                     <button type="submit" class="px-6 py-3 bg-corporate-primary text-white rounded-lg hover:bg-opacity-90 transition">
@@ -264,7 +264,7 @@
                 </form>
             </div>
         </div>
-        
+
         <!-- Right Column - Summary & Info -->
         <div class="space-y-6">
             <!-- Wallet Balance -->
@@ -280,7 +280,7 @@
                             <p class="text-2xl font-bold text-corporate-primary">{{ $wallet->currency }} {{ number_format($wallet->balance, 2) }}</p>
                         </div>
                     </div>
-                    
+
                     <!-- Transaction Summary -->
                     <div class="mt-6 pt-6 border-t border-gray-200">
                         <h4 class="font-medium text-corporate-primary mb-3">Transaction Summary</h4>
@@ -290,7 +290,7 @@
                                 <span class="text-sm font-medium text-gray-900">{{ $disbursement->currency }} {{ number_format($disbursement->total_amount, 2) }}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-sm text-gray-500">Fee ({{ number_format($feePercentage, 2) }}%):</span>
+                                <span class="text-sm text-gray-500">Fee ({{ \App\Models\Transaction::getCorporateFeeDescription() }}):</span>
                                 <span class="text-sm font-medium text-gray-900">{{ $disbursement->currency }} {{ number_format($disbursement->total_fee, 2) }}</span>
                             </div>
                             <div class="flex justify-between pt-2 border-t border-gray-100">
@@ -299,7 +299,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     @if(($disbursement->total_amount + $disbursement->total_fee) > $wallet->balance)
                         <div class="mt-4 bg-corporate-error bg-opacity-10 text-corporate-error rounded-lg p-3 text-sm">
                             <i class="fas fa-exclamation-circle mr-2"></i> Insufficient balance. Please add funds to your wallet.
@@ -312,17 +312,17 @@
                     @endif
                 </div>
             </div>
-            
+
             <!-- Provider Breakdown -->
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-corporate-primary mb-4">Provider Breakdown</h3>
-                    
+
                     <div class="space-y-4">
                         @foreach($providerBreakdown as $provider)
                             <div class="bg-gray-50 p-3 rounded-lg">
                                 <div class="flex items-center">
-                                    <img src="{{ asset('assets/img/' . strtolower($provider['code']) . '.jpg') }}" alt="{{ $provider['name'] }}" class="w-8 h-8 rounded-full mr-3">
+                                    <img src="{{ asset('assets/img/' . strtolower($provider['code']) . '.png') }}" alt="{{ $provider['name'] }}" class="w-8 h-8 rounded-full mr-3">
                                     <div>
                                         <p class="text-sm font-medium text-gray-900">{{ $provider['name'] }}</p>
                                         <div class="flex items-center text-xs text-gray-500 mt-1">
@@ -337,28 +337,23 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Important Information -->
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-corporate-primary mb-4">Important Information</h3>
-                    
+
                     <div class="space-y-4">
                         <div>
                             <h4 class="font-medium text-gray-900 mb-1">Processing Time</h4>
                             <p class="text-sm text-gray-600">Transactions are typically processed within 5-15 minutes after approval.</p>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-medium text-gray-900 mb-1">Transaction Notifications</h4>
                             <p class="text-sm text-gray-600">Recipients will receive SMS notifications from their wallet providers.</p>
                         </div>
-                        
-                        <div>
-                            <h4 class="font-medium text-gray-900 mb-1">Reporting</h4>
-                            <p class="text-sm text-gray-600">A detailed report will be available once processing is complete.</p>
-                        </div>
-                        
+
                         <div class="bg-blue-50 p-3 rounded-lg">
                             <h4 class="font-medium text-blue-700 mb-1">Need Help?</h4>
                             <p class="text-sm text-blue-600">If you encounter any issues, please contact our support team at <a href="mailto:support@cardtowallet.com" class="underline">support@cardtowallet.com</a></p>

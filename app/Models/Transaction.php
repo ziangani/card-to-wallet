@@ -32,9 +32,8 @@ class Transaction extends Model
             ->get();
             
         foreach ($charges as $charge) {
-            if ($charge->charge_type == 'PERCENTAGE') {
-                $totalFee += $amount * ($charge->charge_value / 100);
-            } else { // FIXED
+            // Only apply FIXED charges, as percentage charges are collected at deposit time
+            if ($charge->charge_type == 'FIXED') {
                 $totalFee += $charge->charge_value;
             }
         }
@@ -167,6 +166,69 @@ class Transaction extends Model
     public static function getFeeDescription()
     {
         return 'K' . self::getFixedFeeAmount() . ' + ' . self::getVariableFeePercentage() . '%';
+    }
+    
+    /**
+     * Calculate the fee for corporate transactions (only fixed fee).
+     *
+     * @param float $amount
+     * @return float Returns the total fee amount (only fixed fees)
+     */
+    public static function calculateCorporateFee($amount)
+    {
+        $totalFee = 0;
+        
+        // Get all fixed charges for CARD_TO_WALLET channel
+        $charges = Charges::where('channel', 'CARD_TO_WALLET')
+            ->where('charge_type', 'FIXED')
+            ->where('is_active', true)
+            ->get();
+            
+        foreach ($charges as $charge) {
+            $totalFee += $charge->charge_value;
+        }
+        
+        return $totalFee;
+    }
+    
+    /**
+     * Get the fee description for corporate transactions (only fixed fee).
+     *
+     * @return string
+     */
+    public static function getCorporateFeeDescription()
+    {
+        return 'K' . self::getFixedFeeAmount() . ' fixed fee';
+    }
+    
+    /**
+     * Create transaction charge records for a corporate transaction.
+     * Only includes fixed fees, as percentage fees are collected at deposit time.
+     *
+     * @param Transaction $transaction
+     * @return void
+     */
+    public static function createCorporateTransactionCharges(Transaction $transaction)
+    {
+        // Get all fixed charges for CARD_TO_WALLET channel
+        $charges = Charges::where('channel', 'CARD_TO_WALLET')
+            ->where('charge_type', 'FIXED')
+            ->where('is_active', true)
+            ->get();
+
+        foreach ($charges as $charge) {
+            // Create transaction charge record (only for fixed fees)
+            TransactionCharge::create([
+                'transaction_id' => $transaction->id,
+                'charge_id' => $charge->id,
+                'charge_name' => $charge->charge_name,
+                'charge_type' => $charge->charge_type,
+                'charge_value' => $charge->charge_value,
+                'base_amount' => $transaction->amount,
+                'calculated_amount' => $charge->charge_value,
+                'merchant_id' => $transaction->merchant_code ?? null,
+            ]);
+        }
     }
 
     /**

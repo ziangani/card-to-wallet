@@ -4,12 +4,18 @@ namespace App\Http\Controllers\Auth;
 
 use App\Common\Helpers;
 use App\Http\Controllers\Controller;
+use App\Models\Company;
+use App\Models\CorporateRole;
+use App\Models\CorporateUserRole;
+use App\Models\CorporateWallet;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
-use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -86,7 +92,7 @@ class RegisterController extends Controller
     {
         try {
 
-            \DB::beginTransaction();
+            DB::beginTransaction();
             $user = User::create([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
@@ -104,8 +110,8 @@ class RegisterController extends Controller
 
             // Create company record for corporate accounts
             if (isset($data['account_type']) && $data['account_type'] === 'corporate') {
-                $company = \App\Models\Company::create([
-                    'uuid' => \Illuminate\Support\Str::uuid(),
+                $company = Company::create([
+                    'uuid' => Str::uuid(),
                     'name' => $data['company_name'],
                     'registration_number' => $data['registration_number'],
                     'tax_id' => $data['tax_id'] ?? null,
@@ -124,9 +130,9 @@ class RegisterController extends Controller
                 $user->save();
 
                 // Assign admin role to user
-                $adminRole = \App\Models\CorporateRole::where('name', 'admin')->first();
+                $adminRole = CorporateRole::where('name', 'admin')->first();
                 if ($adminRole) {
-                    \App\Models\CorporateUserRole::create([
+                    CorporateUserRole::create([
                         'company_id' => $company->id,
                         'user_id' => $user->id,
                         'role_id' => $adminRole->id,
@@ -137,7 +143,7 @@ class RegisterController extends Controller
                 }
 
                 // Create corporate wallet
-                \App\Models\CorporateWallet::create([
+                CorporateWallet::create([
                     'company_id' => $company->id,
                     'balance' => 0,
                     'currency' => 'ZMW',
@@ -149,10 +155,10 @@ class RegisterController extends Controller
             }
             return $user;
         } catch (\Exception $e) {
-            \DB::rollBack();
+            DB::rollBack();
             throw $e; // Rethrow the exception to be handled by the caller
         } finally {
-            \DB::commit();
+            DB::commit();
         }
     }
 
@@ -199,17 +205,27 @@ class RegisterController extends Controller
 
             $redirectUrl = route('verification.notice');
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Registration successful. Please verify your email address.',
-                'redirect_url' => $redirectUrl,
-            ], 200);
+            // Check if the request is an AJAX request
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Registration successful. Please verify your email address.',
+                    'redirect_url' => $redirectUrl,
+                ], 200);
+            }
 
+            // For non-AJAX requests, redirect to the verification notice page
+            return redirect($redirectUrl);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Registration failed: ' . $e->getMessage(),
-            ], 500);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Registration failed: ' . $e->getMessage(),
+                ], 500);
+            }
+            
+            // For non-AJAX requests, redirect back with error
+            return redirect()->back()->withErrors(['error' => 'Registration failed: ' . $e->getMessage()]);
         }
     }
 

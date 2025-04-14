@@ -90,7 +90,7 @@
                 <i class="fas fa-bars text-xl"></i>
             </button>
             <a href="{{ route('corporate.dashboard') }}" class="flex items-center">
-                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-10">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-11">
             </a>
             <div class="relative">
                 <button id="mobile-user-menu-button" class="flex items-center focus:outline-none">
@@ -176,7 +176,7 @@
                     </li>
                 </ul>
             </nav>
-            
+
             <div class="mt-6">
                 <div class="text-xs uppercase text-gray-500 font-semibold mb-2">Administration</div>
                 <ul class="space-y-1">

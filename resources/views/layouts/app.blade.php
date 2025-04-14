@@ -36,13 +36,13 @@
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- jQuery (if needed) -->
     @stack('pre-styles')
-    
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -71,7 +71,7 @@
             }
         }
     </style>
-    
+
     @stack('styles')
 </head>
 <body class="bg-light">
@@ -114,7 +114,7 @@
     <aside id="sidebar" class="sidebar bg-white shadow-md h-screen fixed top-0 left-0 overflow-y-auto z-40">
         <div class="p-4 border-b">
             <a href="{{ url('/dashboard') }}" class="flex items-center justify-center">
-                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-12">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-11">
             </a>
         </div>
 
@@ -370,7 +370,7 @@
             });
         });
     </script>
-    
+
     @stack('scripts')
 </body>
 </html>

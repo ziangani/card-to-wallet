@@ -130,7 +130,7 @@ class CorporateUserController extends Controller
                 'name' =>  $request->name,
                 'email' => $request->email,
                 'phone_number' => $request->phone_number,
-                'password' => null, // No password set initially
+                'password' => Str::random(14),
                 'date_of_birth' => now(),
                 'user_type' => 'corporate',
                 'company_id' => $company->id,

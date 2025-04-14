@@ -199,7 +199,7 @@
             <div class="mt-6 text-center text-sm text-gray-600">
                 Already have an account? <a href="{{ url('/login') }}" class="text-primary hover:underline font-medium transition duration-300">Login here</a>
             </div>
-            
+
             <div class="mt-4 text-center">
                 <div class="relative">
                     <div class="absolute inset-0 flex items-center">
@@ -313,8 +313,8 @@
             this.value = this.value.replace(/\D/g, '');
 
             // Limit to 9 digits
-            if (this.value.length > 9) {
-                this.value = this.value.slice(0, 9);
+            if (this.value.length > 12) {
+                this.value = this.value.slice(0, 12);
             }
         });
     });

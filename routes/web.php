@@ -38,8 +38,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
     Route::get('/corporate/register', [App\Http\Controllers\Auth\RegisterController::class, 'showCorporateRegistrationForm'])->name('corporate.register');
     Route::post('/corporate/register', [App\Http\Controllers\Auth\RegisterController::class, 'registerCorporate'])->name('register.corporate');
-    Route::get('/corporate/register', [App\Http\Controllers\Auth\RegisterController::class, 'showCorporateRegistrationForm'])->name('register.corporate');
-    Route::post('/corporate/register', [App\Http\Controllers\Auth\RegisterController::class, 'registerCorporate'])->name('register.corporate');
 
     // Password reset routes
     Route::get('/password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -54,10 +52,12 @@ Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logou
 // Email verification routes
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', [App\Http\Controllers\Auth\VerifyEmailController::class, 'notice'])->name('verification.notice');
-    Route::get('/email/verify/{id}/{hash}', [App\Http\Controllers\Auth\VerifyEmailController::class, '__invoke'])
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
 });
+
+// Email verification route that doesn't require authentication
+Route::get('/email/verify/{id}/{hash}', [App\Http\Controllers\Auth\VerifyEmailController::class, 'verifyWithoutAuth'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
 
 // Verification routes
 Route::middleware(['auth'])->group(function () {
@@ -136,12 +136,12 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
     Route::prefix('transactions')->name('transactions.')->group(function () {
         Route::post('/quick', [TransactionController::class, 'processQuick'])->name('quick');
     });
-    
+
     // Corporate routes
     Route::prefix('corporate')->name('corporate.')->middleware(['auth', 'verified', 'corporate.access'])->group(function () {
         // Dashboard
         Route::get('/dashboard', [App\Http\Controllers\Corporate\CorporateController::class, 'index'])->name('dashboard');
-        
+
         // Wallet routes
         Route::prefix('wallet')->name('wallet.')->group(function () {
             Route::get('/', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'index'])->name('index');
@@ -153,7 +153,7 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
             Route::post('/mpgs-checkout', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'mpgsCheckout'])->name('mpgs-checkout');
             Route::get('/card-callback/{uuid}', [App\Http\Controllers\Corporate\CorporateWalletController::class, 'cardCallback'])->name('card-callback');
         });
-        
+
         // Disbursement routes
         Route::prefix('disbursements')->name('disbursements.')->group(function () {
             Route::get('/', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'index'])->name('index');
@@ -168,7 +168,7 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
             Route::get('/template/{format}', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'downloadTemplate'])->name('template');
             Route::get('/get-validation-results', [App\Http\Controllers\Corporate\BulkDisbursementController::class, 'getValidationResults'])->name('get-validation-results');
         });
-        
+
         // Approval routes
         Route::prefix('approvals')->name('approvals.')->group(function () {
             Route::get('/', [App\Http\Controllers\Corporate\ApprovalController::class, 'index'])->name('index');
@@ -176,7 +176,7 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
             Route::post('/{id}/approve', [App\Http\Controllers\Corporate\ApprovalController::class, 'approve'])->name('approve');
             Route::post('/{id}/reject', [App\Http\Controllers\Corporate\ApprovalController::class, 'reject'])->name('reject');
         });
-        
+
         // User management routes
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', [App\Http\Controllers\Corporate\CorporateUserController::class, 'index'])->name('index');
@@ -185,14 +185,14 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
             Route::get('/{id}/edit', [App\Http\Controllers\Corporate\CorporateUserController::class, 'edit'])->name('edit');
             Route::put('/{id}', [App\Http\Controllers\Corporate\CorporateUserController::class, 'update'])->name('update');
         });
-        
+
         // Reports routes
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::get('/', [App\Http\Controllers\Corporate\CorporateReportController::class, 'index'])->name('index');
             Route::post('/generate', [App\Http\Controllers\Corporate\CorporateReportController::class, 'generate'])->name('generate');
             Route::get('/download/{id}', [App\Http\Controllers\Corporate\CorporateReportController::class, 'download'])->name('download');
         });
-        
+
         // Settings routes
         Route::prefix('settings')->name('settings.')->group(function () {
             Route::get('/profile', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'profile'])->name('profile');

@@ -33,11 +33,19 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     /**
-     * Where to redirect users after registration.
+     * Get the post registration redirect path.
      *
-     * @var string
+     * @return string
      */
-    protected $redirectTo = '/dashboard';
+    protected function redirectPath()
+    {
+        // Check if the user is a corporate user
+        if ($this->guard()->user() && $this->guard()->user()->user_type === 'corporate') {
+            return '/corporate/dashboard';
+        }
+
+        return '/dashboard';
+    }
 
     /**
      * Create a new controller instance.
@@ -61,7 +69,7 @@ class RegisterController extends Controller
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone_number' => ['required', 'string', 'max:20'],
+            'phone_number' => ['required', 'string', 'max:20', 'unique:users'],
             'date_of_birth' => ['nullable', 'date', 'before:today'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'terms' => ['required', 'accepted'],
@@ -166,7 +174,56 @@ class RegisterController extends Controller
      * Handle a registration request for the application.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request)
+    {
+        try {
+            $validator = $this->validator($request->all());
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first(),
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $user = $this->create($request->all());
+            event(new Registered($user));
+
+            $this->guard()->login($user);
+
+            // Send email verification notification
+            Helpers::sendEmailVerificationNotification($user);
+
+            // Mark that verification has been sent
+            session()->flash('status', 'verification-link-sent');
+
+            // Determine the correct redirect URL based on user type
+            $redirectUrl = $user->user_type === 'corporate'
+                ? route('corporate.dashboard')
+                : route('dashboard');
+
+            // Always return a JSON response
+            return response()->json([
+                'success' => true,
+                'message' => 'Registration successful. Please verify your email address.',
+                'redirect_url' => $redirectUrl,
+            ], 200);
+        } catch (\Exception $e) {
+            // Always return a JSON response
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration failed: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Show the corporate registration form.
+     *
+     * @return \Illuminate\View\View
      */
     public function showCorporateRegistrationForm()
     {
@@ -203,29 +260,23 @@ class RegisterController extends Controller
             // Mark that verification has been sent
             session()->flash('status', 'verification-link-sent');
 
-            $redirectUrl = route('verification.notice');
+            // Determine the correct redirect URL based on user type
+            $redirectUrl = $user->user_type === 'corporate'
+                ? route('corporate.dashboard')
+                : route('dashboard');
 
-            // Check if the request is an AJAX request
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Registration successful. Please verify your email address.',
-                    'redirect_url' => $redirectUrl,
-                ], 200);
-            }
-
-            // For non-AJAX requests, redirect to the verification notice page
-            return redirect($redirectUrl);
+            // Always return a JSON response
+            return response()->json([
+                'success' => true,
+                'message' => 'Registration successful. Please verify your email address.',
+                'redirect_url' => $redirectUrl,
+            ], 200);
         } catch (\Exception $e) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Registration failed: ' . $e->getMessage(),
-                ], 500);
-            }
-            
-            // For non-AJAX requests, redirect back with error
-            return redirect()->back()->withErrors(['error' => 'Registration failed: ' . $e->getMessage()]);
+            // Always return a JSON response
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration failed: ' . $e->getMessage(),
+            ], 500);
         }
     }
 

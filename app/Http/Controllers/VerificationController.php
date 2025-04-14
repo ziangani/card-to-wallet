@@ -21,6 +21,22 @@ class VerificationController extends Controller
     }
 
     /**
+     * Get the appropriate dashboard route based on user type.
+     *
+     * @return string
+     */
+    protected function getDashboardRoute()
+    {
+        $user = Auth::user();
+        
+        if ($user && $user->user_type === 'corporate') {
+            return 'corporate.dashboard';
+        }
+        
+        return 'dashboard';
+    }
+
+    /**
      * Show the phone verification page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
@@ -30,7 +46,7 @@ class VerificationController extends Controller
         $user = Auth::user();
         
         if ($user->is_phone_verified) {
-            return redirect()->route('dashboard')->with('info', 'Your phone number is already verified.');
+            return redirect()->route($this->getDashboardRoute())->with('info', 'Your phone number is already verified.');
         }
         
         return view('auth.verify-phone');
@@ -47,7 +63,7 @@ class VerificationController extends Controller
         $user = Auth::user();
         
         if ($user->is_phone_verified) {
-            return redirect()->route('dashboard')->with('info', 'Your phone number is already verified.');
+            return redirect()->route($this->getDashboardRoute())->with('info', 'Your phone number is already verified.');
         }
         
         // Generate a random 6-digit code
@@ -78,7 +94,7 @@ class VerificationController extends Controller
         $user = Auth::user();
         
         if ($user->is_phone_verified) {
-            return redirect()->route('dashboard')->with('info', 'Your phone number is already verified.');
+            return redirect()->route($this->getDashboardRoute())->with('info', 'Your phone number is already verified.');
         }
         
         $storedCode = session('phone_verification_code');
@@ -94,7 +110,7 @@ class VerificationController extends Controller
         // Clear the verification code from the session
         session()->forget('phone_verification_code');
         
-        return redirect()->route('dashboard')->with('success', 'Your phone number has been verified successfully.');
+        return redirect()->route($this->getDashboardRoute())->with('success', 'Your phone number has been verified successfully.');
     }
 
     /**
@@ -108,7 +124,7 @@ class VerificationController extends Controller
         $user = Auth::user();
         
         if ($user->hasVerifiedEmail()) {
-            return redirect()->route('dashboard')->with('success', 'Your email is already verified.');
+            return redirect()->route($this->getDashboardRoute())->with('success', 'Your email is already verified.');
         }
         
         return back()->with('error', 'Your email is not yet verified. Please check your email for the verification link or request a new one.');
@@ -125,7 +141,7 @@ class VerificationController extends Controller
         $user = Auth::user();
         
         if ($user->hasVerifiedEmail()) {
-            return redirect()->route('dashboard')->with('info', 'Your email is already verified.');
+            return redirect()->route($this->getDashboardRoute())->with('info', 'Your email is already verified.');
         }
         
         // Use our custom email verification method

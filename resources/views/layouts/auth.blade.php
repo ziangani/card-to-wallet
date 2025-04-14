@@ -50,13 +50,13 @@
             background: linear-gradient(135deg, #007751 0%, #005a3d 50%, #007751 100%);
         }
     </style>
-    
+
     @stack('styles')
 </head>
 <body class="bg-light">
     <!-- Header -->
     <header class="bg-white shadow-sm">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-4xl">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-5xl">
             <a href="{{ url('/') }}" class="flex items-center">
                 <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-10">
             </a>
@@ -69,7 +69,7 @@
     <!-- Main Content -->
     <section class="py-12">
         <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto">
+            <div class="max-w-5xl mx-auto">
                 @yield('content')
             </div>
         </div>

@@ -18,9 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'admissions/uploads/validate',
             'tpm/*',
             '/checkout/*/process',
-            'checkout/*/3ds/callback'
+            'checkout/*/3ds/callback',
+            'register',
+            'corporate/register',
         ]);
-        
+
         // Register middleware aliases
         $middleware->alias([
             'corporate.access' => \App\Http\Middleware\CorporateAccess::class,
@@ -28,7 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'approval.required' => \App\Http\Middleware\ApprovalRequired::class,
             'retail.access' => \App\Http\Middleware\RetailAccess::class,
         ]);
-        
+
         //$middleware->append(\App\Http\Middleware\AuthenticateMerchant::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {

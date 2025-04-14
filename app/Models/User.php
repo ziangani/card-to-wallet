@@ -94,6 +94,7 @@ class User extends Authenticatable implements HasName, FilamentUser, MustVerifyE
     protected function casts(): array
     {
         return [
+            'last_login_at' => 'datetime',
             'date_of_birth' => 'datetime',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',

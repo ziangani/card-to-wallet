@@ -39,7 +39,7 @@
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-corporate-primary mb-4">Disbursement Details</h3>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <p class="text-sm text-gray-500 mb-1">Status</p>
@@ -95,7 +95,7 @@
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-corporate-primary mb-4">Transaction Summary</h3>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div class="bg-gray-50 rounded-lg p-4">
                             <p class="text-sm text-gray-500 mb-1">Total Recipients</p>
@@ -110,7 +110,7 @@
                             <p class="text-xl font-bold text-corporate-primary">{{ $disbursement->currency }} {{ number_format($disbursement->total_fee, 2) }}</p>
                         </div>
                     </div>
-                    
+
                     @if($disbursement->status === 'completed' || $disbursement->status === 'partially_completed')
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="bg-corporate-success bg-opacity-5 rounded-lg p-4">
@@ -140,7 +140,7 @@
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <div class="p-6">
                         <h3 class="text-lg font-semibold text-corporate-primary mb-4">Approval Information</h3>
-                        
+
                         @if($disbursement->status === 'pending_approval')
                             <div class="bg-corporate-warning bg-opacity-10 text-corporate-warning rounded-lg p-3 text-sm mb-4">
                                 <i class="fas fa-exclamation-circle mr-2"></i> This disbursement is pending approval
@@ -150,7 +150,7 @@
                                 <i class="fas fa-check-circle mr-2"></i> This disbursement has been approved
                             </div>
                         @endif
-                        
+
                         @if($disbursement->approvalRequest)
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
@@ -182,7 +182,7 @@
                                     </div>
                                 @endif
                             </div>
-                            
+
                             @if($disbursement->approvalRequest->actions && $disbursement->approvalRequest->actions->count() > 0)
                                 <div class="mt-6">
                                     <h4 class="font-medium text-corporate-primary mb-3">Approval Actions</h4>
@@ -194,7 +194,7 @@
                                                 </div>
                                                 <div>
                                                     <p class="text-sm font-medium text-gray-900">
-                                                        {{ $action->approver->name }} 
+                                                        {{ $action->approver->name }}
                                                         <span class="text-{{ $action->action === 'approved' ? 'corporate-success' : 'corporate-error' }}">
                                                             {{ ucfirst($action->action) }}
                                                         </span>
@@ -221,7 +221,7 @@
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-corporate-primary mb-4">Status Timeline</h3>
-                    
+
                     <div class="space-y-6">
                         <div class="relative pl-8 pb-6 border-l-2 border-corporate-success">
                             <div class="absolute top-0 left-0 w-6 h-6 -ml-3 rounded-full bg-corporate-success text-white flex items-center justify-center">
@@ -233,7 +233,7 @@
                                 <p class="text-sm text-gray-600 mt-1">Disbursement created by {{ $disbursement->initiator->name }}</p>
                             </div>
                         </div>
-                        
+
                         @if($disbursement->status === 'pending_approval' || $disbursement->status === 'approved' || $disbursement->status === 'processing' || $disbursement->status === 'completed' || $disbursement->status === 'partially_completed' || $disbursement->status === 'failed')
                             <div class="relative pl-8 pb-6 border-l-2 {{ $disbursement->status === 'pending_approval' ? 'border-corporate-warning' : 'border-corporate-success' }}">
                                 <div class="absolute top-0 left-0 w-6 h-6 -ml-3 rounded-full {{ $disbursement->status === 'pending_approval' ? 'bg-corporate-warning' : 'bg-corporate-success' }} text-white flex items-center justify-center">
@@ -252,7 +252,7 @@
                                 </div>
                             </div>
                         @endif
-                        
+
                         @if($disbursement->status === 'approved' || $disbursement->status === 'processing' || $disbursement->status === 'completed' || $disbursement->status === 'partially_completed' || $disbursement->status === 'failed')
                             <div class="relative pl-8 pb-6 border-l-2 border-corporate-success">
                                 <div class="absolute top-0 left-0 w-6 h-6 -ml-3 rounded-full bg-corporate-success text-white flex items-center justify-center">
@@ -262,7 +262,7 @@
                                     <p class="text-sm font-medium text-gray-900">Approved</p>
                                     <p class="text-xs text-gray-500">{{ $disbursement->approvalRequest && $disbursement->approvalRequest->completed_at ? $disbursement->approvalRequest->completed_at->format('M d, Y h:i A') : 'N/A' }}</p>
                                     <p class="text-sm text-gray-600 mt-1">
-                                        Approved by 
+                                        Approved by
                                         @if($disbursement->approvalRequest && $disbursement->approvalRequest->actions && $disbursement->approvalRequest->actions->where('action', 'approved')->first())
                                             {{ $disbursement->approvalRequest->actions->where('action', 'approved')->first()->approver->name }}
                                         @else
@@ -272,7 +272,7 @@
                                 </div>
                             </div>
                         @endif
-                        
+
                         @if($disbursement->status === 'processing' || $disbursement->status === 'completed' || $disbursement->status === 'partially_completed' || $disbursement->status === 'failed')
                             <div class="relative pl-8 pb-6 border-l-2 {{ $disbursement->status === 'processing' ? 'border-corporate-warning' : 'border-corporate-success' }}">
                                 <div class="absolute top-0 left-0 w-6 h-6 -ml-3 rounded-full {{ $disbursement->status === 'processing' ? 'bg-corporate-warning' : 'bg-corporate-success' }} text-white flex items-center justify-center">
@@ -291,7 +291,7 @@
                                 </div>
                             </div>
                         @endif
-                        
+
                         @if($disbursement->status === 'completed' || $disbursement->status === 'partially_completed' || $disbursement->status === 'failed')
                             <div class="relative pl-8 pb-6 border-l-2 border-{{ $disbursement->status === 'completed' ? 'corporate-success' : ($disbursement->status === 'partially_completed' ? 'corporate-warning' : 'corporate-error') }}">
                                 <div class="absolute top-0 left-0 w-6 h-6 -ml-3 rounded-full bg-{{ $disbursement->status === 'completed' ? 'corporate-success' : ($disbursement->status === 'partially_completed' ? 'corporate-warning' : 'corporate-error') }} text-white flex items-center justify-center">
@@ -322,7 +322,7 @@
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-corporate-primary mb-4">Actions</h3>
-                    
+
                     <div class="space-y-3">
                         @if($disbursement->status === 'pending_approval' && auth()->user()->hasRole('approver'))
                             <a href="{{ route('corporate.approvals.show', $disbursement->approvalRequest->id) }}" class="flex items-center p-3 bg-corporate-primary bg-opacity-5 rounded-lg hover:bg-opacity-10 transition">
@@ -335,7 +335,7 @@
                                 </div>
                             </a>
                         @endif
-                        
+
                         @if($disbursement->status === 'completed' || $disbursement->status === 'partially_completed')
                             <a href="#" class="flex items-center p-3 bg-corporate-primary bg-opacity-5 rounded-lg hover:bg-opacity-10 transition">
                                 <div class="w-10 h-10 rounded-full bg-corporate-primary bg-opacity-10 flex items-center justify-center text-corporate-primary mr-3">
@@ -347,7 +347,7 @@
                                 </div>
                             </a>
                         @endif
-                        
+
                         @if($disbursement->status === 'partially_completed' || $disbursement->status === 'failed')
                             <a href="#" class="flex items-center p-3 bg-corporate-primary bg-opacity-5 rounded-lg hover:bg-opacity-10 transition">
                                 <div class="w-10 h-10 rounded-full bg-corporate-primary bg-opacity-10 flex items-center justify-center text-corporate-primary mr-3">
@@ -359,7 +359,7 @@
                                 </div>
                             </a>
                         @endif
-                        
+
                         <a href="#" class="flex items-center p-3 bg-corporate-primary bg-opacity-5 rounded-lg hover:bg-opacity-10 transition">
                             <div class="w-10 h-10 rounded-full bg-corporate-primary bg-opacity-10 flex items-center justify-center text-corporate-primary mr-3">
                                 <i class="fas fa-copy"></i>
@@ -395,18 +395,18 @@
                     </form>
                 </div>
             </div>
-            
+
             <div class="overflow-x-auto">
                 <table class="min-w-full corporate-table">
                     <thead>
                         <tr class="bg-gray-50">
-                            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wallet Number</th>
-                            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
-                            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
-                            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fee</th>
-                            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference</th>
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wallet Number</th>
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fee</th>
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -415,10 +415,10 @@
                                 <td class="whitespace-nowrap">
                                     <div class="text-sm text-gray-900">{{ $item->wallet_number }}</div>
                                 </td>
-                                <td>
+                                <td class="py-3 px-3">
                                     <div class="flex items-center">
                                         @if($item->walletProvider)
-                                            <img src="{{ asset('assets/img/' . strtolower($item->walletProvider->code) . '.jpg') }}" alt="{{ $item->walletProvider->name }}" class="w-6 h-6 rounded-full mr-2">
+                                            <img src="{{ asset('assets/img/' . strtolower($item->walletProvider->api_code) . '.png') }}" alt="{{ $item->walletProvider->name }}" class="w-6 h-6 rounded-full mr-2">
                                             <div class="text-sm text-gray-900">{{ $item->walletProvider->name }}</div>
                                         @else
                                             <div class="text-sm text-gray-900">Unknown</div>
@@ -462,7 +462,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <!-- Pagination -->
             <div class="mt-6">
                 {{ $items->appends(request()->query())->links() }}

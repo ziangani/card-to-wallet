@@ -25,7 +25,7 @@ class RetailAccess
 
         // Check if user is an individual user
         if ($user->user_type !== 'individual') {
-            return redirect()->route('corporate.dashboard')->with('error', 'Corporate users should use the corporate section.');
+            return redirect()->route('corporate.dashboard');
         }
 
         // User is an individual user, proceed

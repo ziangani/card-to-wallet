@@ -7,6 +7,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\Corporate\CorporateUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -188,6 +189,7 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
             Route::post('/invite', [App\Http\Controllers\Corporate\CorporateUserController::class, 'processInvite'])->name('process-invite');
             Route::get('/{id}/edit', [App\Http\Controllers\Corporate\CorporateUserController::class, 'edit'])->name('edit');
             Route::put('/{id}', [App\Http\Controllers\Corporate\CorporateUserController::class, 'update'])->name('update');
+            Route::get('/{id}/resend-invitation', [App\Http\Controllers\Corporate\CorporateUserController::class, 'resendInvitation'])->name('resend-invitation');
         });
 
         // Reports routes
@@ -211,4 +213,12 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
             Route::get('/rates', [App\Http\Controllers\Corporate\CorporateSettingsController::class, 'rates'])->name('rates');
         });
     });
+
+    Route::get('/corporate/setup-password/{email}/{token}', [CorporateUserController::class, 'showSetupPasswordForm'])
+        ->name('corporate.setup-password')
+        ->middleware(['web', 'signed']);
+
+    Route::post('/corporate/setup-password', [CorporateUserController::class, 'setupPassword'])
+        ->name('corporate.setup-password.store')
+        ->middleware(['web']);
 });

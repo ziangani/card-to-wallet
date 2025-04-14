@@ -68,13 +68,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/email/check-verification', [App\Http\Controllers\VerificationController::class, 'checkEmailVerification'])->name('verification.check');
 });
 
-// Protected routes
+// Protected routes for all authenticated users
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Routes specific to retail users
+    Route::middleware(['retail.access'])->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Transaction routes
-    Route::prefix('transactions')->name('transactions.')->group(function () {
+        // Transaction routes
+        Route::prefix('transactions')->name('transactions.')->group(function () {
         // Initiate transaction
         Route::get('/initiate', [TransactionController::class, 'initiate'])->name('initiate');
         Route::post('/initiate', [TransactionController::class, 'processInitiate'])->name('process-initiate');
@@ -136,6 +138,8 @@ Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
     Route::prefix('transactions')->name('transactions.')->group(function () {
         Route::post('/quick', [TransactionController::class, 'processQuick'])->name('quick');
     });
+
+});
 
     // Corporate routes
     Route::prefix('corporate')->name('corporate.')->middleware(['auth', 'verified', 'corporate.access'])->group(function () {

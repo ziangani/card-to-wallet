@@ -105,6 +105,30 @@ class ResetPasswordController extends Controller
         // Use the trait's method to set the password
         $this->setUserPassword($user, $password);
         
+        // Reset login attempts and ensure account is active
+        // Find the actual User model instance
+        $userModel = \App\Models\User::where('email', $user->email)->first();
+        if ($userModel) {
+            // Also update the password on the User model instance
+            $userModel->password = \Illuminate\Support\Facades\Hash::make($password);
+            $userModel->login_attempts = 0;
+            $userModel->is_active = true;
+            $userModel->remember_token = \Illuminate\Support\Str::random(60);
+            
+            // Save the user model
+            $saved = $userModel->save();
+            
+            // Log the password update for debugging
+            \Illuminate\Support\Facades\Log::info('Password reset for user: ' . $user->email . ' (saved: ' . ($saved ? 'true' : 'false') . ')');
+            \Illuminate\Support\Facades\Log::info('New password hash: ' . $userModel->password);
+            
+            // Verify the password was set correctly
+            $passwordMatches = \Illuminate\Support\Facades\Hash::check($password, $userModel->password);
+            \Illuminate\Support\Facades\Log::info('Password verification: ' . ($passwordMatches ? 'success' : 'failure'));
+        } else {
+            \Illuminate\Support\Facades\Log::warning('User model not found for email: ' . $user->email);
+        }
+        
         // We don't want to log in the user automatically after password reset
         // Instead, we'll just fire the password reset event
         event(new PasswordReset($user));
@@ -124,7 +148,8 @@ class ResetPasswordController extends Controller
         }
 
         return redirect($this->redirectPath())
-                            ->with('status', trans($response));
+                            ->with('status', 'Your password has been reset successfully. Please login with your new password.')
+                            ->with('email', $request->email);
     }
 
     /**

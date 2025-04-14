@@ -68,10 +68,66 @@ class LoginController extends Controller
      */
     protected function validateLogin(Request $request)
     {
+        // Check if email is provided instead of login
+        if ($request->has('email') && !$request->has('login')) {
+            $request->merge(['login' => $request->email]);
+        }
+        
         $request->validate([
             'login' => 'required|string',
             'password' => 'required|string',
         ]);
+        
+        // Log login attempt for debugging
+        \Illuminate\Support\Facades\Log::info('Login attempt for: ' . $request->input('login'));
+    }
+
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        $field = $this->username();
+        $credentials = [
+            $field => $request->input('login'),
+            'password' => $request->input('password')
+        ];
+        
+        // Log the field being used for authentication
+        \Illuminate\Support\Facades\Log::info('Authentication field: ' . $field);
+        
+        return $credentials;
+    }
+
+    /**
+     * Attempt to log the user into the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function attemptLogin(Request $request)
+    {
+        $credentials = $this->credentials($request);
+        
+        // Log credentials for debugging (without password)
+        $logCredentials = $credentials;
+        if (isset($logCredentials['password'])) {
+            $logCredentials['password'] = '[HIDDEN]';
+        }
+        \Illuminate\Support\Facades\Log::info('Login credentials: ' . json_encode($logCredentials));
+        
+        // Attempt login
+        $result = $this->guard()->attempt(
+            $credentials, $request->boolean('remember')
+        );
+        
+        // Log result
+        \Illuminate\Support\Facades\Log::info('Login attempt result: ' . ($result ? 'success' : 'failure'));
+        
+        return $result;
     }
 
     /**
@@ -83,6 +139,9 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        // Log successful authentication
+        \Illuminate\Support\Facades\Log::info('User authenticated: ' . $user->email);
+        
         // Check if user is active
         if (!$user->is_active) {
             Auth::logout();
@@ -126,10 +185,16 @@ class LoginController extends Controller
         $login = $request->input('login');
         $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone_number';
         
+        // Log failed login attempt
+        \Illuminate\Support\Facades\Log::info('Failed login attempt for: ' . $login . ' using field: ' . $field);
+        
         // Find the user
         $user = \App\Models\User::where($field, $login)->first();
         
         if ($user) {
+            // Log user found
+            \Illuminate\Support\Facades\Log::info('User found for failed login: ' . $user->id . ' (is_active: ' . ($user->is_active ? 'true' : 'false') . ', login_attempts: ' . $user->login_attempts . ')');
+            
             // Increment login attempts
             $user->login_attempts = $user->login_attempts + 1;
             $user->save();
@@ -139,10 +204,15 @@ class LoginController extends Controller
                 $user->is_active = false;
                 $user->save();
                 
+                \Illuminate\Support\Facades\Log::warning('User account locked due to too many failed attempts: ' . $user->email);
+                
                 throw ValidationException::withMessages([
                     'login' => ['Your account has been locked due to too many failed login attempts. Please contact support.'],
                 ]);
             }
+        } else {
+            // Log user not found
+            \Illuminate\Support\Facades\Log::info('No user found for failed login attempt with ' . $field . ': ' . $login);
         }
         
         throw ValidationException::withMessages([

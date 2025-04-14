@@ -48,7 +48,7 @@
                 <!-- Email/Phone -->
                 <div>
                     <label for="login" class="block text-sm font-medium text-gray-700 mb-1">Email or Phone Number</label>
-                    <input type="text" id="login" name="login" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition duration-200" required autofocus>
+                    <input type="text" id="login" name="login" value="{{ session('email') ?? old('login') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition duration-200" required autofocus>
                     @error('login')
                         <p class="text-error text-sm mt-1">{{ $message }}</p>
                     @enderror

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Notifications\Notification;
 
 class ViewUser extends ViewRecord
 {
@@ -13,7 +14,24 @@ class ViewUser extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            // No edit action needed as per requirements
+            Actions\Action::make('unlockAccount')
+                ->label('Unlock Account')
+                ->color('warning')
+                ->icon('heroicon-o-lock-open')
+                ->requiresConfirmation()
+                ->visible(fn () => $this->record->login_attempts >= 3)
+                ->action(function () {
+                    $this->record->update([
+                        'login_attempts' => 0,
+                        'locked_at' => null,
+                        'is_active' => true,
+                    ]);
+
+                    Notification::make()
+                        ->title('Account unlocked successfully')
+                        ->success()
+                        ->send();
+                }),
         ];
     }
 }

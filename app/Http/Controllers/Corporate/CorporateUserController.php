@@ -437,7 +437,7 @@ class CorporateUserController extends Controller
             return back()->withErrors(['email' => 'User not found.']);
         }
 
-        $user->email_verified = true;
+        $user->is_email_verified = true;
         $user->password = Hash::make($request->password);
         $user->save();
 

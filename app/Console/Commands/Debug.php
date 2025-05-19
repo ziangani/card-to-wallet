@@ -14,8 +14,9 @@ class Debug extends Command
     public function handle()
     {
         $reference = 'BC'.rand(1000000000, 9999999999);
+        $paymentReference = 'l';
         $client = new cGrate($reference);
-        $test = $client->getAccountBalance();
+        $test = $client->queryCustomerPayment($paymentReference);
         print_r($test);
     }
 }

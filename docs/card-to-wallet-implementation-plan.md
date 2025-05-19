@@ -85,6 +85,7 @@ This document outlines the implementation plan for repurposing the TechPay Core 
 - **CompanyDocument**: Stores company verification documents
 - **CorporateRateTier**: Defines fee tiers based on transaction volume
 - **CompanyRateAssignment**: Assigns rate tiers to companies
+- **CorporateWalletTransaction**: Records all corporate wallet transactions
 
 ### 2. Corporate Controllers
 - **CorporateController**: Manages corporate dashboard and metrics
@@ -104,6 +105,70 @@ This document outlines the implementation plan for repurposing the TechPay Core 
 - **Corporate Reporting**: Detailed reports for corporate activities
 - **User Management**: Invite and manage users with different roles
 - **Rate Tiers**: Volume-based pricing for corporate clients
+
+### 4. Corporate Commands
+- **ProcessBulkDisbursements**: Processes approved bulk disbursements by:
+  - Finding disbursements with "approved" status
+  - Checking wallet balance for each item
+  - Creating transaction records for each disbursement item
+  - Deducting funds from corporate wallet
+  - Posting funds to mobile wallets
+  - Handling failures and refunds
+  - Updating statuses of disbursements and items
+
+### 5. Admin Interface
+- **BulkDisbursementResource**: Filament admin panel for managing bulk disbursements
+  - View all disbursements with filtering and sorting
+  - Process disbursements manually
+  - View disbursement details and status
+  - Track processing status and results
+
+- **CompanyResource**: Filament admin panel for managing corporate companies
+  - View and manage company information
+  - Edit company details and status
+  - Track company creation and updates
+
+- **CorporateWalletResource**: Filament admin panel for managing corporate wallets
+  - View wallet balances and transactions
+  - Deposit and withdraw funds manually
+  - Track wallet activity
+  - Manage wallet status
+
+## Bulk Disbursement Flow
+
+1. **File Upload**:
+   - Corporate user uploads CSV file with wallet numbers, amounts, and recipient names
+   - System validates the file format and data
+
+2. **Validation**:
+   - System checks each row for valid wallet numbers and amounts
+   - Displays validation results with errors and valid items
+
+3. **Review**:
+   - User reviews the validated data
+   - System shows breakdown by provider and total amounts
+
+4. **Submission**:
+   - User submits the disbursement for approval
+   - System creates disbursement items and approval request
+
+5. **Approval**:
+   - Approver reviews and approves the disbursement
+   - System marks the disbursement as approved and ready for processing
+
+6. **Processing**:
+   - `ProcessBulkDisbursements` command picks up approved disbursements
+   - For each item:
+     - Checks wallet balance
+     - Creates a transaction record
+     - Deducts funds from corporate wallet
+     - Posts funds to recipient's mobile wallet
+     - Updates statuses based on success/failure
+   - Updates the overall disbursement status
+
+7. **Monitoring**:
+   - Admin can monitor disbursement status through Filament admin panel
+   - Corporate users can view disbursement status and results
 
 ## Next Steps
 

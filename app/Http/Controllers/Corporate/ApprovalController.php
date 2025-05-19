@@ -316,8 +316,7 @@ class ApprovalController extends Controller
                 // Approve the bulk disbursement
                 $entity->approve($approverId);
                 
-                // In a real implementation, this would queue a job to process the disbursement
-                // For now, we'll just update the status
+                // Update the status to processing so it can be picked up by the processing command
                 $entity->startProcessing();
                 break;
             

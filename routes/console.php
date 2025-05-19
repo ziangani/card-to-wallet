@@ -15,6 +15,7 @@ Artisan::command('inspire', function () {
 //Schedule::command('wallet:post-deposits')->everyFiveMinutes()->runInBackground()->withoutOverlapping();
 
 Schedule::command(\App\Console\Commands\PostToMobileWallets::class)->everyMinute()->runInBackground()->withoutOverlapping();
+Schedule::command(\App\Console\Commands\ProcessBulkDisbursements::class)->everyMinute()->runInBackground()->withoutOverlapping();
 Schedule::command(\App\Console\Commands\sendEmail::class)->everyMinute()->runInBackground()->withoutOverlapping();
 Schedule::command(\App\Console\Commands\sendSMS::class)->everyMinute()->runInBackground()->withoutOverlapping();
 

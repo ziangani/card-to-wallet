@@ -47,7 +47,7 @@ class cGrate
     public function __construct($reference, $endpoint = null)
     {
         $this->reference = $reference;
-        
+
         // Load credentials from config
         $this->endpoint = $endpoint ?? config('cgrate.endpoint');
         $this->username = config('cgrate.username');
@@ -419,7 +419,7 @@ REQUEST;
 
     /**
      * Process a cash deposit to a bank account
-     * 
+     *
      * @param float|int $transactionAmount The amount to deposit
      * @param string $customerAccount The customer account number
      * @param string $issuerName The name of the issuer/bank
@@ -460,7 +460,7 @@ REQUEST;
         $responseCode = $dom->getElementsByTagName('responseCode')->item(0)->nodeValue;
         $responseMessage = $dom->getElementsByTagName('responseMessage')->item(0)->nodeValue;
         $internalReferenceNumber = $dom->getElementsByTagName('internalReferenceNumber')->item(0)->nodeValue ?? '';
-        
+
         return [
             'errorCode' => $responseCode,
             'responseMessage' => $responseMessage,
@@ -470,7 +470,7 @@ REQUEST;
 
     /**
      * Get available cash deposit issuers
-     * 
+     *
      * @return array List of available issuers for cash deposits
      * @throws Exception
      */
@@ -513,7 +513,7 @@ REQUEST;
 
     /**
      * Check the status of a cash out code
-     * 
+     *
      * @param string $cashOutCode The cash out code to check
      * @param string $customerMobile The customer's mobile number
      * @return array Status of the cash out code including amount and requestor details
@@ -553,7 +553,7 @@ REQUEST;
         $cashOutBank = $dom->getElementsByTagName('cashOutBank')->item(0)->nodeValue ?? '';
         $requestorName = $dom->getElementsByTagName('requestorName')->item(0)->nodeValue ?? '';
         $requestorSurname = $dom->getElementsByTagName('requestorSurname')->item(0)->nodeValue ?? '';
-        
+
         return [
             'errorCode' => $responseCode,
             'responseMessage' => $responseMessage,
@@ -564,5 +564,42 @@ REQUEST;
         ];
     }
 
+    public function queryCustomerPayment($paymentReference): array
+    {
+        $requestBody = <<<REQUEST
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:kon="http://konik.cgrate.com">
+               <soapenv:Header>
+                     <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soapenv:mustUnderstand="1">
+                        <wsse:UsernameToken xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="{$this->username}">
+                           <wsse:Username>{$this->username}</wsse:Username>
+                           <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{$this->password}</wsse:Password>
+                        </wsse:UsernameToken>
+                     </wsse:Security>
+                  </soapenv:Header>
+               <soapenv:Body>
+                  <ns2:queryCustomerPayment xmlns:ns2="http://konik.cgrate.com">
+                        <paymentReference>{$paymentReference}</paymentReference>
+                  </ns2:queryCustomerPayment>
+               </soapenv:Body>
+          </soapenv:Envelope>
+REQUEST;
+
+        $response = $this->sendRequest($requestBody);
+        if ($response['errorCode'] != 0)
+            throw new Exception($response['errorCode']);
+
+        $dom = new DOMDocument;
+        $dom->loadXML($response['raw']);
+
+        $responseCode = $dom->getElementsByTagName('responseCode')->item(0)->nodeValue;
+        $responseMessage = $dom->getElementsByTagName('responseMessage')->item(0)->nodeValue;
+        $paymentId = $dom->getElementsByTagName('paymentId')->item(0)->nodeValue ?? '';
+
+        return [
+            'errorCode' => $responseCode,
+            'response' => $responseMessage,
+            'paymentId' => $paymentId
+        ];
+    }
 
 }
